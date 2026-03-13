@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  orbita:
+    build: .
+    ports:
+      - "8001:8001"
+      - "3000:3000"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3.1:8b
+      - EMBED_MODEL=BAAI/bge-m3
+      - FAISS_INDEX_PATH=data/faiss_index
+      - MCP_MOCK=true
+      - MCP_SERVER_URL=http://localhost:8000
+      - MCP_ALLOWLIST_PATH=config/mcp_allowlist.yaml
+      - AUDIT_LOG_PATH=logs/mcp_audit.log
+    volumes:
+      - orbita_data:/app/data
+      - orbita_logs:/app/logs
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    restart: unless-stopped
+    # Pull the model on first run:
+    # docker exec orbita-ollama-1 ollama pull llama3.1:8b
+
+volumes:
+  orbita_data:
+  orbita_logs:
+  ollama_models:
