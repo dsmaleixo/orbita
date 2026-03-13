@@ -16,9 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from src.config import settings
-
-# Import data-layer helpers that do NOT depend on Streamlit.
-from app.data_layer import (
+from src.data.transformations import (
     categorize,
     default_date_range,
     get_balance_history,

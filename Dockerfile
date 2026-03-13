@@ -1,57 +1,64 @@
 # syntax=docker/dockerfile:1
-# Multi-stage Dockerfile for Órbita — uses uv for fast dependency installation
+# Multi-stage Dockerfile for Órbita — FastAPI API + Next.js frontend
 
-# ── Build stage ──────────────────────────────────────────────────────────────
-FROM python:3.11-slim AS builder
+# ── Python build stage ───────────────────────────────────────────────────────
+FROM python:3.11-slim AS py-builder
 
 WORKDIR /build
 
-# Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
 
-# Copy dependency manifest first (layer cache)
 COPY pyproject.toml .
 COPY README.md .
 
-# Install dependencies into /build/.venv
 RUN uv sync --no-dev --no-install-project
 
-# Copy source and install the project itself
 COPY src/ src/
 COPY ingest/ ingest/
-COPY app/ app/
+COPY api/ api/
 COPY eval/ eval/
 RUN uv sync --no-dev
 
-# ── Runtime stage ─────────────────────────────────────────────────────────────
+# ── Node build stage ────────────────────────────────────────────────────────
+FROM node:22-slim AS node-builder
+
+WORKDIR /frontend
+
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+
+COPY frontend/ .
+RUN npm run build
+
+# ── Runtime stage ────────────────────────────────────────────────────────────
 FROM python:3.11-slim AS runtime
 
 WORKDIR /app
 
-# Copy uv binary and the pre-built virtualenv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
-COPY --from=builder /build/.venv /app/.venv
+RUN apt-get update && apt-get install -y --no-install-recommends curl nodejs npm && rm -rf /var/lib/apt/lists/*
 
-# Copy application code
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY --from=py-builder /build/.venv /app/.venv
+
 COPY src/ src/
-COPY app/ app/
+COPY api/ api/
 COPY ingest/ ingest/
 COPY eval/ eval/
 COPY mcp_allowlist.yaml .
 COPY .env.example .env
 
-# Create necessary directories
+COPY --from=node-builder /frontend/.next frontend/.next
+COPY --from=node-builder /frontend/node_modules frontend/node_modules
+COPY --from=node-builder /frontend/package.json frontend/package.json
+COPY --from=node-builder /frontend/next.config.ts frontend/next.config.ts
+
 RUN mkdir -p data/raw data/processed data/faiss_index logs eval/results
 
-# Always use the virtualenv
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Expose Streamlit port
-EXPOSE 8501
+EXPOSE 8001 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8501/_stcore/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8001/api/health || exit 1
 
-# Entry point
-CMD ["streamlit", "run", "app/main.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port 8001 & cd frontend && npx next start --port 3000 --hostname 0.0.0.0"]

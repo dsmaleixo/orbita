@@ -4,7 +4,8 @@ services:
   orbita:
     build: .
     ports:
-      - "8501:8501"
+      - "8001:8001"
+      - "3000:3000"
     environment:
       - OLLAMA_BASE_URL=http://ollama:11434
       - OLLAMA_MODEL=llama3.1:8b

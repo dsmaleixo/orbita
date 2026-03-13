@@ -41,7 +41,7 @@ def data_query_node(state: OrbitaState) -> dict[str, Any]:
 
         # Category breakdown
         from collections import defaultdict
-        from app.data_layer import categorize
+        from src.data.transformations import categorize
         cat_totals: dict = defaultdict(float)
         for t in txns:
             if t.get("amount", 0) < 0:
