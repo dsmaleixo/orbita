@@ -1,0 +1,113 @@
+{
+  "version": "1.0",
+  "description": "5 automation task definitions for Órbita evaluation",
+  "tasks": [
+    {
+      "id": "a01",
+      "name": "Categorize 10 Transactions",
+      "automation_type": "categorize",
+      "input": {
+        "start_date": "2025-01-01",
+        "end_date": "2025-01-31",
+        "transactions": [
+          {"id": "T001", "date": "2025-01-03", "description": "Supermercado Extra", "amount": -250.00},
+          {"id": "T002", "date": "2025-01-05", "description": "Salário Empresa ABC", "amount": 4500.00},
+          {"id": "T003", "date": "2025-01-07", "description": "Uber Brasil", "amount": -35.50},
+          {"id": "T004", "date": "2025-01-10", "description": "iFood", "amount": -89.90},
+          {"id": "T005", "date": "2025-01-12", "description": "Netflix", "amount": -44.90},
+          {"id": "T006", "date": "2025-01-15", "description": "Aluguel Ap", "amount": -1800.00},
+          {"id": "T007", "date": "2025-01-18", "description": "Drogasil", "amount": -62.00},
+          {"id": "T008", "date": "2025-01-20", "description": "Academia SmartFit", "amount": -99.90},
+          {"id": "T009", "date": "2025-01-22", "description": "Renner", "amount": -189.00},
+          {"id": "T010", "date": "2025-01-28", "description": "Tesouro Direto", "amount": -500.00}
+        ]
+      },
+      "expected_output": {
+        "categories_present": ["alimentacao", "transporte", "moradia", "saude", "lazer", "vestuario", "investimentos"],
+        "total_transactions": 10,
+        "largest_category": "moradia"
+      },
+      "success_criteria": "All 10 transactions categorized; moradia is largest expense category"
+    },
+    {
+      "id": "a02",
+      "name": "Detect Deviation from Emergency Fund Goal",
+      "automation_type": "goal_alert",
+      "input": {
+        "start_date": "2025-01-01",
+        "end_date": "2025-01-31",
+        "goals": [
+          {
+            "name": "Reserva de Emergência",
+            "target_amount": 30000,
+            "months_remaining": 6
+          }
+        ]
+      },
+      "expected_output": {
+        "required_monthly_savings": 5000.0,
+        "has_alerts": true,
+        "alert_contains": "Reserva de Emergência"
+      },
+      "success_criteria": "Alert generated because monthly savings (< R$5000) is below required R$5000/month for R$30k goal in 6 months"
+    },
+    {
+      "id": "a03",
+      "name": "Generate Monthly Report for January 2025",
+      "automation_type": "report",
+      "input": {
+        "start_date": "2025-01-01",
+        "end_date": "2025-01-31"
+      },
+      "expected_output": {
+        "has_period": true,
+        "has_summary": true,
+        "has_insights": true,
+        "has_top_categories": true
+      },
+      "success_criteria": "Report contains period, income/expense summary, top spending categories, and at least 1 insight"
+    },
+    {
+      "id": "a04",
+      "name": "Detect Overspending in Lazer Category",
+      "automation_type": "goal_alert",
+      "input": {
+        "start_date": "2025-01-01",
+        "end_date": "2025-01-31",
+        "goals": [
+          {
+            "name": "Controle de Lazer (máx 20% do salário)",
+            "target_amount": 900.0,
+            "months_remaining": 1
+          }
+        ],
+        "lazer_budget": 900.0
+      },
+      "expected_output": {
+        "lazer_spending_flagged": true
+      },
+      "success_criteria": "System detects that lazer spending exceeds 20% of R$4500 salary budget"
+    },
+    {
+      "id": "a05",
+      "name": "Detect Zero Savings Pattern",
+      "automation_type": "goal_alert",
+      "input": {
+        "start_date": "2024-11-01",
+        "end_date": "2025-01-31",
+        "goals": [
+          {
+            "name": "Poupança Mensal (meta: R$500/mês)",
+            "target_amount": 1500.0,
+            "months_remaining": 3
+          }
+        ]
+      },
+      "expected_output": {
+        "savings_intervention": true,
+        "has_nudge_message": true
+      },
+      "success_criteria": "System generates intervention nudge when savings rate is critically low"
+    }
+  ]
+}

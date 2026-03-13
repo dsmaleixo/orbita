@@ -1,0 +1,32 @@
+# MCP Tool Allowlist — only READ operations permitted
+# This file enforces the principle of least privilege for MCP tool access.
+# Any tool NOT listed here will raise a PermissionError if called.
+#
+# Security rationale:
+#   - Only read-only financial data access is permitted
+#   - No write, delete, transfer, or payment operations
+#   - Limits blast radius in case of prompt injection or supply-chain attack
+
+allowed_tools:
+  - get_transactions
+  - get_balances
+  - get_accounts
+
+# Documentation: what the agent CANNOT do via MCP
+prohibited_operations:
+  - create_transaction
+  - delete_account
+  - transfer_funds
+  - update_balance
+  - create_payment
+  - authenticate
+  - get_credentials
+  - list_passwords
+
+# File system access limits (relative to project root)
+allowed_paths:
+  - data/
+  - logs/
+
+max_response_records: 500
+max_string_field_length: 256

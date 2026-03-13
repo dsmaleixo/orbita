@@ -1,0 +1,69 @@
+# Órbita Document Corpus Sources
+# Each source will be downloaded/loaded and indexed into FAISS.
+# Types: pdf | html
+
+sources:
+  # ── BACEN (Banco Central do Brasil) ─────────────────────────────────────
+  - id: bacen_cidadania_financeira
+    title: "Cidadania Financeira - Banco Central do Brasil"
+    url: "https://www.bcb.gov.br/content/cidadaniafinanceira/documentos_cidadania/Guia_Educação_Financeira_BCB.pdf"
+    type: pdf
+    language: pt
+    topics: [educação financeira, planejamento, orçamento, poupança]
+
+  - id: bacen_sistema_financeiro
+    title: "Como Funciona o Sistema Financeiro Nacional"
+    url: "https://www.bcb.gov.br/content/publicacoes/outras_pub_alfa/Como_Funciona_o_SFN.pdf"
+    type: pdf
+    language: pt
+    topics: [sistema financeiro, bancos, regulação]
+
+  - id: bacen_investimentos
+    title: "Tipos de Investimentos - BACEN Educa"
+    url: "https://www.bcb.gov.br/cidadaniafinanceira/educacaofinanceira"
+    type: html
+    language: pt
+    topics: [investimentos, renda fixa, renda variável, tesouro direto, poupança]
+
+  # ── CVM (Comissão de Valores Mobiliários) ───────────────────────────────
+  - id: cvm_investidor_iniciante
+    title: "Guia do Investidor Iniciante - CVM"
+    url: "https://www.investidor.gov.br/portaldoinvestidor/export/sites/portaldoinvestidor/publicacao/Cartilha/CartilhaInvestidorIniciante.pdf"
+    type: pdf
+    language: pt
+    topics: [investimentos, ações, fundos, risco]
+
+  - id: cvm_planejamento_financeiro
+    title: "Planejamento Financeiro - Portal do Investidor"
+    url: "https://www.investidor.gov.br/menu/primeiros_passos/Planejando_seus_Investimentos/planejamento_financeiro.html"
+    type: html
+    language: pt
+    topics: [planejamento financeiro, metas, orçamento]
+
+  # ── B3 (Bolsa de Valores) ────────────────────────────────────────────────
+  - id: b3_educacao_financeira
+    title: "Educação Financeira - B3"
+    url: "https://www.b3.com.br/pt_br/produtos-e-servicos/solucoes-para-educacao/plataforma-de-educacao-b3.htm"
+    type: html
+    language: pt
+    topics: [bolsa de valores, ações, mercado de capitais]
+
+  # ── Procon-SP ────────────────────────────────────────────────────────────
+  - id: procon_direitos_consumidor
+    title: "Guia do Consumidor Financeiro - Procon-SP"
+    url: "https://www.procon.sp.gov.br/wp-content/uploads/2019/11/guia_consumidor_financeiro.pdf"
+    type: pdf
+    language: pt
+    topics: [direitos do consumidor, crédito, cartão de crédito, tarifas bancárias]
+
+  # ── IDEC (Instituto Brasileiro de Defesa do Consumidor) ──────────────────
+  - id: idec_consumo_consciente
+    title: "Consumo Consciente e Finanças Pessoais - IDEC"
+    url: "https://idec.org.br/consumidor-sa/artigo/financas-pessoais-entenda-o-sistema-financeiro-nacional"
+    type: html
+    language: pt
+    topics: [consumo consciente, endividamento, finanças pessoais]
+
+# Fallback synthetic documents (used if real URLs are unavailable)
+# These are embedded directly in the loader as in-memory Documents
+fallback_synthetic: true

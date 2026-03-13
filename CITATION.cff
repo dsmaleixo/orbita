@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use Órbita in your research, please cite it as below."
+type: software
+title: "Órbita: Agentic Financial Assistant for Brazilian Young Adults"
+abstract: >
+  Órbita is an academic proof-of-concept agentic financial assistant built with
+  LangGraph, FAISS, and Ollama. It provides citation-backed financial literacy
+  guidance for Brazilian young adults by indexing official BACEN/CVM sources and
+  using a Self-RAG anti-hallucination pipeline. MCP integration with Pluggy
+  enables Open Finance data access for automated expense categorization and
+  goal deviation alerts.
+version: "0.1.0"
+date-released: "2026-03-12"
+license: MIT
+repository-code: "https://github.com/orbita-project/orbita"
+keywords:
+  - financial-literacy
+  - RAG
+  - LangGraph
+  - MCP
+  - Brazil
+  - open-finance
+  - self-RAG
+  - agentic-AI
+authors:
+  - name: "Órbita Team"
