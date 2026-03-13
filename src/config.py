@@ -30,7 +30,7 @@ class Settings:
     # MCP
     MCP_MOCK: bool = os.getenv("MCP_MOCK", "true").lower() == "true"
     MCP_SERVER_URL: str = os.getenv("MCP_SERVER_URL", "http://localhost:8000")
-    MCP_ALLOWLIST_PATH: str = os.getenv("MCP_ALLOWLIST_PATH", "mcp_allowlist.yaml")
+    MCP_ALLOWLIST_PATH: str = os.getenv("MCP_ALLOWLIST_PATH", "config/mcp_allowlist.yaml")
 
     # Pluggy credentials (only needed when MCP_MOCK=false)
     PLUGGY_CLIENT_ID: str = os.getenv("PLUGGY_CLIENT_ID", "")

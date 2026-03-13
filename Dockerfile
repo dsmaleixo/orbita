@@ -44,7 +44,7 @@ COPY src/ src/
 COPY api/ api/
 COPY ingest/ ingest/
 COPY eval/ eval/
-COPY mcp_allowlist.yaml .
+COPY config/ config/
 COPY .env.example .env
 
 COPY --from=node-builder /frontend/.next frontend/.next

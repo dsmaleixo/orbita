@@ -13,7 +13,7 @@ services:
       - FAISS_INDEX_PATH=data/faiss_index
       - MCP_MOCK=true
       - MCP_SERVER_URL=http://localhost:8000
-      - MCP_ALLOWLIST_PATH=mcp_allowlist.yaml
+      - MCP_ALLOWLIST_PATH=config/mcp_allowlist.yaml
       - AUDIT_LOG_PATH=logs/mcp_audit.log
     volumes:
       - orbita_data:/app/data

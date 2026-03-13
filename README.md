@@ -1,130 +1,106 @@
-# 🪐 Órbita — Assistente Financeiro Agentico para Jovens Brasileiros
+# Órbita — Assistente Financeiro Agentico para Jovens Brasileiros
 
-> **Prova de conceito acadêmica** de um sistema agentico multi-agente com RAG, orquestrado por LangGraph, conectado ao Open Finance Brasil via MCP (Pluggy), para educação financeira de jovens adultos brasileiros (sub-35).
+> **Prova de conceito acadêmica** de um sistema agentico multi-agente com RAG, orquestrado por LangGraph, conectado ao Open Finance Brasil via MCP (Pluggy), para educação financeira de jovens adultos brasileiros.
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
+[![Next.js 15](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 [![LangGraph](https://img.shields.io/badge/LangGraph-0.2+-green.svg)](https://github.com/langchain-ai/langgraph)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
-## 📌 Visão Geral
+## Visão Geral
 
-**Problema:** 60% dos jovens brasileiros abandonam aplicativos de finanças pessoais. O mercado oferece dashboards passivos que exigem entrada manual de dados — exatamente o comportamento que os jovens evitam.
+**Problema:** 60% dos jovens brasileiros abandonam apps de finanças pessoais. O mercado oferece dashboards passivos que exigem entrada manual de dados.
 
-**Solução:** Órbita é um assistente financeiro agentico que:
-- ✅ Responde perguntas de educação financeira com **citações de fontes oficiais** (BACEN, CVM)
-- ✅ **Valida afirmações** com um mecanismo Self-RAG anti-alucinação
-- ✅ **Automatiza** categorização de despesas, alertas de metas e geração de relatórios via Open Finance (Pluggy)
-- ✅ **Zero entrada manual** — dados via Open Finance Brasil (MCP)
+**Solução:** Órbita combina um assistente financeiro agentico com um dashboard moderno:
 
-**Impacto Social:** Inclusão financeira para os 70M+ jovens brasileiros sem controle financeiro estruturado. Educação, não aconselhamento.
+- **Dashboard financeiro** completo — saldos, transações, fluxo de caixa, categorias, metas e patrimônio
+- **Assistente IA** com 4 rotas inteligentes — RAG para educação financeira, dados pessoais via Open Finance, conversa geral e recusa segura
+- **Citações verificáveis** de fontes oficiais (BACEN, CVM, Procon)
+- **Anti-alucinação** via Self-RAG com re-retrieval automático
+- **Zero entrada manual** — sincronização via Open Finance Brasil (Pluggy)
 
 ---
 
-## 🏗️ Arquitetura
+## Arquitetura
 
-### Diagrama do Sistema
-
-```mermaid
-graph TB
-    subgraph UI["UI Layer (Streamlit)"]
-        Chat["Chat Interface"]
-        GoalDash["Goal Progress View"]
-        ReportView["Report / Alert View"]
-    end
-
-    subgraph Orchestration["LangGraph Orchestration"]
-        Supervisor["Supervisor\n(Intent Router)"]
-
-        subgraph QA_Route["Q&A Route"]
-            Retriever["Retriever Agent\n(FAISS dense search)"]
-            Safety["Safety/Policy Agent\n(disclaimers, compliance)"]
-            Writer["Answerer/Writer\n(cited responses)"]
-            SelfCheck["Self-Check Agent\n(Self-RAG validation)"]
-        end
-
-        subgraph Auto_Route["Automation Route"]
-            AutoAgent["Automation Agent\n(workflows)"]
-        end
-    end
-
-    subgraph Data["Data & Knowledge Layer"]
-        FAISS["FAISS Vector Store"]
-        DocStore["Document Corpus\n(BACEN, CVM, Procon)"]
-        EmbModel["bge-m3 Embeddings"]
-    end
-
-    subgraph External["External Integrations (MCP)"]
-        MCP_Client["MCP Client"]
-        MockServer["Mock Server\n(synthetic data)"]
-    end
-
-    Chat --> Supervisor
-    Supervisor -->|"Q&A"| Retriever
-    Supervisor -->|"Automation"| AutoAgent
-    Supervisor -->|"Refuse"| Safety
-    Retriever --> FAISS --> EmbModel --> DocStore
-    Retriever --> Safety --> Writer --> SelfCheck
-    SelfCheck -->|"Supported"| Chat
-    SelfCheck -->|"Unsupported (retry)"| Retriever
-    SelfCheck -->|"Max retries (refuse)"| Chat
-    AutoAgent --> MCP_Client --> MockServer
+```
+┌─────────────────────────────────────────────────────────┐
+│  Frontend (Next.js + React + Tailwind CSS)              │
+│  11 páginas: Dashboard, Transações, Fluxo de Caixa,    │
+│  Contas, Patrimônio, Recorrentes, Categorias, Metas,   │
+│  Relatórios, Assistente IA, Conectar Banco              │
+└───────────────────────┬─────────────────────────────────┘
+                        │ HTTP (proxy :3000 → :8001)
+┌───────────────────────▼─────────────────────────────────┐
+│  API (FastAPI)                                          │
+│  REST endpoints + LangGraph agent invocation            │
+└───────────┬───────────────────────┬─────────────────────┘
+            │                       │
+┌───────────▼───────────┐ ┌────────▼──────────────────────┐
+│  MCP Client           │ │  LangGraph Orchestration      │
+│  Pluggy / Mock        │ │  Supervisor → Retriever →     │
+│  (Open Finance)       │ │  Safety → Writer → Self-Check │
+└───────────────────────┘ └────────┬──────────────────────┘
+                                   │
+                          ┌────────▼──────────┐
+                          │  FAISS + bge-m3   │
+                          │  (RAG pipeline)   │
+                          └───────────────────┘
 ```
 
-### Agentes
+### Agentes LangGraph
 
-| Agente | Responsabilidade |
+| Agente | Rota | Responsabilidade |
+|---|---|---|
+| **Supervisor** | Entrada | Classifica intenção: `general` / `rag` / `data` / `refuse` |
+| **General** | `general` | Resposta direta via Ollama, sem retrieval |
+| **Data Query** | `data` | Busca dados financeiros via MCP, responde com contexto real |
+| **Retriever** | `rag` | Busca densa em FAISS (top-5) + reranking opcional |
+| **Safety** | `rag` | Disclaimers obrigatórios, bloqueio de aconselhamento regulado |
+| **Writer** | `rag` | Resposta com citações `[Fonte: X, p.Y]` |
+| **Self-Check** | `rag` | Validação Self-RAG: re-retrieval ou recusa se não suportado |
+| **Automation** | automação | Categorização, alertas de metas, relatórios financeiros |
+
+---
+
+## Stack Técnica
+
+| Componente | Tecnologia |
 |---|---|
-| **Supervisor** | Classifica intenção: Q&A, Automação ou Recusa |
-| **Retriever** | Busca densa em FAISS com reranking opcional |
-| **Safety/Policy** | Injeta disclaimers, bloqueia aconselhamento regulado |
-| **Writer** | Gera resposta com citações `[Fonte: X, p.Y]` |
-| **Self-Check** | Valida afirmações contra documentos recuperados (Self-RAG) |
-| **Automation** | Executa workflows: categorizar, alertar metas, relatório |
-
-### Fluxo Q&A
-
-```
-Usuário → Supervisor(qa) → Retriever(FAISS) → Safety → Writer → Self-Check
-  → Se suportado: resposta com citações
-  → Se não suportado + tentativas < 2: re-retrieval
-  → Se não suportado + tentativas >= 2: recusa educada
-```
-
-### Fluxo de Automação
-
-```
-Usuário → Supervisor(automation) → Automation Agent
-  → MCP Client (get_transactions/get_balances)
-  → Categorização / Alerta de Meta / Relatório
-  → Resultado formatado com disclaimer
-```
+| Frontend | Next.js 15, React 19, Tailwind CSS 4, Recharts, Lucide Icons |
+| API | FastAPI + Uvicorn |
+| Orquestração | LangGraph 0.2+ (StateGraph com estado tipado) |
+| LLM | Ollama + Llama 3.1 8B (local, zero custo) |
+| Embeddings | BAAI/bge-m3 (1024-dim, multilingual) |
+| Vector Store | FAISS (faiss-cpu, persistência local) |
+| Open Finance | Pluggy REST API via MCP (allowlist + audit logging) |
+| Avaliação | RAGAS (Faithfulness, Relevancy, Precision, Recall) |
+| Testes | pytest (totalmente mockado) |
 
 ---
 
-## ⚙️ Setup
+## Setup
 
 ### Pré-requisitos
 
 - Python 3.11+
+- Node.js 20+
 - [Ollama](https://ollama.com/) instalado localmente
-- [uv](https://docs.astral.sh/uv/) para gerenciamento de dependências
+- [uv](https://docs.astral.sh/uv/) para gerenciamento de dependências Python
 
 ### 1. Clone e instale dependências
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/dsmaleixo/orbita.git
 cd orbita
 
-# Instala uv (se ainda não tiver)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Cria virtualenv e instala todas as dependências
+# Backend (Python)
 uv sync
 
-# Para instalar dependências de dev (testes, linter)
-uv sync --dev
+# Frontend (Node.js)
+cd frontend && npm install && cd ..
 ```
 
 ### 2. Configure o ambiente
@@ -140,25 +116,25 @@ cp .env.example .env
 ollama pull llama3.1:8b
 ```
 
-### 4. Execute o pipeline de ingestão (offline, uma vez)
+### 4. Execute o pipeline de ingestão (uma vez)
 
 ```bash
 uv run python -m ingest.pipeline
 ```
 
-Isso irá:
-- Baixar documentos do BACEN, CVM, Procon-SP, B3 (com fallback para corpus sintético)
-- Segmentar em chunks de 512 tokens com 50 de sobreposição
-- Indexar com embeddings `bge-m3` no FAISS
-- Salvar o índice em `data/faiss_index/`
+Isso irá baixar documentos do BACEN, CVM, Procon-SP, B3, segmentar em chunks, indexar com bge-m3 e salvar no FAISS.
 
 ### 5. Execute o app
 
 ```bash
-uv run streamlit run app/main.py
+# Terminal 1 — API (porta 8001)
+uv run python api/main.py
+
+# Terminal 2 — Frontend (porta 3000)
+cd frontend && npm run dev
 ```
 
-Acesse em: `http://localhost:8501`
+Acesse em: **http://localhost:3000**
 
 ### 6. Execute os testes
 
@@ -166,239 +142,140 @@ Acesse em: `http://localhost:8501`
 uv run pytest tests/ -v
 ```
 
-> Os testes são totalmente mockados — não requerem Ollama ou internet.
-
 ---
 
-## 🐳 Docker
+## Docker
 
 ```bash
-# Build e execução
 docker-compose up --build
 
 # Puxar o modelo no primeiro uso
 docker exec orbita-ollama-1 ollama pull llama3.1:8b
 
-# Execute o pipeline de ingestão no container
+# Pipeline de ingestão no container
 docker exec orbita-orbita-1 python -m ingest.pipeline
 ```
 
+Portas expostas: `3000` (frontend) e `8001` (API).
+
 ---
 
-## 🔌 MCP (Model Context Protocol) — Documentação de Segurança
+## MCP — Segurança
 
-### Servidor MCP Utilizado
+### Ferramentas Expostas (somente leitura)
 
-- **Modo Demo (padrão):** `src/mcp/mock_server.py` — servidor MCP próprio com dados sintéticos brasileiros
-- **Modo Produção:** Pluggy MCP Server (Open Finance Brasil) via `langchain-mcp-adapters`
+| Tool | Descrição |
+|---|---|
+| `get_transactions` | Transações bancárias por período |
+| `get_balances` | Saldos das contas vinculadas |
+| `get_accounts` | Metadados das contas |
 
-### Ferramentas Expostas (tools)
+### O que o agente NÃO pode fazer
 
-| Tool | Descrição | Parâmetros |
-|---|---|---|
-| `get_transactions` | Busca transações bancárias por período | `start_date`, `end_date` (ISO date) |
-| `get_balances` | Consulta saldos das contas vinculadas | — |
-| `get_accounts` | Retorna metadados das contas | — |
+Criar/deletar transações, transferir fundos, criar pagamentos, autenticar, escrever dados no Open Finance.
 
-### O que o agente **NÃO PODE** fazer via MCP
+### Controles
 
-- ❌ Criar ou deletar transações
-- ❌ Transferir fundos
-- ❌ Criar pagamentos
-- ❌ Autenticar ou obter credenciais
-- ❌ Escrever dados no Open Finance
-- ❌ Acessar dados fora do escopo (`data/` e `logs/`)
+- **Allowlist** — `config/mcp_allowlist.yaml` restringe ferramentas permitidas
+- **Audit logging** — toda chamada MCP registrada em `logs/mcp_audit.log`
+- **Sanitização** — caracteres de controle removidos, campos truncados, valores financeiros nunca logados
 
-### Controles de Segurança
+---
 
-#### 1. Allowlist de ferramentas (`mcp_allowlist.yaml`)
+## Avaliação
 
-```yaml
-allowed_tools:
-  - get_transactions
-  - get_balances
-  - get_accounts
+### RAG — RAGAS
+
+```bash
+uv run python eval/run_ragas.py
 ```
 
-Qualquer chamada a ferramenta fora dessa lista lança `PermissionError` e é registrada no log de auditoria.
+15 perguntas rotuladas (10 educação financeira + 3 adversariais + 2 recusas).
 
-#### 2. Log de auditoria (`logs/mcp_audit.log`)
+| Métrica | Meta |
+|---|---|
+| Faithfulness | >= 0.70 |
+| Answer Relevancy | >= 0.70 |
+| Context Precision | >= 0.65 |
+| Context Recall | >= 0.65 |
+| Correct Refusals | = 2/2 |
 
-Cada invocação de ferramenta MCP é registrada com:
-- `timestamp` (ISO UTC)
-- `tool` (nome da ferramenta)
-- `params` (sem valores financeiros — redacted)
-- `response_summary` (somente `record_count`, nunca valores)
-- `blocked` (true/false)
+### Automação
 
-**Exemplo de entrada no log:**
-```json
-{"timestamp": "2025-01-15T10:30:00Z", "tool": "get_transactions", "params": {"start_date": "2025-01-01", "end_date": "2025-01-31"}, "response_summary": "record_count=47", "blocked": false}
+```bash
+uv run python eval/run_automation_eval.py
 ```
 
-#### 3. Sanitização de saída MCP
-
-Antes de qualquer dado do MCP chegar ao LLM:
-- Caracteres de controle são removidos (prevenção de prompt injection)
-- Campos longos são truncados em 256 caracteres
-- Valores financeiros NUNCA são logados
-
-#### 4. Justificativa de riscos (Supply-chain & Exfiltração)
-
-| Risco | Severidade | Mitigação |
-|---|---|---|
-| **Supply-chain attack** via servidor MCP malicioso | Alta | Allowlist estrita; apenas operações de leitura; log de auditoria completo; Docker sandbox |
-| **Prompt injection** via nomes de comerciantes | Média | Sanitização de controle chars; formato estruturado (não texto livre) |
-| **Exfiltração de dados financeiros** | Alta | Valores nunca logados; dados não persistidos além do session state; `.env` excluído do git |
-| **Aconselhamento financeiro não autorizado** | Alta | Safety agent bloqueia padrões regulados; disclaimer mandatório em toda resposta |
+5 tarefas: categorização, detecção de desvio de meta, relatório mensal, alerta de gastos, detecção de ausência de poupança. Meta: >= 80%.
 
 ---
 
-## 📊 Avaliação
-
-### RAG — Métricas RAGAS
-
-Execute: `python eval/run_ragas.py`
-
-O golden set contém 15 perguntas rotuladas:
-- 10 perguntas básicas de educação financeira (Tesouro Direto, CDI, FGTS, etc.)
-- 3 perguntas adversariais (gatilhos de alucinação)
-- 2 perguntas fora do escopo (devem ser recusadas)
-
-| Métrica | Descrição | Meta |
-|---|---|---|
-| Faithfulness | Afirmações suportadas pelos docs recuperados | ≥ 0.70 |
-| Answer Relevancy | Relevância da resposta para a pergunta | ≥ 0.70 |
-| Context Precision | Precisão dos documentos recuperados | ≥ 0.65 |
-| Context Recall | Cobertura dos documentos relevantes | ≥ 0.65 |
-| Correct Refusals | Perguntas fora do escopo recusadas corretamente | = 2/2 |
-| P50 Latency | Mediana de latência por pergunta | ≤ 30s |
-
-> **Nota:** Métricas RAGAS requerem `pip install ragas`. Métricas básicas (refusals, citations, latency) funcionam sem RAGAS.
-
-### Automação — 5 Tarefas de Avaliação
-
-Execute: `python eval/run_automation_eval.py`
-
-| ID | Tarefa | Critério |
-|---|---|---|
-| a01 | Categorizar 10 transações sintéticas | Todas as 7 categorias identificadas |
-| a02 | Detectar desvio de meta (Reserva R$30k em 6 meses) | Alerta gerado para poupança insuficiente |
-| a03 | Gerar relatório mensal de Janeiro 2025 | Período, sumário, insights e categorias presentes |
-| a04 | Detectar gastos de lazer > 20% do salário | Flag de lazer gerado |
-| a05 | Detectar 3 meses sem poupança | Nudge de intervenção gerado |
-
-**Meta:** Taxa de sucesso ≥ 80% (4/5 tarefas)
-
----
-
-## 🗂️ Estrutura do Repositório
+## Estrutura do Repositório
 
 ```
 orbita/
-├── README.md
-├── LICENSE                     # MIT
-├── CITATION.cff
-├── Dockerfile
+├── api/                          # FastAPI REST API
+│   └── main.py                   # Endpoints + LangGraph integration
+│
+├── frontend/                     # Next.js frontend
+│   ├── src/app/                  # Pages (11 rotas)
+│   ├── src/components/           # UI components (React)
+│   └── src/lib/                  # API client + utilities
+│
+├── src/                          # Core Python backend
+│   ├── config.py                 # Configuração centralizada (.env)
+│   ├── agents/                   # 8 agentes LangGraph
+│   ├── data/                     # Transformações de dados
+│   ├── graph/                    # StateGraph + OrbitaState
+│   ├── mcp/                      # Cliente MCP + segurança + Pluggy
+│   ├── rag/                      # Embeddings + FAISS + Reranker
+│   └── webhook/                  # FastAPI webhook receiver (Pluggy)
+│
+├── ingest/                       # Pipeline de ingestão offline
+│   ├── pipeline.py               # Orchestrador end-to-end
+│   ├── loaders.py                # PDF + HTML loaders
+│   ├── splitter.py               # Chunking (512 tokens)
+│   └── sources.yaml              # Fontes BACEN/CVM/Procon/B3
+│
+├── config/                       # Arquivos de configuração
+│   └── mcp_allowlist.yaml        # Allowlist de ferramentas MCP
+│
+├── eval/                         # Suítes de avaliação
+│   ├── golden_set.json           # 15 Q&As rotuladas
+│   ├── automation_tasks.json     # 5 tarefas de automação
+│   ├── run_ragas.py              # Avaliação RAGAS
+│   └── run_automation_eval.py    # Avaliação de automação
+│
+├── tests/                        # Testes unitários (mockados)
+├── data/                         # Dados e índice FAISS
+├── logs/                         # Logs de auditoria MCP
+├── docs/                         # Documentação técnica
+│   ├── ARCHITECTURE.md           # Especificação arquitetural
+│   ├── VALUE_PROPOSITION.md      # Proposta de valor
+│   ├── IMPLEMENTATION_INSTRUCTIONS.md  # Especificação acadêmica
+│   └── PLUGGY.md                 # Documentação Pluggy
+│
+├── Dockerfile                    # Build multi-stage (Python + Node)
 ├── docker-compose.yml
-├── pyproject.toml
-├── .env.example
-├── mcp_allowlist.yaml
-│
-├── src/
-│   ├── config.py               # Configuração centralizada
-│   ├── agents/                 # 6 agentes LangGraph
-│   ├── graph/                  # StateGraph + OrbitaState
-│   ├── mcp/                    # Cliente MCP + segurança
-│   └── rag/                    # Embeddings + FAISS + Reranker
-│
-├── app/
-│   ├── main.py                 # Entry point Streamlit
-│   ├── pages/                  # Chat, Metas, Relatórios
-│   └── components/             # Citation + Disclaimer
-│
-├── ingest/
-│   ├── pipeline.py             # Pipeline de ingestão offline
-│   ├── loaders.py              # PDF + HTML loaders
-│   ├── splitter.py             # Text chunking
-│   └── sources.yaml            # Fontes BACEN/CVM/Procon/B3
-│
-├── eval/
-│   ├── golden_set.json         # 15 Q&As rotuladas
-│   ├── automation_tasks.json   # 5 tarefas de automação
-│   ├── run_ragas.py            # Avaliação RAGAS
-│   └── run_automation_eval.py  # Avaliação de automação
-│
-├── tests/
-│   ├── conftest.py             # Fixtures mockadas
-│   ├── test_supervisor.py
-│   ├── test_retriever.py
-│   ├── test_self_check.py
-│   ├── test_automation.py
-│   └── test_mcp_security.py
-│
-├── data/
-│   ├── raw/                    # Documentos baixados
-│   ├── processed/              # Chunks com metadados
-│   └── faiss_index/            # Índice FAISS persistido
-│
-└── logs/
-    └── mcp_audit.log           # Log de auditoria MCP
+├── pyproject.toml                # Dependências Python (uv)
+├── CITATION.cff
+└── LICENSE                       # MIT
 ```
 
 ---
 
-## 🛠️ Stack Técnica
+## Limitações
 
-| Componente | Tecnologia | Justificativa |
-|---|---|---|
-| Orquestração | LangGraph 0.2+ | Estado tipado, arestas condicionais, loop de retry Self-RAG |
-| LLM | Ollama + Llama 3.1 8B | Zero custo, soberania de dados, sem API externa |
-| Embeddings | BAAI/bge-m3 | Melhor modelo multilingual, suporte nativo a português |
-| Vector Store | FAISS (faiss-cpu) | Zero dependência externa, persistência local, alta performance |
-| MCP | langchain-mcp-adapters | Padrão de integração de ferramentas, plugável |
-| UI | Streamlit 1.30+ | Controle de layout multi-tab, session state integrado |
-| Avaliação | RAGAS | Métricas de RAG (Faithfulness, Relevancy, Precision, Recall) |
-| Testes | pytest | Totalmente mockado, sem dependências externas |
+1. **LLM em português** — Llama 3.1 8B pode ter desempenho variável em termos financeiros específicos
+2. **Latência** — 2-3 chamadas de LLM por resposta = 20-30s no P50
+3. **Corpus** — fallback para corpus sintético quando documentos oficiais não estão disponíveis
+4. **MCP real** — integração com Pluggy real requer credenciais de sandbox
 
 ---
 
-## ⚠️ Limitações e Trabalho Futuro
-
-### Limitações Atuais
-
-1. **Qualidade do LLM em português:** Llama 3.1 8B pode ter desempenho variável em termos financeiros específicos
-2. **Latência:** 2-3 chamadas de LLM por resposta = 20-30s no P50 (aceitável para PoC)
-3. **Corpus:** Documentos sintéticos como fallback — corpus real requer execução do pipeline de ingestão
-4. **MCP real:** Integração com Pluggy real requer credenciais de sandbox (demo usa mock)
-5. **Avaliação RAGAS:** Com modelos locais, as métricas RAGAS podem ser menos precisas
-
-### Trabalho Futuro
-
-- [ ] Integração com Pluggy real (Open Finance Brasil)
-- [ ] Busca híbrida (FAISS + BM25) para melhor recall em português
-- [ ] Reranking com bge-reranker-v2-m3 (bonus B1)
-- [ ] Suporte a múltiplos usuários
-- [ ] Metas compartilhadas (casais/família)
-- [ ] Agendamento de automações (background tasks)
-- [ ] Integração com LangSmith para observabilidade
-
----
-
-## 📄 Licença
+## Licença
 
 MIT License — veja [LICENSE](LICENSE).
-
-## 📖 Citação
-
-```bibtex
-@software{orbita2026,
-  title = {Órbita: Agentic Financial Assistant for Brazilian Young Adults},
-  year = {2026},
-  license = {MIT},
-  url = {https://github.com/orbita-project/orbita}
-}
-```
 
 ---
 
