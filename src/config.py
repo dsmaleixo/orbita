@@ -28,11 +28,10 @@ class Settings:
     FAISS_INDEX_PATH: str = os.getenv("FAISS_INDEX_PATH", "data/faiss_index")
 
     # MCP
-    MCP_MOCK: bool = os.getenv("MCP_MOCK", "true").lower() == "true"
     MCP_SERVER_URL: str = os.getenv("MCP_SERVER_URL", "http://localhost:8000")
     MCP_ALLOWLIST_PATH: str = os.getenv("MCP_ALLOWLIST_PATH", "config/mcp_allowlist.yaml")
 
-    # Pluggy credentials (only needed when MCP_MOCK=false)
+    # Pluggy credentials
     PLUGGY_CLIENT_ID: str = os.getenv("PLUGGY_CLIENT_ID", "")
     PLUGGY_CLIENT_SECRET: str = os.getenv("PLUGGY_CLIENT_SECRET", "")
     PLUGGY_ITEM_ID: str = os.getenv("PLUGGY_ITEM_ID", "")
@@ -45,6 +44,14 @@ class Settings:
     # Safety
     MAX_RETRIEVAL_ATTEMPTS: int = int(os.getenv("MAX_RETRIEVAL_ATTEMPTS", "2"))
     SELF_CHECK_THRESHOLD: float = float(os.getenv("SELF_CHECK_THRESHOLD", "0.5"))
+
+    @property
+    def pluggy_item_ids(self) -> list[str]:
+        """Return PLUGGY_ITEM_ID as a list (comma-separated in .env)."""
+        raw = self.PLUGGY_ITEM_ID
+        if not raw:
+            return []
+        return [item_id.strip() for item_id in raw.split(",") if item_id.strip()]
 
     @property
     def faiss_index_path(self) -> Path:
@@ -68,4 +75,4 @@ if __name__ == "__main__":
     print(f"OLLAMA_MODEL: {settings.OLLAMA_MODEL}")
     print(f"EMBED_MODEL: {settings.EMBED_MODEL}")
     print(f"FAISS_INDEX_PATH: {settings.faiss_index_path}")
-    print(f"MCP_MOCK: {settings.MCP_MOCK}")
+    print(f"PLUGGY_BASE_URL: {settings.PLUGGY_BASE_URL}")

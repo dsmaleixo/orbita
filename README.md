@@ -107,7 +107,7 @@ cd frontend && npm install && cd ..
 
 ```bash
 cp .env.example .env
-# Edite .env conforme necessário (MCP_MOCK=true para modo demo)
+# Edite .env conforme necessário
 ```
 
 ### 3. Instale o modelo LLM

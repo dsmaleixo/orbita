@@ -66,19 +66,15 @@ export function Sidebar() {
   }, []);
 
   const statusDot = config
-    ? config.mcp_mock
-      ? "bg-amber-400"
-      : config.connected
-        ? "bg-emerald-400"
-        : "bg-slate-400"
+    ? config.connected
+      ? "bg-emerald-400"
+      : "bg-slate-400"
     : "bg-slate-400";
 
   const statusLabel = config
-    ? config.mcp_mock
-      ? "Demo (mock)"
-      : config.connected
-        ? "Open Finance"
-        : "Desconectado"
+    ? config.connected
+      ? "Open Finance"
+      : "Desconectado"
     : "...";
 
   return (

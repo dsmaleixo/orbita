@@ -1,14 +1,13 @@
-"""MCP client — Pluggy direct API or mock.
+"""MCP client — Pluggy direct API.
 
-  MCP_MOCK=true   → MockMCPServer  (synthetic data, no credentials)
-  MCP_MOCK=false  → PluggyDirectClient  (real Pluggy REST API)
-
-No separate server process needed in either mode.
+Calls the Pluggy Open Finance REST API via PluggyDirectClient.
+All calls go through PluggyTools for security enforcement, sanitization,
+and audit logging.
 """
 from __future__ import annotations
 
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from src.config import settings
 
@@ -22,22 +21,15 @@ class MCPClient:
     output sanitization, and audit logging.
     """
 
-    def __init__(self, mock: Optional[bool] = None) -> None:
-        use_mock = mock if mock is not None else settings.MCP_MOCK
-
-        if use_mock:
-            from src.mcp.mock_server import MockMCPServer
-            raw = MockMCPServer()
-            logger.info("MCPClient: mock mode (synthetic data)")
-        else:
-            from src.mcp.pluggy_direct import PluggyDirectClient
-            raw = PluggyDirectClient(
-                client_id=settings.PLUGGY_CLIENT_ID,
-                client_secret=settings.PLUGGY_CLIENT_SECRET,
-                item_id=settings.PLUGGY_ITEM_ID or None,
-                base_url=settings.PLUGGY_BASE_URL,
-            )
-            logger.info("MCPClient: Pluggy direct API")
+    def __init__(self) -> None:
+        from src.mcp.pluggy_direct import PluggyDirectClient
+        raw = PluggyDirectClient(
+            client_id=settings.PLUGGY_CLIENT_ID,
+            client_secret=settings.PLUGGY_CLIENT_SECRET,
+            item_ids=settings.pluggy_item_ids,
+            base_url=settings.PLUGGY_BASE_URL,
+        )
+        logger.info("MCPClient: Pluggy direct API")
 
         from src.mcp.pluggy_tools import PluggyTools
         self._tools = PluggyTools(raw)

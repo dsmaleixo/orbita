@@ -58,7 +58,7 @@ def automation_state():
     """Base OrbitaState for an automation query."""
     return make_initial_state(
         user_query="Categorize minhas despesas",
-        intent="automation",
+        intent="data",
         automation_type="categorize",
     )
 
@@ -131,8 +131,8 @@ def mock_llm_self_check_fail():
 
 
 @pytest.fixture
-def mock_mcp_transactions():
-    """Synthetic transaction list for MCP mock testing."""
+def sample_transactions():
+    """Sample transaction list for testing."""
     return [
         {"id": "T001", "date": "2025-01-03", "description": "Supermercado Extra", "amount": -250.0},
         {"id": "T002", "date": "2025-01-05", "description": "Salário Empresa ABC", "amount": 4500.0},
@@ -143,10 +143,10 @@ def mock_mcp_transactions():
 
 
 @pytest.fixture
-def mock_mcp_client(mock_mcp_transactions):
-    """Mock MCPClient that returns synthetic data."""
+def patched_mcp_client(sample_transactions):
+    """Patch MCPClient so it doesn't hit the real Pluggy API in tests."""
     client = MagicMock()
-    client.get_transactions.return_value = mock_mcp_transactions
+    client.get_transactions.return_value = sample_transactions
     client.get_balances.return_value = [
         {"account_id": "ACC001", "balance": 2847.50, "currency": "BRL"}
     ]

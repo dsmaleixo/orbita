@@ -81,9 +81,9 @@ export interface Citation {
 }
 
 export interface AppConfig {
-  mcp_mock: boolean;
   ollama_model: string;
   connected: boolean;
+  item_ids: string[];
 }
 
 // API functions
@@ -147,4 +147,19 @@ export async function sendChatMessage(message: string): Promise<ChatResponse> {
     method: "POST",
     body: JSON.stringify({ message }),
   });
+}
+
+export async function createConnectToken(): Promise<{ accessToken: string }> {
+  return fetchJSON("/connect-token", { method: "POST" });
+}
+
+export async function saveConnection(itemId: string): Promise<{ status: string; itemId: string; item_ids: string[] }> {
+  return fetchJSON("/connect", {
+    method: "POST",
+    body: JSON.stringify({ itemId }),
+  });
+}
+
+export async function disconnectItem(itemId: string): Promise<{ status: string; item_ids: string[] }> {
+  return fetchJSON(`/connections/${itemId}`, { method: "DELETE" });
 }

@@ -1,8 +1,7 @@
 """Direct Pluggy REST API client — no separate MCP server process required.
 
-Used when MCP_MOCK=false. Calls api.pluggy.ai directly and adapts the
-responses to the same interface as MockMCPServer so PluggyTools works
-identically in both modes.
+Calls api.pluggy.ai directly and returns data in a normalized shape
+consumed by PluggyTools.
 """
 from __future__ import annotations
 
@@ -16,10 +15,11 @@ logger = logging.getLogger(__name__)
 
 
 class PluggyDirectClient:
-    """Calls Pluggy's REST API directly, returning data in the same shape
-    as MockMCPServer so the rest of the app is unaffected."""
+    """Calls Pluggy's REST API directly, returning normalized data."""
 
-    def __init__(self, client_id: str, client_secret: str, item_id: Optional[str] = None,
+    def __init__(self, client_id: str, client_secret: str,
+                 item_id: Optional[str] = None,
+                 item_ids: Optional[List[str]] = None,
                  base_url: str = "https://api.pluggy.ai") -> None:
         if not client_id or not client_secret:
             raise ValueError(
@@ -27,7 +27,13 @@ class PluggyDirectClient:
             )
         self._client_id = client_id
         self._client_secret = client_secret
-        self._item_id = item_id or None  # None → auto-discover on first use
+        # Support multiple item IDs; fall back to single item_id for compat
+        if item_ids:
+            self._item_ids = [i for i in item_ids if i]
+        elif item_id:
+            self._item_ids = [item_id]
+        else:
+            self._item_ids = []
         self._http = httpx.Client(base_url=base_url, timeout=30.0)
         self._api_key: Optional[str] = None
         self._expires_at: Optional[datetime] = None
@@ -55,7 +61,7 @@ class PluggyDirectClient:
         resp.raise_for_status()
         return resp.json()["accessToken"]
 
-    # ── Public interface (mirrors MockMCPServer) ───────────────────────────
+    # ── Public interface ────────────────────────────────────────────────────
 
     def get_transactions(self, start_date: str, end_date: str) -> List[Dict]:
         """Fetch all transactions across all accounts for the date range."""
@@ -116,30 +122,35 @@ class PluggyDirectClient:
             for a in self._fetch_accounts()
         ]
 
-    def _resolve_item_id(self) -> str:
-        """Return configured item_id or raise a clear setup error."""
-        if self._item_id:
-            return self._item_id
+    def _resolve_item_ids(self) -> List[str]:
+        """Return configured item IDs or raise a clear setup error."""
+        if self._item_ids:
+            return self._item_ids
         raise RuntimeError(
             "PLUGGY_ITEM_ID is not set. "
             "Go to the 'Conectar Banco' page in the app to create a connection, "
             "or set PLUGGY_ITEM_ID in .env."
         )
 
-    def get_item_status(self) -> dict:
-        """Retrieve the current sync status of the configured item."""
+    def get_item_status(self, item_id: Optional[str] = None) -> dict:
+        """Retrieve the current sync status of a configured item."""
+        iid = item_id or self._resolve_item_ids()[0]
         resp = self._http.get(
-            f"/items/{self._resolve_item_id()}",
+            f"/items/{iid}",
             headers=self._auth_header(),
         )
         resp.raise_for_status()
         return resp.json()
 
     def _fetch_accounts(self) -> List[Dict]:
-        resp = self._http.get(
-            "/accounts",
-            params={"itemId": self._resolve_item_id()},
-            headers=self._auth_header(),
-        )
-        resp.raise_for_status()
-        return resp.json().get("results", [])
+        """Fetch accounts across all configured items."""
+        all_accounts: List[Dict] = []
+        for item_id in self._resolve_item_ids():
+            resp = self._http.get(
+                "/accounts",
+                params={"itemId": item_id},
+                headers=self._auth_header(),
+            )
+            resp.raise_for_status()
+            all_accounts.extend(resp.json().get("results", []))
+        return all_accounts

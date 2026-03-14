@@ -148,8 +148,7 @@ def _get_pluggy_client() -> PluggyAPIClient:
     if _pluggy_client is None:
         if not PLUGGY_CLIENT_ID or not PLUGGY_CLIENT_SECRET:
             raise ValueError(
-                "PLUGGY_CLIENT_ID and PLUGGY_CLIENT_SECRET must be set in .env. "
-                "Set MCP_MOCK=true to use synthetic data instead."
+                "PLUGGY_CLIENT_ID and PLUGGY_CLIENT_SECRET must be set in .env."
             )
         _pluggy_client = PluggyAPIClient()
     return _pluggy_client
@@ -289,8 +288,7 @@ if __name__ == "__main__":
         print(
             "WARNING: PLUGGY_CLIENT_ID and PLUGGY_CLIENT_SECRET are not set.\n"
             "The server will start but tool calls will fail.\n"
-            "Set these in your .env file or environment.\n"
-            "Use MCP_MOCK=true in the Órbita app to use synthetic data instead.",
+            "Set these in your .env file or environment.",
             file=sys.stderr,
         )
 

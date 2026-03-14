@@ -20,8 +20,8 @@ _MANDATORY_DISCLAIMER = (
 _CATEGORY_MAP = {
     "alimentacao": ["supermercado", "restaurante", "ifood", "lanche", "padaria", "mercado", "uber eats"],
     "transporte": ["uber", "99taxi", "combustivel", "estacionamento", "metro", "onibus", "transporte"],
-    "moradia": ["aluguel", "condominio", "luz", "agua", "gas", "internet", "telefone"],
-    "saude": ["farmacia", "medico", "hospital", "plano de saude", "academia", "drogaria"],
+    "moradia": ["aluguel", "condominio", "luz", "agua", "gás", "conta de gas", "internet", "telefone"],
+    "saude": ["farmacia", "farmácia", "medico", "hospital", "plano de saude", "academia", "drogaria", "drogasil"],
     "educacao": ["escola", "faculdade", "curso", "livro", "material escolar", "spotify", "netflix"],
     "lazer": ["cinema", "teatro", "viagem", "hotel", "bar", "balada", "show", "jogo"],
     "vestuario": ["roupa", "calcado", "acessorio", "loja de roupas"],
@@ -186,9 +186,8 @@ def automation_node(state: OrbitaState) -> dict[str, Any]:
 
     logger.info("Automation: running workflow '%s'", automation_type)
 
-    # Import MCP client (uses mock if MCP_MOCK=true)
     from src.mcp.client import MCPClient
-    client = MCPClient(mock=settings.MCP_MOCK)
+    client = MCPClient()
 
     mcp_tool_calls = list(state.get("mcp_tool_calls", []))
 

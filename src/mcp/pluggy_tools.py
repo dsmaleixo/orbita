@@ -18,7 +18,7 @@ class PluggyTools:
     def __init__(self, raw_client: Any) -> None:
         """
         Args:
-            raw_client: The underlying MCP transport (real or mock).
+            raw_client: The underlying Pluggy API client.
         """
         self._client = raw_client
 
