@@ -37,11 +37,11 @@ class TestCategorizationLogic:
 
 
 class TestRunCategorize:
-    def test_categorize_returns_categories_dict(self, mock_mcp_transactions):
-        result = _run_categorize(mock_mcp_transactions)
+    def test_categorize_returns_categories_dict(self, sample_transactions):
+        result = _run_categorize(sample_transactions)
         assert "categories" in result
         assert "total_transactions" in result
-        assert result["total_transactions"] == len(mock_mcp_transactions)
+        assert result["total_transactions"] == len(sample_transactions)
 
     def test_categorize_sums_amounts_correctly(self):
         txns = [
@@ -83,48 +83,48 @@ class TestRunGoalAlert:
 
 
 class TestAutomationNode:
-    def test_categorize_node_returns_automation_output(self, mock_mcp_client):
+    def test_categorize_node_returns_automation_output(self, patched_mcp_client):
         state = make_initial_state(
             user_query="Categorize despesas",
             intent="automation",
             automation_type="categorize",
         )
-        with patch("src.agents.automation.MCPClient", return_value=mock_mcp_client):
+        with patch("src.mcp.client.MCPClient", return_value=patched_mcp_client):
             result = automation_node(state)
         assert "automation_output" in result
         assert result["automation_output"] is not None
         assert "final_response" in result
 
-    def test_report_node_returns_report_output(self, mock_mcp_client):
+    def test_report_node_returns_report_output(self, patched_mcp_client):
         state = make_initial_state(
             user_query="Gerar relatório",
             intent="automation",
             automation_type="report",
         )
-        with patch("src.agents.automation.MCPClient", return_value=mock_mcp_client):
+        with patch("src.mcp.client.MCPClient", return_value=patched_mcp_client):
             result = automation_node(state)
         assert result["automation_output"] is not None
         output = result["automation_output"]
         assert "summary" in output
         assert "insights" in output
 
-    def test_automation_node_populates_mcp_tool_calls(self, mock_mcp_client):
+    def test_automation_node_populates_mcp_tool_calls(self, patched_mcp_client):
         state = make_initial_state(
             user_query="Categorize despesas",
             intent="automation",
             automation_type="categorize",
         )
-        with patch("src.agents.automation.MCPClient", return_value=mock_mcp_client):
+        with patch("src.mcp.client.MCPClient", return_value=patched_mcp_client):
             result = automation_node(state)
         assert len(result["mcp_tool_calls"]) >= 1
         assert result["mcp_tool_calls"][0]["tool"] == "get_transactions"
 
-    def test_final_response_includes_disclaimer(self, mock_mcp_client):
+    def test_final_response_includes_disclaimer(self, patched_mcp_client):
         state = make_initial_state(
             user_query="Categorize despesas",
             intent="automation",
             automation_type="categorize",
         )
-        with patch("src.agents.automation.MCPClient", return_value=mock_mcp_client):
+        with patch("src.mcp.client.MCPClient", return_value=patched_mcp_client):
             result = automation_node(state)
         assert "educacional" in result["final_response"].lower()

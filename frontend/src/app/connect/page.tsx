@@ -1,126 +1,196 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { PageHeader } from "@/components/page-header";
-import { getConfig } from "@/lib/api";
+import {
+  getConfig,
+  createConnectToken,
+  saveConnection,
+  disconnectItem,
+} from "@/lib/api";
 import type { AppConfig } from "@/lib/api";
-import { Link2, Shield, RefreshCw, CheckCircle2, AlertCircle, ExternalLink } from "lucide-react";
+import {
+  Link2,
+  Shield,
+  RefreshCw,
+  CheckCircle2,
+  Loader2,
+  Plus,
+  Trash2,
+} from "lucide-react";
+
+const PluggyConnect = dynamic(
+  () =>
+    import("react-pluggy-connect").then((mod) => ({
+      default: mod.PluggyConnect,
+    })),
+  { ssr: false }
+);
 
 export default function ConnectPage() {
   const [config, setConfig] = useState<AppConfig | null>(null);
+  const [connectToken, setConnectToken] = useState<string | null>(null);
+  const [showWidget, setShowWidget] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [removing, setRemoving] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getConfig().then(setConfig).catch(() => {});
   }, []);
 
-  const isConnected = config && !config.mcp_mock && config.connected;
-  const isMock = config?.mcp_mock;
+  const itemIds = config?.item_ids ?? [];
+
+  const handleConnect = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { accessToken } = await createConnectToken();
+      setConnectToken(accessToken);
+      setShowWidget(true);
+    } catch {
+      setError(
+        "Erro ao iniciar conexão. Verifique as credenciais Pluggy no .env."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleSuccess = useCallback(
+    async (data: { item: { id: string } }) => {
+      setShowWidget(false);
+      setConnectToken(null);
+      try {
+        await saveConnection(data.item.id);
+        const newConfig = await getConfig();
+        setConfig(newConfig);
+      } catch {
+        setError(
+          `Conexão realizada, mas houve erro ao salvar. Item ID: ${data.item.id}`
+        );
+      }
+    },
+    []
+  );
+
+  const handleClose = useCallback(() => {
+    setShowWidget(false);
+    setConnectToken(null);
+  }, []);
+
+  const handleRemove = useCallback(async (itemId: string) => {
+    setRemoving(itemId);
+    setError(null);
+    try {
+      await disconnectItem(itemId);
+      const newConfig = await getConfig();
+      setConfig(newConfig);
+    } catch {
+      setError("Erro ao remover conexão.");
+    } finally {
+      setRemoving(null);
+    }
+  }, []);
 
   return (
     <>
       <PageHeader
         title="Conectar Banco"
-        subtitle="Vincule sua conta bancária via Open Finance"
+        subtitle="Vincule suas contas bancárias via Open Finance"
       />
 
-      {/* Status card */}
-      <div
-        className={`rounded-2xl p-6 mb-6 animate-fade-in-up ${
-          isConnected
-            ? "bg-emerald-50 border border-emerald-100"
-            : isMock
-              ? "bg-amber-50 border border-amber-100"
-              : "bg-gray-50 border border-gray-200"
-        }`}
-      >
-        <div className="flex items-center gap-4">
-          <div
-            className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-              isConnected
-                ? "bg-emerald-100"
-                : isMock
-                  ? "bg-amber-100"
-                  : "bg-gray-200"
-            }`}
-          >
-            {isConnected ? (
-              <CheckCircle2 size={24} className="text-emerald-600" />
-            ) : (
-              <AlertCircle
-                size={24}
-                className={isMock ? "text-amber-600" : "text-gray-500"}
-              />
-            )}
-          </div>
-          <div>
-            <div className="text-lg font-bold text-gray-900">
-              {isConnected
-                ? "Conta Conectada"
-                : isMock
-                  ? "Modo Demonstração"
-                  : "Desconectado"}
-            </div>
-            <div className="text-sm text-gray-500">
-              {isConnected
-                ? "Seus dados financeiros estão sincronizados via Open Finance"
-                : isMock
-                  ? "O app está usando dados fictícios para demonstração"
-                  : "Nenhuma conta bancária vinculada"}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Steps */}
-      {!isConnected && (
+      {/* Connected accounts */}
+      {itemIds.length > 0 && (
         <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-6 animate-fade-in-up">
-          <h3 className="text-sm font-bold text-gray-800 mb-5">
-            Como conectar sua conta
+          <h3 className="text-sm font-bold text-gray-800 mb-4">
+            Contas conectadas ({itemIds.length})
           </h3>
-          <div className="space-y-4">
-            {[
-              {
-                step: 1,
-                title: "Acesse o Pluggy Dashboard",
-                desc: "Crie uma conta em dashboard.pluggy.ai e configure suas credenciais.",
-              },
-              {
-                step: 2,
-                title: "Crie uma conexão",
-                desc: 'Use o conector Pluggy Bank (login: user_good, senha: password_good) para testes.',
-              },
-              {
-                step: 3,
-                title: "Copie o Item ID",
-                desc: "Após conectar, copie o Item ID gerado pelo Pluggy.",
-              },
-              {
-                step: 4,
-                title: "Configure o .env",
-                desc: "Cole o Item ID no arquivo .env → PLUGGY_ITEM_ID=<seu_id> e defina MCP_MOCK=false.",
-              },
-              {
-                step: 5,
-                title: "Reinicie o app",
-                desc: "Reinicie a API para carregar as novas configurações.",
-              },
-            ].map((item) => (
-              <div key={item.step} className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-[#4686fe] text-white text-sm font-bold flex items-center justify-center flex-shrink-0">
-                  {item.step}
+          <div className="space-y-3">
+            {itemIds.map((id) => (
+              <div
+                key={id}
+                className="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3"
+              >
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 size={18} className="text-emerald-600" />
+                  <span className="text-sm font-mono text-gray-700">
+                    {id.slice(0, 8)}...{id.slice(-4)}
+                  </span>
                 </div>
-                <div>
-                  <div className="text-sm font-semibold text-gray-800">
-                    {item.title}
-                  </div>
-                  <div className="text-sm text-gray-500 mt-0.5">
-                    {item.desc}
-                  </div>
-                </div>
+                <button
+                  onClick={() => handleRemove(id)}
+                  disabled={removing === id}
+                  className="text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
+                  title="Remover conexão"
+                >
+                  {removing === id ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Trash2 size={16} />
+                  )}
+                </button>
               </div>
             ))}
           </div>
         </div>
+      )}
+
+      {/* Add account */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-8 mb-6 animate-fade-in-up text-center">
+        <h3 className="text-lg font-bold text-gray-800 mb-2">
+          {itemIds.length > 0
+            ? "Adicionar outra conta"
+            : "Conecte sua conta bancária"}
+        </h3>
+        <p className="text-sm text-gray-500 mb-6 max-w-md mx-auto">
+          {itemIds.length > 0
+            ? "Conecte mais contas para ter uma visão completa das suas finanças."
+            : "Selecione seu banco e autentique-se com segurança. Seus dados serão sincronizados automaticamente via Open Finance."}
+        </p>
+
+        {error && (
+          <div className="bg-red-50 border border-red-100 rounded-xl p-4 mb-4 text-sm text-red-700 max-w-md mx-auto">
+            {error}
+          </div>
+        )}
+
+        <button
+          onClick={handleConnect}
+          disabled={loading}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#4686fe] text-white font-semibold rounded-xl hover:bg-[#3570e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              Preparando...
+            </>
+          ) : (
+            <>
+              {itemIds.length > 0 ? (
+                <Plus size={18} />
+              ) : (
+                <Link2 size={18} />
+              )}
+              {itemIds.length > 0 ? "Adicionar Conta" : "Conectar Banco"}
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Pluggy Connect Widget */}
+      {showWidget && connectToken && (
+        <PluggyConnect
+          connectToken={connectToken}
+          onSuccess={handleSuccess}
+          onError={() => {
+            setError("Erro durante a conexão. Tente novamente.");
+            setShowWidget(false);
+            setConnectToken(null);
+          }}
+          onClose={handleClose}
+        />
       )}
 
       {/* Features */}

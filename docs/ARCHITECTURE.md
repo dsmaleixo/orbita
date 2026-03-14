@@ -281,11 +281,10 @@ orbita/
 │   │   ├── state.py             (OrbitaState TypedDict)
 │   │   └── builder.py           (StateGraph → CompiledGraph)
 │   ├── mcp/
-│   │   ├── client.py            (MCPClient: mock or real)
+│   │   ├── client.py            (MCPClient — Pluggy direct API)
 │   │   ├── pluggy_direct.py     (PluggyDirectClient — REST via httpx)
 │   │   ├── pluggy_tools.py      (allowlist enforcement + sanitization)
 │   │   ├── pluggy_server.py     (FastMCP server — academic requirement)
-│   │   ├── mock_server.py       (synthetic data, MCP_MOCK=true)
 │   │   └── security.py          (audit logging)
 │   ├── rag/
 │   │   ├── embeddings.py        (bge-m3 singleton)
@@ -432,7 +431,6 @@ class OrbitaState(TypedDict):
 | `RERANKER_MODEL` | `BAAI/bge-reranker-v2-m3` | Reranker (if enabled) |
 | `ENABLE_RERANKER` | `false` | Toggle cross-encoder reranking |
 | `FAISS_INDEX_PATH` | `data/faiss_index` | FAISS index directory |
-| `MCP_MOCK` | `true` | `true` = synthetic data; `false` = real Pluggy |
 | `MCP_ALLOWLIST_PATH` | `mcp_allowlist.yaml` | Allowed MCP tools config |
 | `PLUGGY_CLIENT_ID` | — | Pluggy application client ID |
 | `PLUGGY_CLIENT_SECRET` | — | Pluggy application client secret |

@@ -25,7 +25,7 @@ def data_query_node(state: OrbitaState) -> dict[str, Any]:
 
     try:
         from src.mcp.client import MCPClient
-        client = MCPClient(mock=settings.MCP_MOCK)
+        client = MCPClient()
 
         today = datetime.today()
         start = today.replace(day=1).strftime("%Y-%m-%d")

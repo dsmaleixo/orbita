@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import logging
+import os
+import re
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -11,7 +13,7 @@ _PROJECT_ROOT = str(Path(__file__).resolve().parent.parent)
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -26,9 +28,8 @@ from src.data.transformations import (
     get_summary,
 )
 
-# The fetchers use @st.cache_data, so we import the underlying MCP client
-# directly to avoid depending on a running Streamlit instance.
 from src.mcp.client import MCPClient
+from src.mcp.pluggy_direct import PluggyDirectClient
 
 _mcp: MCPClient | None = None
 
@@ -36,7 +37,7 @@ _mcp: MCPClient | None = None
 def _mcp_client() -> MCPClient:
     global _mcp
     if _mcp is None:
-        _mcp = MCPClient(mock=settings.MCP_MOCK)
+        _mcp = MCPClient()
     return _mcp
 
 
@@ -103,9 +104,13 @@ class ChatResponse(BaseModel):
 
 
 class ConfigResponse(BaseModel):
-    mcp_mock: bool
     ollama_model: str
     connected: bool
+    item_ids: List[str] = []
+
+
+class ConnectRequest(BaseModel):
+    itemId: str
 
 
 class SummaryResponse(BaseModel):
@@ -150,11 +155,11 @@ def health() -> Dict[str, str]:
 
 @app.get("/api/config", response_model=ConfigResponse)
 def config() -> ConfigResponse:
-    connected = bool(settings.PLUGGY_ITEM_ID) and not settings.MCP_MOCK
+    ids = settings.pluggy_item_ids
     return ConfigResponse(
-        mcp_mock=settings.MCP_MOCK,
         ollama_model=settings.OLLAMA_MODEL,
-        connected=connected,
+        connected=len(ids) > 0,
+        item_ids=ids,
     )
 
 
@@ -249,6 +254,75 @@ def balance_history(
     except Exception:
         logger.exception("Error computing balance history")
         return []
+
+
+def _update_env_var(key: str, value: str) -> None:
+    """Update a variable in the .env file, or append it if missing."""
+    env_path = Path(_PROJECT_ROOT) / ".env"
+    if not env_path.exists():
+        env_path.write_text(f"{key}={value}\n", encoding="utf-8")
+        return
+    text = env_path.read_text(encoding="utf-8")
+    pattern = rf"^{re.escape(key)}=.*$"
+    if re.search(pattern, text, flags=re.MULTILINE):
+        text = re.sub(pattern, f"{key}={value}", text, flags=re.MULTILINE)
+    else:
+        text = text.rstrip("\n") + f"\n{key}={value}\n"
+    env_path.write_text(text, encoding="utf-8")
+
+
+@app.post("/api/connect-token")
+def connect_token() -> Dict[str, str]:
+    """Create a Pluggy Connect Token for the Connect Widget."""
+    try:
+        client = PluggyDirectClient(
+            client_id=settings.PLUGGY_CLIENT_ID,
+            client_secret=settings.PLUGGY_CLIENT_SECRET,
+            base_url=settings.PLUGGY_BASE_URL,
+        )
+        token = client.create_connect_token()
+        return {"accessToken": token}
+    except Exception:
+        logger.exception("Error creating connect token")
+        raise HTTPException(status_code=500, detail="Falha ao criar token de conexão. Verifique as credenciais Pluggy.")
+
+
+@app.post("/api/connect")
+def connect(req: ConnectRequest) -> Dict[str, Any]:
+    """Add a new Item ID from the Connect Widget."""
+    global _mcp
+
+    # Append to existing list (avoid duplicates)
+    current_ids = settings.pluggy_item_ids
+    if req.itemId not in current_ids:
+        current_ids.append(req.itemId)
+
+    new_value = ",".join(current_ids)
+    settings.PLUGGY_ITEM_ID = new_value
+    os.environ["PLUGGY_ITEM_ID"] = new_value
+    _mcp = None
+    _update_env_var("PLUGGY_ITEM_ID", new_value)
+
+    logger.info("Connected Pluggy item: %s (total: %d)", req.itemId, len(current_ids))
+    return {"status": "ok", "itemId": req.itemId, "item_ids": current_ids}
+
+
+@app.delete("/api/connections/{item_id}")
+def disconnect(item_id: str) -> Dict[str, Any]:
+    """Remove a connected Item ID."""
+    global _mcp
+
+    current_ids = settings.pluggy_item_ids
+    current_ids = [i for i in current_ids if i != item_id]
+
+    new_value = ",".join(current_ids)
+    settings.PLUGGY_ITEM_ID = new_value
+    os.environ["PLUGGY_ITEM_ID"] = new_value
+    _mcp = None
+    _update_env_var("PLUGGY_ITEM_ID", new_value)
+
+    logger.info("Disconnected Pluggy item: %s (remaining: %d)", item_id, len(current_ids))
+    return {"status": "ok", "item_ids": current_ids}
 
 
 @app.post("/api/chat", response_model=ChatResponse)
