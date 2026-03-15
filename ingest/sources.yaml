@@ -64,6 +64,70 @@ sources:
     language: pt
     topics: [consumo consciente, endividamento, finanças pessoais]
 
+  # ── Local PDFs (data/raw/) ──────────────────────────────────────────────
+  - id: pai_rico_pai_pobre
+    title: "Pai Rico, Pai Pobre - Robert Kiyosaki"
+    url: "data/raw/Pai Rico, Pai Pobre.pdf"
+    type: pdf
+    language: pt
+    topics: [ativos, passivos, fluxo de caixa, mentalidade financeira, independência financeira]
+
+  - id: homem_mais_rico_babilonia
+    title: "O Homem Mais Rico da Babilônia - George S. Clason"
+    url: "data/raw/O Homem Mais Rico da Babilônia.pdf"
+    type: pdf
+    language: pt
+    topics: [poupança, disciplina financeira, princípios financeiros]
+
+  - id: caderno_cidadania_financeira
+    title: "Caderno de Cidadania Financeira - BACEN"
+    url: "data/raw/caderno_cidadania_financeira.pdf"
+    type: pdf
+    language: pt
+    topics: [educação financeira, cidadania, planejamento]
+
+  - id: financas_pessoais_iniciantes
+    title: "Finanças Pessoais para Iniciantes"
+    url: "data/raw/Finanças pessoais para iniciantes.pdf"
+    type: pdf
+    language: pt
+    topics: [finanças pessoais, orçamento, investimentos, dívidas]
+
+  - id: planejamento_financeiro_pessoal_livro
+    title: "Planejamento Financeiro Pessoal"
+    url: "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf"
+    type: pdf
+    language: pt
+    topics: [planejamento financeiro, metas, orçamento, investimentos]
+
+  - id: finclass_thiago_nigro
+    title: "Finclass - Thiago Nigro"
+    url: "data/raw/Finclass16-ThiagoNigro.pdf"
+    type: pdf
+    language: pt
+    topics: [investimentos, finanças pessoais, mercado financeiro]
+
+  - id: principios_ray_dalio
+    title: "Princípios - Ray Dalio"
+    url: "data/raw/Princípios Ray Dalio.pdf.pdf"
+    type: pdf
+    language: pt
+    topics: [princípios, investimentos, economia, tomada de decisão]
+
+  - id: poder_do_habito
+    title: "O Poder do Hábito - Charles Duhigg"
+    url: "data/raw/O Poder do Habito - Charles Duhigg.pdf.pdf"
+    type: pdf
+    language: pt
+    topics: [hábitos, comportamento, disciplina, mudança]
+
+  - id: rapido_devagar
+    title: "Rápido e Devagar - Daniel Kahneman"
+    url: "data/raw/Rapido e devagar_ Duas formas d - Daniel Kahneman.pdf.pdf"
+    type: pdf
+    language: pt
+    topics: [vieses cognitivos, tomada de decisão, psicologia financeira]
+
 # Fallback synthetic documents (used if real URLs are unavailable)
 # These are embedded directly in the loader as in-memory Documents
 fallback_synthetic: true
