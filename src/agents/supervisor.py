@@ -28,13 +28,25 @@ Classifique a mensagem do usuário em UMA das quatro categorias:
 Responda APENAS com uma palavra: general, rag, data, ou refuse."""
 
 _RAG_KEYWORDS = [
+    # Books and authors
     "pai rico", "rich dad", "babilônia", "homem mais rico", "investidor inteligente",
-    "kiyosaki", "clason", "graham", "buffett", "livro", "filosofia", "mentalidade",
+    "kiyosaki", "clason", "graham", "buffett", "ray dalio", "thiago nigro",
+    "kahneman", "duhigg", "poder do hábito", "rápido e devagar",
+    "livro", "filosofia", "mentalidade", "princípios",
+    # Financial concepts
     "hábito financeiro", "liberdade financeira", "independência financeira",
-    "ativo", "passivo", "fluxo de caixa", "juros compostos", "inflação",
+    "ativo", "passivo", "fluxo de caixa", "juros compostos", "juros simples",
+    "inflação", "taxa selic", "taxa de juros", "amortização",
     "o que é", "como funciona", "explique", "educação financeira", "conceito",
     "poupança", "investimento", "tesouro direto", "cdi", "fgts", "renda fixa",
     "renda variável", "fundo", "ações", "dividendos", "carteira",
+    "planejamento financeiro", "orçamento", "endividamento", "dívida",
+    # Open Finance / Banking
+    "open finance", "open banking", "sistema financeiro", "banco central",
+    "bacen", "cvm", "direitos do consumidor", "cidadania financeira",
+    # Behavioral finance
+    "viés cognitivo", "psicologia financeira", "tomada de decisão",
+    "consumo consciente", "finanças pessoais",
 ]
 _DATA_KEYWORDS = [
     "meu saldo", "minha conta", "minhas despesas", "meus gastos", "gastei",

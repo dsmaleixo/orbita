@@ -44,7 +44,7 @@ def _check_grounding_llm(query: str, draft: str, docs: List[Document]) -> tuple[
         return False, ["Nenhum documento recuperado para verificar as afirmações."]
 
     context = "\n\n".join(
-        f"[Doc {i+1}] {doc.metadata.get('title', '')}: {doc.page_content[:300]}"
+        f"[Doc {i+1}] {doc.metadata.get('title', '')}: {doc.page_content[:600]}"
         for i, doc in enumerate(docs)
     )
 
