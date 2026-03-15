@@ -1,0 +1,96 @@
+{
+  "summary": {
+    "success_rate": 0.6,
+    "successes": 3,
+    "total": 5,
+    "avg_steps": 2.2,
+    "avg_latency_s": 1.43
+  },
+  "task_results": [
+    {
+      "id": "a01",
+      "name": "Categorize 10 Transactions",
+      "automation_type": "categorize",
+      "success": false,
+      "checks": {
+        "category_alimentacao": false,
+        "category_transporte": false,
+        "category_moradia": false,
+        "category_saude": false,
+        "category_lazer": false,
+        "category_vestuario": false,
+        "category_investimentos": false,
+        "total_transactions_correct": false,
+        "_pass_rate": "0/8"
+      },
+      "latency_s": 1.92,
+      "num_mcp_calls": 1,
+      "num_steps": 2,
+      "error": null
+    },
+    {
+      "id": "a02",
+      "name": "Detect Deviation from Emergency Fund Goal",
+      "automation_type": "goal_alert",
+      "success": true,
+      "checks": {
+        "has_alerts": true,
+        "alert_contains_keyword": true,
+        "_pass_rate": "2/2"
+      },
+      "latency_s": 1.29,
+      "num_mcp_calls": 1,
+      "num_steps": 2,
+      "error": null
+    },
+    {
+      "id": "a03",
+      "name": "Generate Monthly Report for January 2025",
+      "automation_type": "report",
+      "success": false,
+      "checks": {
+        "has_period": true,
+        "has_summary": true,
+        "has_insights": true,
+        "has_top_categories": false,
+        "_pass_rate": "3/4"
+      },
+      "latency_s": 1.38,
+      "num_mcp_calls": 2,
+      "num_steps": 3,
+      "error": null
+    },
+    {
+      "id": "a04",
+      "name": "Detect Overspending in Lazer Category",
+      "automation_type": "goal_alert",
+      "success": true,
+      "checks": {
+        "has_alerts": true,
+        "alert_contains_keyword": true,
+        "savings_below_target": true,
+        "_pass_rate": "3/3"
+      },
+      "latency_s": 1.26,
+      "num_mcp_calls": 1,
+      "num_steps": 2,
+      "error": null
+    },
+    {
+      "id": "a05",
+      "name": "Detect Zero Savings Pattern",
+      "automation_type": "goal_alert",
+      "success": true,
+      "checks": {
+        "has_alerts": true,
+        "alert_contains_keyword": true,
+        "savings_below_target": true,
+        "_pass_rate": "3/3"
+      },
+      "latency_s": 1.31,
+      "num_mcp_calls": 1,
+      "num_steps": 2,
+      "error": null
+    }
+  ]
+}

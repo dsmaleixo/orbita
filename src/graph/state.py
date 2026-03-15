@@ -6,7 +6,7 @@ from langchain_core.documents import Document
 
 class OrbitaState(TypedDict):
     user_query: str
-    intent: Optional[Literal["general", "rag", "data", "refuse"]]
+    intent: Optional[Literal["general", "rag", "data", "refuse", "automation"]]
     retrieved_docs: list[Document]
     retrieval_attempts: int
     draft_response: Optional[str]
@@ -25,7 +25,7 @@ class OrbitaState(TypedDict):
 
 def make_initial_state(
     user_query: str,
-    intent: Optional[Literal["general", "rag", "data", "refuse"]] = None,
+    intent: Optional[Literal["general", "rag", "data", "refuse", "automation"]] = None,
     automation_type: Optional[Literal["categorize", "goal_alert", "report"]] = None,
     automation_input: Optional[dict] = None,
 ) -> OrbitaState:

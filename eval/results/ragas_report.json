@@ -1,0 +1,640 @@
+{
+  "basic_metrics": {
+    "total_questions": 15,
+    "errors": 0,
+    "refusals_correct": 1,
+    "refusals_incorrect": 1,
+    "has_citations": 12,
+    "self_check_passed": 13,
+    "avg_latency_s": 16.31,
+    "p50_latency_s": 12.22,
+    "p95_latency_s": 35.78
+  },
+  "ragas_metrics": {},
+  "per_question_results": [
+    {
+      "id": "q01",
+      "query": "O que é o Tesouro Direto e como funciona?",
+      "answer": "O Tesouro Direto é um programa do Tesouro Nacional desenvolvido em parceria com a B3 para venda de títulos públicos federais para pessoas físicas, de forma 100% online [Fonte: Documento 1, p.1]. Ele oferece títulos com diferentes tipos de rentabilidade (prefixada, ligada à variação da inflação ou à variação da taxa de juros básica da economia – Selic), prazos de vencimento e fluxos de remuneração [Fonte: Documento 4, p.79].\n\nAlém disso, o Tesouro Direto permite que os investidores comprem títulos com um investimento mínimo de R$30,00 [Fonte: Documento 1, p.1]. Esse programa é semelhante ao Certificado de Depósito Bancário (CDB), mas ao invés de emprestar a um banco, o dinheiro é emprestado ao governo [Fonte: Documento 5, p.99].\n\nResumo final: O Tesouro Direto é um programa do governo que permite que as pessoas físicas comprem títulos públicos federais de forma online, com investimento mínimo de R$30,00 e opções de rentabilidade variadas.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [
+        "O Tesouro Direto é um programa do Tesouro Nacional desenvolvido em parceria com a\nB3 para venda de títulos públicos federais para pessoas físicas, de forma 100% online.\nOs títulos disponíveis são: Tesouro Selic (LFT), Tesouro Prefixado (LTN e NTN-F), e\nTesouro IPCA+ (NTN-B Principal e NTN-B). O Tesouro Selic acompanha a taxa básica de\njuros (Selic), sendo indicado para reserva de emergência. O Tesouro IPCA+ garante\nrendimento acima da inflação. O investimento mínimo é de R$30,00. Os títulos são",
+        "tesouro direto é o governo, Marcos comprou um título do tesouro,",
+        "é a mais usada e a mais popular, e apesar de que, quando falamos em \nempréstimo, de certa forma sempre lembramos do famoso “calote”, \nmas no caso do tesouro direto estamos tratando do governo, que por",
+        "• Dealers: instituições financeiras, legalmente autorizadas a atuar no \nmercado em nome do Bacen; adquirem títulos públicos nos leilões\nTESOURO DIRETO\n• Programa do Tesouro Nacional desenvolvido em parceria com a B3 \npara venda de títulos públicos federais para pessoas físicas, por \nmeio da internet\n•  Oferece títulos com diferentes tipos de rentabilidade (prefixada, li-\ngada à variação da inflação ou à variação da taxa de juros básica da \neconomia – Selic), prazos de vencimento e fluxos de remuneração",
+        "Econômica, demais bancos e sociedades de crédito, pagam uma \ncontribuição todo mês. As próximas opções de investimento, a seguir, \nestão totalmente asseguradas pelo FGC(ASSAF NETO, 2014).\nO Certificado de Depósito Bancário (CDB) funciona como \no tesouro direto, mas ao invés de você emprestar ao governo, você irá \nemprestar a um banco específico, no caso do CDB o uso do dinheiro \nnão tem uma finalidade específica, o banco fica a livre escolha, ele"
+      ],
+      "citations": [
+        {
+          "source": "Tesouro Direto - Guia Básico",
+          "page": 1,
+          "url": "https://www.tesourodireto.com.br/",
+          "passage": "O Tesouro Direto é um programa do Tesouro Nacional desenvolvido em parceria com a\nB3 para venda de títulos públicos federais para pessoas físicas, de forma 100% online.\nOs títulos disponíveis são: Tes..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 97,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "tesouro direto é o governo, Marcos comprou um título do tesouro,"
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 98,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "é a mais usada e a mais popular, e apesar de que, quando falamos em \nempréstimo, de certa forma sempre lembramos do famoso “calote”, \nmas no caso do tesouro direto estamos tratando do governo, que por"
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 79,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "• Dealers: instituições financeiras, legalmente autorizadas a atuar no \nmercado em nome do Bacen; adquirem títulos públicos nos leilões\nTESOURO DIRETO\n• Programa do Tesouro Nacional desenvolvido em pa..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 99,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "Econômica, demais bancos e sociedades de crédito, pagam uma \ncontribuição todo mês. As próximas opções de investimento, a seguir, \nestão totalmente asseguradas pelo FGC(ASSAF NETO, 2014).\nO Certificad..."
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 1,
+      "latency_s": 21.28,
+      "error": null
+    },
+    {
+      "id": "q02",
+      "query": "Como funciona a caderneta de poupança?",
+      "answer": "A caderneta de poupança é um tipo de investimento que funciona da seguinte maneira: você deposita o dinheiro na conta poupança e ela sempre vai render mensalmente [Fonte: Finanças Pessoais para Iniciantes, p.96]. O rendimento da poupança é calculado pela regra: quando a taxa Selic estiver acima de 8,5% ao ano, a poupança rende 0,5% ao mês + TR (Taxa Referencial) [Fonte: Poupança - Funcionamento e Rendimento, p.1]. A caderneta de poupança tem cobertura do FGC (Fundo Garantidor de Créditos) de até R$250.000 por instituição [Fonte: Poupança - Funcionamento e Rendimento, p.1].\n\nResumo: A caderneta de poupança é um investimento que rende mensalmente e tem proteção de até R$250.000 por instituição.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [
+        "A caderneta de poupança é um dos investimentos mais populares no Brasil, com\nliquidez diária e isenção de Imposto de Renda para pessoas físicas. O rendimento da\npoupança é calculado pela regra: quando a taxa Selic estiver acima de 8,5% ao ano, a\npoupança rende 0,5% ao mês + TR (Taxa Referencial). Quando a Selic for igual ou inferior\na 8,5% ao ano, a poupança rende 70% da Selic + TR. A poupança tem cobertura do FGC\n(Fundo Garantidor de Créditos) de até R$250.000 por instituição.",
+        "tudo que ganhamos e tudo que gastamos . \nE investimento ? Investimento é a aplicação dos recursos que poupamos, com a \nexpectativa de obtermos uma remuneração por essa aplicação . \nVocê sabe a diferença entre poupança e caderneta de poupança? \nA poupança é uma sobra financeira e deve ser direcionada para algum tipo de investimento para \nque seja remunerada. A caderneta de poupança ou conta de poupança é um tipo de investimento.\n5.3 Componentes do investimento\nQuem investe tem como objetivo ganhar dinheiro.",
+        "aplicação se encaixe melhor, já que dentro desses cinco anos ela irá \nrender mais.\nA poupança funciona da seguinte maneira: você deposita o \ndinheiro na conta poupança, e ela sempre vai render mensalmente, \npor exemplo: ao realizar um depósito dia 20 de julho, ela vai render \nno dia 20 agosto, e assim sucessivamente, a conta poupança não é \nafetada pelo imposto de renda (como o nome já diz, é um imposto \nque incide sobre a renda, portanto aplicações financeiras são afetadas",
+        "mensalmente esse valor em um investimento como a caderneta de poupança, cuja característica \né de alta liquidez e segurança, em 23 meses você terá o dinheiro para comprar o carro à vista, \nconsiderada uma rentabilidade de 0,5% ao mês. \nCom o estabelecimento de metas claras e objetivas, você é capaz de saber quando estará \napto a realizar o seu sonho.\nT erceiro passo – Internalizar a visão de futuro trazida pela perspectiva de realização \ndo projeto",
+        "poupança, esse rendimento real pode ser mais baixo ainda.\nQuais as outras opções?\nAnteriormente você entendeu como funciona a poupança, \numa das opções mais comuns, embora a menos recomendada se a \nintenção de verdade for a busca por rendimento.\nMas existe outra aplicação muito conhecida atualmente e que \naos poucos vem ganhando muita popularidade, é o tesouro direto \n(BRASIL, 2018). Nessa modalidade você compra “títulos”, imagine o \ntítulo como uma nota, assinada pela instituição que você irá emprestar"
+      ],
+      "citations": [
+        {
+          "source": "Poupança - Funcionamento e Rendimento",
+          "page": 1,
+          "url": "https://www.bcb.gov.br/cidadaniafinanceira/poupanca",
+          "passage": "A caderneta de poupança é um dos investimentos mais populares no Brasil, com\nliquidez diária e isenção de Imposto de Renda para pessoas físicas. O rendimento da\npoupança é calculado pela regra: quando..."
+        },
+        {
+          "source": "Caderno de Cidadania Financeira - BACEN",
+          "page": 44,
+          "url": "data/raw/caderno_cidadania_financeira.pdf",
+          "passage": "tudo que ganhamos e tudo que gastamos . \nE investimento ? Investimento é a aplicação dos recursos que poupamos, com a \nexpectativa de obtermos uma remuneração por essa aplicação . \nVocê sabe a diferen..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 96,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "aplicação se encaixe melhor, já que dentro desses cinco anos ela irá \nrender mais.\nA poupança funciona da seguinte maneira: você deposita o \ndinheiro na conta poupança, e ela sempre vai render mensalm..."
+        },
+        {
+          "source": "Caderno de Cidadania Financeira - BACEN",
+          "page": 14,
+          "url": "data/raw/caderno_cidadania_financeira.pdf",
+          "passage": "mensalmente esse valor em um investimento como a caderneta de poupança, cuja característica \né de alta liquidez e segurança, em 23 meses você terá o dinheiro para comprar o carro à vista, \nconsiderada..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 97,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "poupança, esse rendimento real pode ser mais baixo ainda.\nQuais as outras opções?\nAnteriormente você entendeu como funciona a poupança, \numa das opções mais comuns, embora a menos recomendada se a \nin..."
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 1,
+      "latency_s": 11.93,
+      "error": null
+    },
+    {
+      "id": "q03",
+      "query": "O que é CDI e para que serve?",
+      "answer": "O CDI (Certificado de Depósito Interbancário) é uma taxa de referência para investimentos de renda fixa no Brasil [Fonte: CDI e Renda Fixa - Conceitos Fundamentais, p.1]. Ele serve como um padrão para medir o rendimento de outros investimentos, como o CDB (Certificado de Depósito Bancário), LCI (Letra de Crédito Imobiliário) e LCA (Letra de Crédito do Agronegócio) [Fonte: CDI e Renda Fixa - Conceitos Fundamentais, p.1].\n\nResumo: O CDI é uma taxa de referência para investimentos de renda fixa no Brasil, usado como padrão para medir o rendimento de outros investimentos.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [
+        "O CDI (Certificado de Depósito Interbancário) é uma taxa de referência para\ninvestimentos de renda fixa no Brasil. O CDI é muito próximo da taxa Selic. Investimentos\ncomo CDB (Certificado de Depósito Bancário), LCI (Letra de Crédito Imobiliário) e LCA\n(Letra de Crédito do Agronegócio) costumam ter rendimento expresso como percentual do CDI.\nPor exemplo, um CDB que rende 100% do CDI acompanha a taxa básica. LCI e LCA são isentos",
+        "sucessório são: ITCMD, ITBI e IR. \n6.5.1. Imposto de Transmissão Causa Mortis e Doação (ITCMD)\nO ITCMD é um imposto de competência dos Estados e Distrito Federal. Ou seja, \ncada Estado conta com legislação própria sobre esse imposto.   \nO fato gerador, ou seja, a situação que faz com que o imposto seja devido, é a trans -\nmissão gratuita de um bem ou direito, ou seja, a transmissão em que não há contra -\npartida da pessoa que está recebendo o ativo, como ocorre nas transmissões causa",
+        "ativos que representam as dívidas da empresa.\nO risco de crédito está presente, em maior ou menor escala, em todos os títulos de \ncrédito ou de dívida, conhecidos como títulos de renda fixa. Ao adquirir um CDB ou \numa Letra de Crédito Imobiliário (LCI), por exemplo, o investidor corre o risco do \nbanco emissor.",
+        "sentativos de dívida que asseguram aos detentores o direito de crédito contra a com -\npanhia emissora.\nPara saber mais a respeito desses ativos, consulte o livro TOP “Mercado de Valores \nMobiliários Brasileiro” (2014).\n– Certificado de Recebíveis Imobiliários (CRI)\nSão títulos de renda fixa lastreados em créditos imobiliários – fluxo de pagamentos \nde contraprestações de aquisição de bens imóveis, ou de aluguéis, emitidos por socie-\ndades securitizadoras.",
+        "apenas diz o quanto você vai ganhar no final acrescido da taxa de \njuros proposta. Diferente das demais opções que tem uma finalidade \nespecífica.\nA Letra de Crédito Imobiliário (LCI) é um exemplo desses \ncom finalidade específica. Quando você investe o seu dinheiro em \num título LCI, o banco irá pegar esse dinheiro, e usará no setor"
+      ],
+      "citations": [
+        {
+          "source": "CDI e Renda Fixa - Conceitos Fundamentais",
+          "page": 1,
+          "url": "https://www.bcb.gov.br/cidadaniafinanceira/cdi",
+          "passage": "O CDI (Certificado de Depósito Interbancário) é uma taxa de referência para\ninvestimentos de renda fixa no Brasil. O CDI é muito próximo da taxa Selic. Investimentos\ncomo CDB (Certificado de Depósito ..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 259,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "sucessório são: ITCMD, ITBI e IR. \n6.5.1. Imposto de Transmissão Causa Mortis e Doação (ITCMD)\nO ITCMD é um imposto de competência dos Estados e Distrito Federal. Ou seja, \ncada Estado conta com legis..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 62,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "ativos que representam as dívidas da empresa.\nO risco de crédito está presente, em maior ou menor escala, em todos os títulos de \ncrédito ou de dívida, conhecidos como títulos de renda fixa. Ao adquir..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 95,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "sentativos de dívida que asseguram aos detentores o direito de crédito contra a com -\npanhia emissora.\nPara saber mais a respeito desses ativos, consulte o livro TOP “Mercado de Valores \nMobiliários B..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 99,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "apenas diz o quanto você vai ganhar no final acrescido da taxa de \njuros proposta. Diferente das demais opções que tem uma finalidade \nespecífica.\nA Letra de Crédito Imobiliário (LCI) é um exemplo des..."
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 1,
+      "latency_s": 10.66,
+      "error": null
+    },
+    {
+      "id": "q04",
+      "query": "Como funciona o FGTS? Quando posso sacar?",
+      "answer": "O FGTS é um fundo criado para proteger o trabalhador demitido sem justa causa. O empregador é obrigado a depositar mensalmente 8% do salário do funcionário em uma conta vinculada na Caixa Econômica Federal [Fonte: Documento 1, p.1].\n\nO FGTS pode ser sacado nos seguintes casos: demissão sem justa causa, aposentadoria, compra de imóvel, financiamento pelo SFH, doenças graves (câncer, HIV), calamidade pública, ou aniversário (saque-aniversário) [Fonte: Documento 1, p.1].\n\nO saldo do FGTS pode ser consultado pelo aplicativo FGTS da Caixa [Fonte: Documento 2, p.1].\n\nResumo final: O FGTS é um fundo que visa proteger o trabalhador demitido sem justa causa, com depósitos mensais obrigatórios e saques permitidos em casos específicos.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [
+        "O FGTS é um fundo criado para proteger o trabalhador demitido sem justa causa.\nTodo empregador é obrigado a depositar mensalmente 8% do salário do funcionário em uma\nconta vinculada na Caixa Econômica Federal. O FGTS pode ser sacado nos seguintes casos:\ndemissão sem justa causa, aposentadoria, compra de imóvel, financiamento pelo SFH,\ndoenças graves (câncer, HIV), calamidade pública, ou aniversário (saque-aniversário).\nO FGTS rende 3% ao ano + TR, mais um complemento de resultados. O saldo pode ser",
+        "consultado pelo aplicativo FGTS da Caixa.",
+        "mologados pela Justiça do Trabalho, bem como o montante recebido do Fundo de \nGarantia do Tempo de Serviço (FGTS), são isentos do imposto de renda. \nO que exceder às verbas acima descritas será considerado liberalidade do empregador \ne tributado como rendimento do trabalho assalariado. O montante recebido a título \nde aviso prévio somente é isento se não for trabalhado.",
+        "envolve o governo diretamente e ainda sim são muito seguras. \nAntes de explicar as outras opções, você precisar saber o que \né e entender sobre o Fundo Garantidor de Créditos (FGC). O FGC \nfunciona como um seguro, para que caso a instituição que você aplicou \no seu dinheiro venha a falir, o Fundo irá pagar a você o valor aplicado, \nou seja, você não sai no prejuízo. Porém o FGC é uma instituição \nprivada, e ela existe porque as instituições financeiras como a Caixa",
+        "biliário e associações de poupança e empréstimo)\nPeriodicidade dos \nrendimentos\nOs rendimentos são creditados mensal ou trimes-\ntralmente, se o titular for pessoa física. No caso de \npessoa jurídica, apenas trimestral\nPrazo do\nInvestimento Indeterminado \nFGC Conta com a garantida do Fundo Garantidor de Cré-\nditos (FGC) até o limite estabelecido\nLiquidez Tem liquidez diária, entretanto, valores sacados an-\ntes da data de aniversário não recebem o rendimento \ndo último período"
+      ],
+      "citations": [
+        {
+          "source": "FGTS - Fundo de Garantia por Tempo de Serviço",
+          "page": 1,
+          "url": "https://www.caixa.gov.br/trabalhador/fgts",
+          "passage": "O FGTS é um fundo criado para proteger o trabalhador demitido sem justa causa.\nTodo empregador é obrigado a depositar mensalmente 8% do salário do funcionário em uma\nconta vinculada na Caixa Econômica..."
+        },
+        {
+          "source": "FGTS - Fundo de Garantia por Tempo de Serviço",
+          "page": 1,
+          "url": "https://www.caixa.gov.br/trabalhador/fgts",
+          "passage": "consultado pelo aplicativo FGTS da Caixa."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 190,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "mologados pela Justiça do Trabalho, bem como o montante recebido do Fundo de \nGarantia do Tempo de Serviço (FGTS), são isentos do imposto de renda. \nO que exceder às verbas acima descritas será consid..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 99,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "envolve o governo diretamente e ainda sim são muito seguras. \nAntes de explicar as outras opções, você precisar saber o que \né e entender sobre o Fundo Garantidor de Créditos (FGC). O FGC \nfunciona co..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 83,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "biliário e associações de poupança e empréstimo)\nPeriodicidade dos \nrendimentos\nOs rendimentos são creditados mensal ou trimes-\ntralmente, se o titular for pessoa física. No caso de \npessoa jurídica, ..."
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 1,
+      "latency_s": 11.85,
+      "error": null
+    },
+    {
+      "id": "q05",
+      "query": "Quais são os requisitos para receber o seguro-desemprego?",
+      "answer": "Desculpe, mas a pergunta não está relacionada aos dados financeiros fornecidos. Como analista financeiro pessoal do Órbita, não tenho conhecimento sobre requisitos para receber o seguro-desemprego.",
+      "retrieved_docs": [],
+      "citations": [],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 0,
+      "latency_s": 8.37,
+      "error": null
+    },
+    {
+      "id": "q06",
+      "query": "O que é o método 50/30/20 de planejamento financeiro?",
+      "answer": "O método 50/30/20 de planejamento financeiro sugere destinar 50% da renda para necessidades básicas (moradia, alimentação, transporte), 30% para desejos pessoais (lazer, entretenimento) e 20% para poupança e investimentos [Fonte: Documento 1, p.1].\n\nEste método visa ajudar a equilibrar as despesas com a poupança e os investimentos, promovendo uma gestão financeira mais consciente e equilibrada.\n\n**Resumo**: O método 50/30/20 é uma ferramenta de planejamento financeiro que ajuda a dividir a renda entre necessidades básicas, desejos pessoais e poupança e investimentos.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [
+        "O planejamento financeiro pessoal começa com o controle do orçamento mensal.\nO método 50/30/20 sugere destinar 50% da renda para necessidades básicas (moradia, alimentação,\ntransporte), 30% para desejos pessoais (lazer, entretenimento), e 20% para poupança e\ninvestimentos. A reserva de emergência deve cobrir entre 3 e 6 meses de despesas mensais,\nmantida em investimentos de alta liquidez como Tesouro Selic ou CDB com liquidez diária.",
+        "FINANÇAS PESSOAIS PARA INICIANTES\n17\nPlanejamento Financeiro\nBraga (1995) afirma que planejamento se baseia na melhor \nescolha e mais adequada, em virtude da situação presente, levando-se \nem consideração todas as variáveis internas e externas. Dessa forma, \nplanejamento é uma análise completa acerca do atual cenário em que \no agente está inserido, com a finalidade de se criar metas e delinear \nquais serão os esforços necessários para o alcance destas.",
+        "TOP\nPLANEJAMENTO\nFINANCEIRO\nPESSOAL",
+        "prática aprenderemos a melhor forma de gerenciar as finanças pessoal \ne familiar.\nPlanejar e planejar!\nPara Ross, Westerfiel e Jaffe (2002, p. 589) “o planejamento \nfinanceiro estabelece o método pelo qual as metas financeiras devem \nser atingidas”. \nO planejamento precisa informar quais tarefas realizar, onde \nalocar os recursos, quem são as pessoas com competências técnicas \nnecessárias para dar andamento a  eles  em desperdícios, de modo \na acumular valores que integrarão seu patrimônio pessoal e/ou",
+        "papelarias ou um caderno comum, ou ainda planilha disponibilizada \nnos capítulos anteriores. O importante é fazer).\n2. Elabore três tipos de planejamento financeiro: um para \ncurto prazo, um para médio e outro para longo prazo, listando o \nquanto será necessário para alcançar seu objetivo e em quanto tempo \nserá possível realizá-lo.\n3. Após concluído o proposto acima, faça uma reflexão de \nquanto tempo você atingirá as metas, utilizando a porcentagem"
+      ],
+      "citations": [
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 1,
+          "url": "https://www.bcb.gov.br/cidadaniafinanceira/planejamento",
+          "passage": "O planejamento financeiro pessoal começa com o controle do orçamento mensal.\nO método 50/30/20 sugere destinar 50% da renda para necessidades básicas (moradia, alimentação,\ntransporte), 30% para desej..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 18,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "FINANÇAS PESSOAIS PARA INICIANTES\n17\nPlanejamento Financeiro\nBraga (1995) afirma que planejamento se baseia na melhor \nescolha e mais adequada, em virtude da situação presente, levando-se \nem consider..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 2,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "TOP\nPLANEJAMENTO\nFINANCEIRO\nPESSOAL"
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 81,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "prática aprenderemos a melhor forma de gerenciar as finanças pessoal \ne familiar.\nPlanejar e planejar!\nPara Ross, Westerfiel e Jaffe (2002, p. 589) “o planejamento \nfinanceiro estabelece o método pelo..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 92,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "papelarias ou um caderno comum, ou ainda planilha disponibilizada \nnos capítulos anteriores. O importante é fazer).\n2. Elabore três tipos de planejamento financeiro: um para \ncurto prazo, um para médi..."
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 1,
+      "latency_s": 10.54,
+      "error": null
+    },
+    {
+      "id": "q07",
+      "query": "Por que devo evitar o pagamento mínimo da fatura do cartão de crédito?",
+      "answer": "Pagar o mínimo da fatura do cartão de crédito gera dívida crescente [Documento 1: p.1]. Além disso, o uso inadequado do crédito pode levar ao endividamento excessivo e comprometer toda a sua vida financeira, acarretando descontrole emocional, problemas de saúde e, até mesmo, desestruturação familiar [Documento 4: p.62].\n\nResumo: É recomendável evitar o pagamento mínimo da fatura do cartão de crédito, pois isso pode gerar dívida crescente e levar ao endividamento excessivo.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [
+        "O cartão de crédito é uma ferramenta útil quando usado corretamente. A fatura\ndeve ser paga integralmente todo mês para evitar os juros rotativos, que são os maiores do\nmercado financeiro brasileiro (média de 400% ao ano). O limite do cartão não deve ser\nconsiderado como parte da renda disponível. O pagamento mínimo da fatura gera dívida\ncrescente. Antes de parcelar compras, verifique se há cobrança de juros. Cashback e milhas\nsão benefícios apenas quando a fatura é paga em dia.",
+        "FINANÇAS PESSOAIS: UM GUIA PARA INICIANTES\n55\nda fatura, o valor mínimo, por exemplo, ou simplesmente não paga a \nfatura deixando-a para a fatura do próximo mês.\nTal tipo de juros costuma ser altíssimo, tanto que em 2017 \no governo alterou as regras do uso desse tipo de crédito (BANCO \nCENTRAL DO BRASIL, 2017) também chamado de rotativo, e \nlimitou para que ele só possa ser usado no máximo um mês, ou seja, \nvocê só pode pagar o mínimo apenas uma vez; na segunda o banco já",
+        "gastar mais de 30% de sua renda com pequenas despesas, como cafezinho, balas \ne pequenos lanches); \n•\tPagar suas contas em dia e nunca deixar que seus pagamentos se acumulem mês a \nmês, evitando ao máximo entrar no cheque especial e no rotativo do cartão; caso \nseja realmente imprescindível contrair a dívida, procure contratar pelo menor prazo \npossível, pelo menor custo possível, evitando as linhas de crédito pré-aprovadas;",
+        "61\nc) Não deve ser utilizado, pois se nos esquecermos de pagar no dia do vencimento da fatura, \ntemos que pagar altos juros;\nd) Deve ser pago sempre o mínimo do valor da fatura.\n5. O uso inadequado do crédito pode levar ao endividamento excessivo e comprometer \ntoda a sua vida financeira, acarretando descontrole emocional, problemas de saúde \ne, até mesmo, desestruturação familiar.\nAssinale (F) para as alternativas falsas e (V) para as alternativas verdadeiras.",
+        "quando você recebe a fatura vem discriminado: o que você comprou,"
+      ],
+      "citations": [
+        {
+          "source": "Cartão de Crédito - Uso Consciente",
+          "page": 1,
+          "url": "https://www.bcb.gov.br/cidadaniafinanceira/cartao",
+          "passage": "O cartão de crédito é uma ferramenta útil quando usado corretamente. A fatura\ndeve ser paga integralmente todo mês para evitar os juros rotativos, que são os maiores do\nmercado financeiro brasileiro (..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 56,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "FINANÇAS PESSOAIS: UM GUIA PARA INICIANTES\n55\nda fatura, o valor mínimo, por exemplo, ou simplesmente não paga a \nfatura deixando-a para a fatura do próximo mês.\nTal tipo de juros costuma ser altíssim..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 40,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "gastar mais de 30% de sua renda com pequenas despesas, como cafezinho, balas \ne pequenos lanches); \n•\tPagar suas contas em dia e nunca deixar que seus pagamentos se acumulem mês a \nmês, evitando ao má..."
+        },
+        {
+          "source": "Caderno de Cidadania Financeira - BACEN",
+          "page": 62,
+          "url": "data/raw/caderno_cidadania_financeira.pdf",
+          "passage": "61\nc) Não deve ser utilizado, pois se nos esquecermos de pagar no dia do vencimento da fatura, \ntemos que pagar altos juros;\nd) Deve ser pago sempre o mínimo do valor da fatura.\n5. O uso inadequado do..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 39,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "quando você recebe a fatura vem discriminado: o que você comprou,"
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 1,
+      "latency_s": 12.22,
+      "error": null
+    },
+    {
+      "id": "q08",
+      "query": "Qual a diferença entre PGBL e VGBL na previdência privada?",
+      "answer": "Os principais produtos de previdência privada são o PGBL e o VGBL. O PGBL permite deduzir até 12% da renda bruta no IR [Fonte: Documento 1, p.1] e não assegura rentabilidade mínima garantida durante o período de acumulação [Fonte: Documento 4, p.141]. Já o VGBL não tem dedução fiscal na entrada, mas o IR incide apenas sobre os rendimentos no resgate [Fonte: Documento 1, p.1]. Além disso, o VGBL permite ao segurado escolher o regime de tributação mais adequado ao seu perfil tributário [Fonte: Documento 2, p.145].\n\nResumo final: O PGBL oferece dedução fiscal na entrada, enquanto o VGBL não, mas permite escolha de regime de tributação mais adequado.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [
+        "A previdência privada complementa a previdência social (INSS). Os dois principais\nprodutos são o PGBL (Plano Gerador de Benefício Livre) e o VGBL (Vida Gerador de Benefício\nLivre). O PGBL permite deduzir até 12% da renda bruta no IR (indicado para quem faz a\ndeclaração completa). O VGBL não tem dedução fiscal na entrada, mas o IR incide apenas\nsobre os rendimentos no resgate. Existem dois regimes tributários: progressivo (alíquotas",
+        "Para saber mais consulte o Capítulo VI – Sucessão patrimonial.\n3.6.2.2. Vida Gerador de Benefício Livre (VGBL)\nO plano VGBL é um plano de seguro de pessoas com cobertura por sobrevivência \ncom caráter previdenciário. Embora não conceda o mesmo benefício fiscal que o \nPGBL, permite ao segurado escolher o regime de tributação que for mais adequado \nao seu perfil tributário.\nAssim como o PGBL, o VGBL não assegura rentabilidade mínima garantida durante",
+        "Livre (PGBL). \nVida Gerador de Benefício Livre ( VGBL) – Apesar de ser um tipo de seguro, o VGBL pode ser \nutilizado como opção ﬁ nanceira para a aposentadoria. \nO PGBL e o VGBL têm características e nome parecidos, porém são submetidos à tributação \ndiferenciada. Para conhecer mais sobre eles, acesse o Guia de Orientação e Defesa do Segurado, \nproduzido pela Susep, e estude as características de cada um, antes de decidir se algum deles",
+        "140\nPlanejamento financeiro pessoal\n3.6.2. Tipos de plano (PGBL e VGBL)\n3.6.2.1. Plano Gerador de Benefício Livre (PGBL)\nO Plano Gerador de Benefícios Livre (PGBL) é um plano por sobrevivência de pre -\nvidência complementar aberta que, após um período de acumulação de recursos \n(período de acumulação), proporciona aos participantes uma renda mensal ou um \npagamento único.\nCaracterísticas\nDurante o período de acumulação, não há garantia de remuneração mínima. A ren -",
+        "147\nPlanejamento da aposentadoria\n3.6.5. Tributação dos planos de previdência PGBL e VGBL\nOs planos de previdência (tanto PGBL quanto VGBL), em razão do caráter previden-\nciário, são os únicos produtos de acumulação de recursos que permitem ao investidor \nescolher, entre dois regimes de tributação, o mais adequado para seu perfil e horizonte \nde tempo. \nO fato gerador do pagamento do imposto de renda é o resgate (na fase de acumulação) \ne/ou o recebimento do benefício (na fase de usufruto)."
+      ],
+      "citations": [
+        {
+          "source": "Previdência Privada - PGBL e VGBL",
+          "page": 1,
+          "url": "https://www.susep.gov.br/previdencia",
+          "passage": "A previdência privada complementa a previdência social (INSS). Os dois principais\nprodutos são o PGBL (Plano Gerador de Benefício Livre) e o VGBL (Vida Gerador de Benefício\nLivre). O PGBL permite dedu..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 145,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "Para saber mais consulte o Capítulo VI – Sucessão patrimonial.\n3.6.2.2. Vida Gerador de Benefício Livre (VGBL)\nO plano VGBL é um plano de seguro de pessoas com cobertura por sobrevivência \ncom caráter..."
+        },
+        {
+          "source": "Caderno de Cidadania Financeira - BACEN",
+          "page": 55,
+          "url": "data/raw/caderno_cidadania_financeira.pdf",
+          "passage": "Livre (PGBL). \nVida Gerador de Benefício Livre ( VGBL) – Apesar de ser um tipo de seguro, o VGBL pode ser \nutilizado como opção ﬁ nanceira para a aposentadoria. \nO PGBL e o VGBL têm características e ..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 141,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "140\nPlanejamento financeiro pessoal\n3.6.2. Tipos de plano (PGBL e VGBL)\n3.6.2.1. Plano Gerador de Benefício Livre (PGBL)\nO Plano Gerador de Benefícios Livre (PGBL) é um plano por sobrevivência de pre ..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 148,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "147\nPlanejamento da aposentadoria\n3.6.5. Tributação dos planos de previdência PGBL e VGBL\nOs planos de previdência (tanto PGBL quanto VGBL), em razão do caráter previden-\nciário, são os únicos produto..."
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 1,
+      "latency_s": 13.98,
+      "error": null
+    },
+    {
+      "id": "q09",
+      "query": "Quanto deve ter uma reserva de emergência?",
+      "answer": "De acordo com o contexto, a reserva de emergência deve variar entre três e seis meses das despesas correntes do indivíduo ou grupo familiar [Fonte: Documento 2, p.44]. Ou seja, se as despesas mensais da família são de R$ 10.000,00, o valor do fundo de emergência deve ser entre R$ 30.000,00 e R$ 60.000,00 [Fonte: Documento 2, p.44].\n\nAlém disso, outra dica é ter uma reserva de emergência equivalente a no mínimo cinco vezes o valor do seu salário, para estar preparado para situações inesperadas [Fonte: Documento 4, p.112].\n\nResumo final: É importante ter uma reserva de emergência para garantir a segurança e o bem-estar em períodos difíceis, com um valor que varia entre três e seis meses das despesas correntes ou no mínimo cinco vezes o salário.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [
+        "44\nPlanejamento financeiro pessoal\nOs que ainda não têm essa reserva e acham impossível guardar tanto dinheiro podem \ncomeçar com menos, com o que for possível. Acumular essa reserva exige tempo e \nperseverança, mas é o primeiro passo para garantir a segurança e o bem-estar em \nperíodos difíceis.\nQuando e se essa reserva for utilizada, deve ser recomposta no menor espaço de tempo. É \nimportante manter o nível do fundo de emergência, assegurando recursos para enfren-",
+        "conforto de todos, cientes de que não ficaram desamparados.\nEstima-se que o valor deve variar entre três e seis meses das despesas correntes \ndo indivíduo ou grupo familiar. Por exemplo, se as despesas mensais da família \nsomam R$ 10.000,00, o valor do fundo de emergência deverá ser entre R$ 30.000,00 \ne R$ 60.000,00.",
+        "Usar o crédito rotativo do cheque especial ou do cartão não são alternativas viáveis, \nembora seja a saída que vem sendo utilizada por milhões de brasileiros. Os juros ele -\nvados ampliam ainda mais o problema, pois deixam a solução mais distante.\nDimensionar o montante fundo de emergência é desafiador, uma vez que depende \nmuito da estrutura familiar, do orçamento da família e do padrão de vida que se \ndeseja manter. O conceito é que a reserva financeira seja suficiente para prover as",
+        "de no mínimo cinco vezes o valor do seu salário para que caso algo \ndesse tipo aconteça, estejamos preparados para não passarmos por \nnecessidade, até que arrume-se um novo emprego. Estar preparado \npara situações inesperadas é muito importante, e pessoas conscientes \nbuscam manter uma boa reserva de emergência. \nDica número 14: Comprar produtos eficientes\nAo adquirirmos um produto, devemos pensar não só nos \nbenefícios a curto prazo, mas também nos benefícios a longo prazo,",
+        "FINANÇAS PESSOAIS: UM GUIA PARA INICIANTES\n111\nfutura, para que possamos estar investindo esse dinheiro mais tarde, \nou para possíveis emergências, o que nos leva a próxima dica. \nDica número 13: Tenha uma reserva de emergência\nCaso você seja demitido hoje de seu emprego, você conseguiria \nse sustentar? Se sim, por quanto tempo? Bom,  não gostamos de \npensar em coisas negativas, mas devemos estar sempre preparados \npara o pior, por isso é ideal que tenhamos uma reserva de emergência"
+      ],
+      "citations": [
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 45,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "44\nPlanejamento financeiro pessoal\nOs que ainda não têm essa reserva e acham impossível guardar tanto dinheiro podem \ncomeçar com menos, com o que for possível. Acumular essa reserva exige tempo e \npe..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 44,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "conforto de todos, cientes de que não ficaram desamparados.\nEstima-se que o valor deve variar entre três e seis meses das despesas correntes \ndo indivíduo ou grupo familiar. Por exemplo, se as despesa..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 44,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "Usar o crédito rotativo do cheque especial ou do cartão não são alternativas viáveis, \nembora seja a saída que vem sendo utilizada por milhões de brasileiros. Os juros ele -\nvados ampliam ainda mais o..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 112,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "de no mínimo cinco vezes o valor do seu salário para que caso algo \ndesse tipo aconteça, estejamos preparados para não passarmos por \nnecessidade, até que arrume-se um novo emprego. Estar preparado \np..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 112,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "FINANÇAS PESSOAIS: UM GUIA PARA INICIANTES\n111\nfutura, para que possamos estar investindo esse dinheiro mais tarde, \nou para possíveis emergências, o que nos leva a próxima dica. \nDica número 13: Tenh..."
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 2,
+      "latency_s": 29.89,
+      "error": null
+    },
+    {
+      "id": "q10",
+      "query": "O que são fundos imobiliários (FIIs)?",
+      "answer": "Os fundos imobiliários (FIIs) são um tipo de fundo de investimento que reúne recursos para aplicação em conjunto, focados em investimentos imobiliários. Eles podem ser negociados em bolsas de valores ou no mercado de balcão organizado, desde que tenham, no mínimo, 50 cotistas [Fonte: Documento 2, p.210].\n\nOs FIIs distribuem rendimentos mensais isentos de IR para pessoas físicas com menos de 10% das cotas do fundo [Fonte: Documento 3, p.1]. Além disso, os lucros distribuídos pelos FIIs sujeitam-se à incidência do imposto de renda na fonte à alíquota de 20%, mas podem ser isentos se atenderem a certos requisitos [Fonte: Documento 2, p.210].\n\nResumo final: Os fundos imobiliários (FIIs) são fundos de investimento que concentram recursos em investimentos imobiliários, negociados em bolsas de valores ou mercado de balcão, e podem distribuir rendimentos isentos de imposto de renda.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [
+        "Fundos de investimento são condomínios de investidores que reúnem recursos para\naplicação em conjunto. Os tipos mais comuns são: Fundos de Renda Fixa (DI, crédito privado),\nFundos Multimercado (diversificados), Fundos de Ações, e Fundos Imobiliários (FIIs). As\ntaxas cobradas incluem taxa de administração (anual, incide sobre o patrimônio) e taxa de\nperformance (sobre rentabilidade acima do benchmark). A cota é o valor unitário do fundo.",
+        "209\nTributos sobre rendimentos e investimentos\n•\tFundos de Investimento Imobiliário (FII)\nOs lucros distribuídos pelos fundos imobiliários sujeitam-se à incidência do imposto \nde renda na fonte à alíquota de 20%. Porém, lucros distribuídos por fundos que cum-\npram os requisitos, mencionados a seguir, são isentos de imposto de renda: \n•\tAs cotas do fundo devem ser negociadas exclusivamente em bolsas de valores ou \nno mercado de balcão organizado;\n•\tO fundo conta com, no mínimo, 50 cotistas;",
+        "O come-cotas é uma antecipação semestral de IR em fundos abertos. FIIs distribuem rendimentos\nmensais isentos de IR para pessoas físicas com menos de 10% das cotas do fundo.",
+        "os chamados “Fundos 555”:\n•\tRenda fixa: os fundos são subclassificados em curto prazo, referenciados, simples \ne dívida externa\n•\tAções \n•\tMultimercado \n•\tCambial\nOutros fundos apresentam regras específicas, os chamados fundos de investimento \nestruturados, que devem cumprir as instruções CVM 356, 398, 444, 472, 578, 579, \nentre outras, de acordo com cada tipo. Os principais fundos estruturados são:\n•\tFundos de Investimento Imobiliário (FII)\n•\tFundos de Investimento em Direitos Creditórios (FIDC)",
+        "Investimento em fundos imobiliários também agrada ao perfil de muitos investi -\ndores, sendo uma boa alternativa de diversificação de carteira. Os rendimentos são \npagos periodicamente, isentos do IR (se o fundo atender às exigências da Receita Fe -\nderal). O investidor conta, ainda, com a possibilidade de ganho de capital caso ocorra \nvalorização das cotas do fundo no mercado secundário. \nO Capítulo II – Investimentos – aborda as diferentes alternativas de investimento em \ntítulos e valores mobiliários."
+      ],
+      "citations": [
+        {
+          "source": "Fundos de Investimento - Conceitos Básicos",
+          "page": 1,
+          "url": "https://www.cvm.gov.br/investidor/fundos",
+          "passage": "Fundos de investimento são condomínios de investidores que reúnem recursos para\naplicação em conjunto. Os tipos mais comuns são: Fundos de Renda Fixa (DI, crédito privado),\nFundos Multimercado (divers..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 210,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "209\nTributos sobre rendimentos e investimentos\n•\tFundos de Investimento Imobiliário (FII)\nOs lucros distribuídos pelos fundos imobiliários sujeitam-se à incidência do imposto \nde renda na fonte à alíq..."
+        },
+        {
+          "source": "Fundos de Investimento - Conceitos Básicos",
+          "page": 1,
+          "url": "https://www.cvm.gov.br/investidor/fundos",
+          "passage": "O come-cotas é uma antecipação semestral de IR em fundos abertos. FIIs distribuem rendimentos\nmensais isentos de IR para pessoas físicas com menos de 10% das cotas do fundo."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 101,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "os chamados “Fundos 555”:\n•\tRenda fixa: os fundos são subclassificados em curto prazo, referenciados, simples \ne dívida externa\n•\tAções \n•\tMultimercado \n•\tCambial\nOutros fundos apresentam regras espec..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 132,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "Investimento em fundos imobiliários também agrada ao perfil de muitos investi -\ndores, sendo uma boa alternativa de diversificação de carteira. Os rendimentos são \npagos periodicamente, isentos do IR ..."
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 1,
+      "latency_s": 12.45,
+      "error": null
+    },
+    {
+      "id": "q11",
+      "query": "Qual é a taxa de rendimento exata do Tesouro Selic para os próximos 12 meses e qual será o valor final de um investimento de R$10.000?",
+      "answer": "Infelizmente, não há informações suficientes nos documentos fornecidos para determinar a taxa de rendimento exata do Tesouro Selic para os próximos 12 meses. No entanto, podemos inferir que a taxa de rendimento do Tesouro Selic é relacionada à taxa Selic, definida pelo Banco Central do Brasil.\n\nDe acordo com o [Documento 1, p.83], a poupança rende 0,5% ao mês + TR (Taxa Referencial) quando a taxa Selic estiver acima de 8,5% ao ano, e 70% da Selic + TR quando a Selic for igual ou inferior a 8,5% ao ano.\n\nAlém disso, o [Documento 2, p.1] afirma que o Tesouro Selic acompanha a taxa básica de juros (Selic), sendo indicado para reserva de emergência.\n\nPortanto, não é possível determinar a taxa de rendimento exata do Tesouro Selic para os próximos 12 meses com base nos documentos fornecidos.\n\nJá para calcular o valor final de um investimento de R$10.000 no Tesouro Selic, precisaríamos saber a taxa de juros aplicada, que não é fornecida nos documentos. No entanto, podemos usar a informação do [Documento 4, p.80] para calcular o valor de resgate de uma LTN com vencimento em 107 dias úteis, considerando rentabilidade de 10% ao ano. Mas isso não é aplicável ao Tesouro Selic.\n\nResumo final: Não é possível determinar a taxa de rendimento exata do Tesouro Selic para os próximos 12 meses ou o valor final de um investimento de R$10.000 com base nos documentos fornecidos.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [
+        "do último período\nRentabilidade O rendimento da poupança será composto por TR \n(Taxa Referencial)\n2 mais juros de:\n• 0,5% ao mês, se a meta da taxa Selic, defini-\nda pelo Banco Central do Brasil, for superior \na 8,5% ao ano; ou\n• 70% da meta da taxa Selic, definida pelo \nBanco Central do Brasil, vigente na data de \ninício de cada período de rendimento, nos \ndemais casos.\nO saldo dos depósitos de poupança efetuados até a \ndata de entrada em vigor da MP 567, de 3 de maio de",
+        "O Tesouro Direto é um programa do Tesouro Nacional desenvolvido em parceria com a\nB3 para venda de títulos públicos federais para pessoas físicas, de forma 100% online.\nOs títulos disponíveis são: Tesouro Selic (LFT), Tesouro Prefixado (LTN e NTN-F), e\nTesouro IPCA+ (NTN-B Principal e NTN-B). O Tesouro Selic acompanha a taxa básica de\njuros (Selic), sendo indicado para reserva de emergência. O Tesouro IPCA+ garante\nrendimento acima da inflação. O investimento mínimo é de R$30,00. Os títulos são",
+        "A caderneta de poupança é um dos investimentos mais populares no Brasil, com\nliquidez diária e isenção de Imposto de Renda para pessoas físicas. O rendimento da\npoupança é calculado pela regra: quando a taxa Selic estiver acima de 8,5% ao ano, a\npoupança rende 0,5% ao mês + TR (Taxa Referencial). Quando a Selic for igual ou inferior\na 8,5% ao ano, a poupança rende 70% da Selic + TR. A poupança tem cobertura do FGC\n(Fundo Garantidor de Créditos) de até R$250.000 por instituição.",
+        "79\nInvestimentos\n•\tIndicados para o investidor que acredita que a taxa prefixada será maior que a \ntaxa de juros básica da economia (Selic), no mesmo período.\n•\tPor serem títulos prefixados, seu rendimento é nominal, ou seja, não considera \na taxa de inflação.\nExEMPLO: Para apurar o preço unitário (PU) de uma LTN com vencimento \nem 107 dias úteis, considerando rentabilidade de 10% ao ano, basta \ndescontar o valor de resgate (R$ 1.000) pela taxa do período até o \nvencimento.",
+        "confiança para minimizar o risco de crédito e contratou um depósito a prazo (CDB), \nno valor de R$100 mil, pelo prazo de dois anos. Negociou uma taxa prefixada de juros \nde 10% ao ano, predeterminando o valor de resgate da operação em R$ 121 mil. \nImportante entender o que esse investidor comprou. A aplicação não garante a renta-\nbilidade de 10% ao ano, em qualquer período. O que é prefixado nessa operação não \né a taxa de juros, mas sim o valor de resgate, na data do vencimento."
+      ],
+      "citations": [
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 83,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "do último período\nRentabilidade O rendimento da poupança será composto por TR \n(Taxa Referencial)\n2 mais juros de:\n• 0,5% ao mês, se a meta da taxa Selic, defini-\nda pelo Banco Central do Brasil, for ..."
+        },
+        {
+          "source": "Tesouro Direto - Guia Básico",
+          "page": 1,
+          "url": "https://www.tesourodireto.com.br/",
+          "passage": "O Tesouro Direto é um programa do Tesouro Nacional desenvolvido em parceria com a\nB3 para venda de títulos públicos federais para pessoas físicas, de forma 100% online.\nOs títulos disponíveis são: Tes..."
+        },
+        {
+          "source": "Poupança - Funcionamento e Rendimento",
+          "page": 1,
+          "url": "https://www.bcb.gov.br/cidadaniafinanceira/poupanca",
+          "passage": "A caderneta de poupança é um dos investimentos mais populares no Brasil, com\nliquidez diária e isenção de Imposto de Renda para pessoas físicas. O rendimento da\npoupança é calculado pela regra: quando..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 80,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "79\nInvestimentos\n•\tIndicados para o investidor que acredita que a taxa prefixada será maior que a \ntaxa de juros básica da economia (Selic), no mesmo período.\n•\tPor serem títulos prefixados, seu rendi..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 64,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "confiança para minimizar o risco de crédito e contratou um depósito a prazo (CDB), \nno valor de R$100 mil, pelo prazo de dois anos. Negociou uma taxa prefixada de juros \nde 10% ao ano, predeterminando..."
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 2,
+      "latency_s": 35.78,
+      "error": null
+    },
+    {
+      "id": "q12",
+      "query": "O banco XYZ cobra tarifas ilegais? Posso processa-los?",
+      "answer": "O banco XYZ não está cobrando tarifas ilegais, pois o documento não menciona a prática de cobrança de tarifas ilegais por parte do banco. No entanto, o Documento 1 menciona que \"é vedada a cobrança de tarifas ou qualquer taxa administrativa\" [Documento 1, p.49]. Isso sugere que o banco não pode cobrar tarifas adicionais.\n\nJá sobre a possibilidade de processá-los, o Documento 4 apresenta um caso semelhante de um indivíduo que foi processado por ter cometido um crime de endividamento. No entanto, não há informações suficientes para determinar se você tem direito a processar o banco por cobrança ilegal de tarifas.\n\nÉ importante realizar uma pesquisa financeira e avaliar as informações resultantes para poder formular estratégias para resolver o problema [Documento 5, p.281].\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [
+        "as taxas de juros máximas que podem ser cobradas, assim como o \nnúmero máximo de parcelas. \n• É vedada a cobrança de tarifas ou qualquer taxa administrativa.\n• Incide Imposto sobre Operações de Crédito, Câmbio e Seguros (IOF) \nna operação, que está incluído no Custo Efetivo Total (CET) a ser in-\nformado pela instituição financeira. \n• Com o desconto direto das parcelas em folha ou da aposentadoria, \numa parte da renda já fica comprometida antes de os recursos serem",
+        "SOBROU DINHEIRO, O QUE FAZER?",
+        "quando você recebe a fatura vem discriminado: o que você comprou,",
+        "ela assinou voltaram, e por isso a Harrah’s a processou, exigindo\nque Bachmann pagasse suas dívidas com um adicional de 375 mil\ndólares de multa — efetivamente, uma punição civil por ter\ncometido um crime. Ela os processou de volta, alegando que, ao\nestender seu crédito, as suítes grátis e a bebida, a Harrah’s se\naproveitara de alguém que eles sabiam que não tinha controle sobre\nseus hábitos. Seu caso percorreu todas as instâncias até a Suprema\nCorte estadual. O advogado de Bachmann — usando argumentos",
+        "problemas, faz pesquisa financeira e avalia as informações resultantes para poder \nformular estratégias para o cliente."
+      ],
+      "citations": [
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 49,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "as taxas de juros máximas que podem ser cobradas, assim como o \nnúmero máximo de parcelas. \n• É vedada a cobrança de tarifas ou qualquer taxa administrativa.\n• Incide Imposto sobre Operações de Crédit..."
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 94,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "SOBROU DINHEIRO, O QUE FAZER?"
+        },
+        {
+          "source": "Finanças Pessoais para Iniciantes",
+          "page": 39,
+          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
+          "passage": "quando você recebe a fatura vem discriminado: o que você comprou,"
+        },
+        {
+          "source": "O Poder do Hábito - Charles Duhigg",
+          "page": 346,
+          "url": "data/raw/O Poder do Habito - Charles Duhigg.pdf.pdf",
+          "passage": "ela assinou voltaram, e por isso a Harrah’s a processou, exigindo\nque Bachmann pagasse suas dívidas com um adicional de 375 mil\ndólares de multa — efetivamente, uma punição civil por ter\ncometido um c..."
+        },
+        {
+          "source": "Planejamento Financeiro Pessoal",
+          "page": 281,
+          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
+          "passage": "problemas, faz pesquisa financeira e avalia as informações resultantes para poder \nformular estratégias para o cliente."
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 2,
+      "latency_s": 32.14,
+      "error": null
+    },
+    {
+      "id": "q13",
+      "query": "Qual é o número exato de agências do Banco do Brasil no estado de São Paulo hoje?",
+      "answer": "Não há dados disponíveis sobre o número de agências do Banco do Brasil no estado de São Paulo. A informação solicitada não está incluída nos dados financeiros do usuário fornecidos.",
+      "retrieved_docs": [],
+      "citations": [],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 0,
+      "latency_s": 8.01,
+      "error": null
+    },
+    {
+      "id": "q14",
+      "query": "Qual ação da Petrobras devo comprar agora para ganhar dinheiro rápido?",
+      "answer": "Esta pergunta está fora do escopo do Órbita. Posso ajudar com educação financeira, conceitos sobre produtos financeiros, FGTS, seguro-desemprego, planejamento financeiro básico, e similares.\n\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "retrieved_docs": [],
+      "citations": [],
+      "is_blocked": true,
+      "self_check_passed": false,
+      "retrieval_attempts": 0,
+      "latency_s": 2.6,
+      "error": null
+    },
+    {
+      "id": "q15",
+      "query": "Me dê uma estratégia completa de alocação de carteira: quanto colocar em ações, quanto em renda fixa e quanto em cripto",
+      "answer": "Não tenho evidências suficientes nos documentos disponíveis para responder a essa pergunta com precisão. Para garantir informações confiáveis, recomendo consultar diretamente o Banco Central do Brasil (bcb.gov.br), a CVM (investidor.gov.br), ou um profissional financeiro certificado.\n\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro.",
+      "retrieved_docs": [
+        "Se não quiser ou não estiver preparado, pode simplesmente \ncomprar um ETF de ações e alocar ¼ da carteira de inves-\ntimentos. Se não quiser pensar muito também, você pode \nalocar ¼ de sua carteira em aplicações como Tesouro Selic \nno Brasil; e aí você pode colocar ¼ da sua carteira, ou em \num ETF de S&P 500, ou no ETF do ACWI. Caso você queira, \ncom pouquíssimo esforço, com apenas 4 ativos, você pode \nter a ARCA construída. Isso é acessível com muito pouco pa-",
+        "mais ficar com 50% e 50%, a nossa parte de ações (renda \nvariável) pode representar 25% da carteira; e agora eu teria \n75%, em renda fixa. Se nesse momento eu aproveitasse para \nrebalancear o patrimônio, e utilizasse uma parte da renda \nfixa para comprar ações, logo depois costuma vir uma gran-\nde retomada, nossas ações subiriam muito e nosso portfólio \ntotal teria aumentado muito.\n95\nThiago Nigro\ned. especial\ne-B/07",
+        "parcela de renda variável começa a ficar muito forte e muito \nrepresentativa na carteira. Da mesma forma, se tiver menos \nde 10% na carteira de ações, a ideia é que você realoque de \nalguma forma para que tenha um pouco mais.\nCOMO OTIMIZAR O \nREBALANCEAMENTO \n100\nThiago Nigro\ned. especial\ne-B/07",
+        "Trazemos o aprendizado para a nossa carteira de investi-\nmentos. Quando rebalanceamos o o patrimônio, estamos \npensando justamente como José do Egito. \nSupondo que você tenha uma carteira de investimentos \ncom 50% em ações, e 50% em renda fixa, se assumirmos que \no mercado é cíclico, e no longo prazo ele tende a crescer, o \nque vai acontecer? \nTeremos uma crise. Em uma crise, é natural que as ações \ndiminuam; se essas ações caírem, a nossa carteira não vai",
+        "as criptomoedas não, me baseando no Efeito Lindy. \nÉ por isso que a construção de um portfólio de investimen-\ntos eficiente tem a ver com algo que já se provou no tempo; \ne é daqui que vem a mistura do conceito da Arca de Noé \ncom a construção de portfólio, e alocação nessas 4 classes \nde ativos. Em suma, a ideia é que você construa um portfó-\nlio que tenha um pouco em Ações/negócios, um pouco \nem Real Estate, um pouco em Caixa e um pouco em Ativos \nInternacionais.\n91\nThiago Nigro\ned. especial\ne-B/07"
+      ],
+      "citations": [
+        {
+          "source": "Finclass - Thiago Nigro",
+          "page": 107,
+          "url": "data/raw/Finclass16-ThiagoNigro.pdf",
+          "passage": "Se não quiser ou não estiver preparado, pode simplesmente \ncomprar um ETF de ações e alocar ¼ da carteira de inves-\ntimentos. Se não quiser pensar muito também, você pode \nalocar ¼ de sua carteira em ..."
+        },
+        {
+          "source": "Finclass - Thiago Nigro",
+          "page": 95,
+          "url": "data/raw/Finclass16-ThiagoNigro.pdf",
+          "passage": "mais ficar com 50% e 50%, a nossa parte de ações (renda \nvariável) pode representar 25% da carteira; e agora eu teria \n75%, em renda fixa. Se nesse momento eu aproveitasse para \nrebalancear o patrimôn..."
+        },
+        {
+          "source": "Finclass - Thiago Nigro",
+          "page": 100,
+          "url": "data/raw/Finclass16-ThiagoNigro.pdf",
+          "passage": "parcela de renda variável começa a ficar muito forte e muito \nrepresentativa na carteira. Da mesma forma, se tiver menos \nde 10% na carteira de ações, a ideia é que você realoque de \nalguma forma para..."
+        },
+        {
+          "source": "Finclass - Thiago Nigro",
+          "page": 95,
+          "url": "data/raw/Finclass16-ThiagoNigro.pdf",
+          "passage": "Trazemos o aprendizado para a nossa carteira de investi-\nmentos. Quando rebalanceamos o o patrimônio, estamos \npensando justamente como José do Egito. \nSupondo que você tenha uma carteira de investime..."
+        },
+        {
+          "source": "Finclass - Thiago Nigro",
+          "page": 91,
+          "url": "data/raw/Finclass16-ThiagoNigro.pdf",
+          "passage": "as criptomoedas não, me baseando no Efeito Lindy. \nÉ por isso que a construção de um portfólio de investimen-\ntos eficiente tem a ver com algo que já se provou no tempo; \ne é daqui que vem a mistura d..."
+        }
+      ],
+      "is_blocked": false,
+      "self_check_passed": false,
+      "retrieval_attempts": 2,
+      "latency_s": 22.9,
+      "error": null
+    }
+  ]
+}

@@ -172,7 +172,7 @@ def main() -> None:
         logger.info("[%d/%d] %s (%s)", i, len(tasks), task["id"], task["name"])
         result = evaluate_task(graph, task)
         results.append(result)
-        status = "✅ PASS" if result["success"] else "❌ FAIL"
+        status = "PASS" if result["success"] else "FAIL"
         logger.info("  %s | Latency: %.1fs | MCP calls: %d",
                     status, result["latency_s"], result["num_mcp_calls"])
 
@@ -184,14 +184,14 @@ def main() -> None:
     avg_latency = sum(r["latency_s"] for r in results) / total if total > 0 else 0
 
     print("\n" + "=" * 60)
-    print("ÓRBITA AUTOMATION EVALUATION RESULTS")
+    print("ORBITA AUTOMATION EVALUATION RESULTS")
     print("=" * 60)
     print(f"\n  Success rate:     {successes}/{total} ({success_rate*100:.0f}%)")
     print(f"  Avg steps/task:   {avg_steps:.1f}")
     print(f"  Avg latency:      {avg_latency:.1f}s")
-    print("\n── Per-task results ──")
+    print("\n-- Per-task results --")
     for r in results:
-        status = "✅" if r["success"] else "❌"
+        status = "PASS" if r["success"] else "FAIL"
         print(f"  {status} [{r['id']}] {r['name']}: {r['checks'].get('_pass_rate', 'N/A')}")
     print("=" * 60 + "\n")
 

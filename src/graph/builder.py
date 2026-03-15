@@ -13,6 +13,8 @@ def route_supervisor(state: OrbitaState) -> str:
         return "retriever"
     elif intent == "data":
         return "data_query"
+    elif intent == "automation":
+        return "automation"
     elif intent == "refuse":
         return "safety_policy"
     else:
@@ -37,6 +39,7 @@ def build_graph():
     from src.agents.supervisor import supervisor_node
     from src.agents.general import general_node
     from src.agents.data_query import data_query_node
+    from src.agents.automation import automation_node
     from src.agents.retriever import retriever_node
     from src.agents.safety import safety_node
     from src.agents.writer import writer_node
@@ -46,6 +49,7 @@ def build_graph():
     g.add_node("supervisor", supervisor_node)
     g.add_node("general", general_node)
     g.add_node("data_query", data_query_node)
+    g.add_node("automation", automation_node)
     g.add_node("retriever", retriever_node)
     g.add_node("safety_policy", safety_node)
     g.add_node("writer", writer_node)
@@ -54,9 +58,11 @@ def build_graph():
     g.set_entry_point("supervisor")
     g.add_conditional_edges("supervisor", route_supervisor,
         {"general": "general", "data_query": "data_query",
+         "automation": "automation",
          "retriever": "retriever", "safety_policy": "safety_policy"})
     g.add_edge("general", END)
     g.add_edge("data_query", END)
+    g.add_edge("automation", END)
     g.add_edge("retriever", "safety_policy")
     g.add_conditional_edges("safety_policy", route_safety,
         {"writer": "writer", END: END})
