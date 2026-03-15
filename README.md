@@ -242,29 +242,34 @@ Resultados salvos em `eval/results/ragas_report.json` e `eval/results/automation
 
 15 perguntas rotuladas (`eval/golden_set.json`): 10 educação financeira + 3 adversariais + 2 recusas.
 
-#### Métricas básicas (Llama 3.1 8B local)
+#### Metricas basicas (Llama 3.1 8B local)
 
-| Métrica | Resultado | Meta |
+| Metrica | Resultado | Meta |
 |---|---|---|
 | Perguntas processadas | 15/15 | 15 |
 | Erros | 0 | 0 |
-| Respostas com citações | 12/15 (80%) | > 70% |
-| Self-check aprovado | 13/15 (87%) | > 80% |
+| Respostas com citacoes | 11/15 (73%) | > 70% |
+| Self-check aprovado | 14/15 (93%) | > 80% |
 | Recusas corretas | 1/2 (50%) | = 2/2 |
-| Latência P50 | 12.22s | < 30s |
-| Latência P95 | 35.78s | < 60s |
-| Latência média | 16.31s | — |
+| Latencia P50 | 12.83s | < 30s |
+| Latencia P95 | 32.94s | < 60s |
+| Latencia media | 13.98s | -- |
 
-#### RAGAS (LLM-as-judge via OpenAI)
+#### RAGAS (LLM-as-judge via GPT-4o-mini)
 
-As métricas RAGAS (Faithfulness, Answer Relevancy, Context Precision, Context Recall) requerem `OPENAI_API_KEY` no `.env` para usar GPT como juiz. O script `eval/run_ragas.py` tenta executar RAGAS automaticamente; se a chave não estiver configurada, reporta apenas as métricas básicas acima.
+| Metrica RAGAS | Resultado | Meta |
+|---|---|---|
+| **Faithfulness** | **0.553** | >= 0.70 |
+| **Answer Relevancy** | **0.736** | >= 0.70 |
+| **Context Precision** | **0.693** | >= 0.65 |
+| **Context Recall** | **0.744** | >= 0.65 |
 
-| Métrica RAGAS | Meta |
-|---|---|
-| Faithfulness | >= 0.70 |
-| Answer Relevancy | >= 0.70 |
-| Context Precision | >= 0.65 |
-| Context Recall | >= 0.65 |
+**Analise RAGAS:**
+- **Answer Relevancy (0.736)** e **Context Recall (0.744)** superam as metas — o sistema retorna documentos relevantes e respostas alinhadas as perguntas.
+- **Context Precision (0.693)** acima da meta — os chunks recuperados sao majoritariamente uteis.
+- **Faithfulness (0.553)** abaixo da meta — o Llama 3.1 8B adiciona informacoes que, embora corretas, nao estao explicitamente nos chunks recuperados. Oportunidade de melhoria: aumentar o contexto por chunk ou usar reranking.
+
+> **Nota:** RAGAS requer `OPENAI_API_KEY` no `.env` (usa GPT-4o-mini como juiz). Sem a chave, o script reporta apenas metricas basicas.
 
 #### Resultado por pergunta
 

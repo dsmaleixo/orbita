@@ -114,7 +114,10 @@ def compute_basic_metrics(results: List[Dict], questions: List[Dict]) -> Dict:
 
 
 def try_ragas_metrics(results: List[Dict], questions: List[Dict]) -> Dict:
-    """Attempt RAGAS evaluation if library is available."""
+    """Attempt RAGAS evaluation if library is available.
+
+    Requires OPENAI_API_KEY in environment (used as LLM-as-judge via GPT-4o-mini).
+    """
     try:
         from ragas import evaluate
         from ragas.metrics import (
@@ -123,6 +126,9 @@ def try_ragas_metrics(results: List[Dict], questions: List[Dict]) -> Dict:
             context_recall,
             faithfulness,
         )
+        from ragas.llms import LangchainLLMWrapper
+        from ragas.embeddings import LangchainEmbeddingsWrapper
+        from langchain_openai import ChatOpenAI, OpenAIEmbeddings
         from datasets import Dataset
 
         # Build RAGAS dataset from non-refused, non-error results
@@ -133,25 +139,40 @@ def try_ragas_metrics(results: List[Dict], questions: List[Dict]) -> Dict:
             if q.get("should_refuse") or r.get("error") or not r.get("answer"):
                 continue
             ragas_rows.append({
-                "question": r["query"],
-                "answer": r["answer"],
-                "contexts": r["retrieved_docs"] if r["retrieved_docs"] else [""],
-                "ground_truth": q.get("reference_answer", r["answer"]),
+                "user_input": r["query"],
+                "response": r["answer"],
+                "retrieved_contexts": r["retrieved_docs"] if r["retrieved_docs"] else [""],
+                "reference": q.get("reference_answer", r["answer"]),
             })
 
         if not ragas_rows:
             return {}
 
+        llm = LangchainLLMWrapper(ChatOpenAI(model="gpt-4o-mini"))
+        embeddings = LangchainEmbeddingsWrapper(OpenAIEmbeddings())
+
         dataset = Dataset.from_list(ragas_rows)
         score = evaluate(
             dataset,
             metrics=[faithfulness, answer_relevancy, context_precision, context_recall],
+            llm=llm,
+            embeddings=embeddings,
         )
+
+        def _safe_float(val: Any) -> float:
+            """Extract float from ragas score value (may be float, list, or nested)."""
+            if isinstance(val, (int, float)):
+                return float(val)
+            if isinstance(val, list):
+                nums = [x for x in val if isinstance(x, (int, float))]
+                return sum(nums) / len(nums) if nums else 0.0
+            return float(val)
+
         return {
-            "faithfulness": round(float(score["faithfulness"]), 3),
-            "answer_relevancy": round(float(score["answer_relevancy"]), 3),
-            "context_precision": round(float(score["context_precision"]), 3),
-            "context_recall": round(float(score["context_recall"]), 3),
+            "faithfulness": round(_safe_float(score["faithfulness"]), 3),
+            "answer_relevancy": round(_safe_float(score["answer_relevancy"]), 3),
+            "context_precision": round(_safe_float(score["context_precision"]), 3),
+            "context_recall": round(_safe_float(score["context_recall"]), 3),
         }
     except ImportError:
         logger.warning("RAGAS library not available. Skipping RAGAS metrics.")

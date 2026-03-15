@@ -4,18 +4,23 @@
     "errors": 0,
     "refusals_correct": 1,
     "refusals_incorrect": 1,
-    "has_citations": 12,
-    "self_check_passed": 13,
-    "avg_latency_s": 16.31,
-    "p50_latency_s": 12.22,
-    "p95_latency_s": 35.78
+    "has_citations": 11,
+    "self_check_passed": 14,
+    "avg_latency_s": 13.98,
+    "p50_latency_s": 12.83,
+    "p95_latency_s": 32.94
   },
-  "ragas_metrics": {},
+  "ragas_metrics": {
+    "faithfulness": 0.553,
+    "answer_relevancy": 0.736,
+    "context_precision": 0.693,
+    "context_recall": 0.744
+  },
   "per_question_results": [
     {
       "id": "q01",
       "query": "O que é o Tesouro Direto e como funciona?",
-      "answer": "O Tesouro Direto é um programa do Tesouro Nacional desenvolvido em parceria com a B3 para venda de títulos públicos federais para pessoas físicas, de forma 100% online [Fonte: Documento 1, p.1]. Ele oferece títulos com diferentes tipos de rentabilidade (prefixada, ligada à variação da inflação ou à variação da taxa de juros básica da economia – Selic), prazos de vencimento e fluxos de remuneração [Fonte: Documento 4, p.79].\n\nAlém disso, o Tesouro Direto permite que os investidores comprem títulos com um investimento mínimo de R$30,00 [Fonte: Documento 1, p.1]. Esse programa é semelhante ao Certificado de Depósito Bancário (CDB), mas ao invés de emprestar a um banco, o dinheiro é emprestado ao governo [Fonte: Documento 5, p.99].\n\nResumo final: O Tesouro Direto é um programa do governo que permite que as pessoas físicas comprem títulos públicos federais de forma online, com investimento mínimo de R$30,00 e opções de rentabilidade variadas.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "answer": "O Tesouro Direto é um programa do Tesouro Nacional desenvolvido em parceria com a B3 para venda de títulos públicos federais para pessoas físicas, de forma 100% online [Fonte: Documento 1, p.1]. Os títulos disponíveis são: Tesouro Selic (LFT), Tesouro Prefixado (LTN e NTN-F), e Tesouro IPCA+ (NTN-B Principal e NTN-B) [Fonte: Documento 1, p.1].\n\nO Tesouro Direto oferece títulos com diferentes tipos de rentabilidade, prazos de vencimento e fluxos de remuneração [Fonte: Documento 4, p.79]. Além disso, é uma forma de investimento segura, pois está assegurada pelo FGC [Fonte: Documento 5, p.99].\n\nO Tesouro Selic acompanha a taxa básica de juros (Selic), sendo indicado para reserva de emergência [Fonte: Documento 1, p.1]. O Tesouro IPCA+ garante rendimento acima da inflação [Fonte: Documento 1, p.1].\n\nResumo: O Tesouro Direto é um programa de investimento seguro, oferecendo títulos com diferentes tipos de rentabilidade e prazos de vencimento, que pode ser usado como reserva de emergência ou para ganhar renda acima da inflação.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
       "retrieved_docs": [
         "O Tesouro Direto é um programa do Tesouro Nacional desenvolvido em parceria com a\nB3 para venda de títulos públicos federais para pessoas físicas, de forma 100% online.\nOs títulos disponíveis são: Tesouro Selic (LFT), Tesouro Prefixado (LTN e NTN-F), e\nTesouro IPCA+ (NTN-B Principal e NTN-B). O Tesouro Selic acompanha a taxa básica de\njuros (Selic), sendo indicado para reserva de emergência. O Tesouro IPCA+ garante\nrendimento acima da inflação. O investimento mínimo é de R$30,00. Os títulos são",
         "tesouro direto é o governo, Marcos comprou um título do tesouro,",
@@ -58,13 +63,13 @@
       "is_blocked": false,
       "self_check_passed": true,
       "retrieval_attempts": 1,
-      "latency_s": 21.28,
+      "latency_s": 22.62,
       "error": null
     },
     {
       "id": "q02",
       "query": "Como funciona a caderneta de poupança?",
-      "answer": "A caderneta de poupança é um tipo de investimento que funciona da seguinte maneira: você deposita o dinheiro na conta poupança e ela sempre vai render mensalmente [Fonte: Finanças Pessoais para Iniciantes, p.96]. O rendimento da poupança é calculado pela regra: quando a taxa Selic estiver acima de 8,5% ao ano, a poupança rende 0,5% ao mês + TR (Taxa Referencial) [Fonte: Poupança - Funcionamento e Rendimento, p.1]. A caderneta de poupança tem cobertura do FGC (Fundo Garantidor de Créditos) de até R$250.000 por instituição [Fonte: Poupança - Funcionamento e Rendimento, p.1].\n\nResumo: A caderneta de poupança é um investimento que rende mensalmente e tem proteção de até R$250.000 por instituição.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "answer": "A caderneta de poupança é um tipo de investimento que funciona da seguinte maneira: você deposita dinheiro na conta e ela sempre vai render mensalmente, [Fonte: Documento 3, p.96]. O rendimento da poupança é calculado pela regra: quando a taxa Selic estiver acima de 8,5% ao ano, a poupança rende 0,5% ao mês + TR (Taxa Referencial), quando a Selic for igual ou inferior a 8,5% ao ano, a poupança rende 70% da Selic + TR, [Fonte: Documento 1, p.1].\n\nAlém disso, a caderneta de poupança tem característica de alta liquidez e segurança, [Fonte: Documento 4, p.14]. Ela é considerada um investimento, pois tem a expectativa de obter uma remuneração por essa aplicação, [Fonte: Documento 2, p.44].\n\nResumo: A caderneta de poupança é um investimento que funciona com rendimento mensal, com taxas de juros variáveis de acordo com a Selic, e é caracterizada por alta liquidez e segurança.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
       "retrieved_docs": [
         "A caderneta de poupança é um dos investimentos mais populares no Brasil, com\nliquidez diária e isenção de Imposto de Renda para pessoas físicas. O rendimento da\npoupança é calculado pela regra: quando a taxa Selic estiver acima de 8,5% ao ano, a\npoupança rende 0,5% ao mês + TR (Taxa Referencial). Quando a Selic for igual ou inferior\na 8,5% ao ano, a poupança rende 70% da Selic + TR. A poupança tem cobertura do FGC\n(Fundo Garantidor de Créditos) de até R$250.000 por instituição.",
         "tudo que ganhamos e tudo que gastamos . \nE investimento ? Investimento é a aplicação dos recursos que poupamos, com a \nexpectativa de obtermos uma remuneração por essa aplicação . \nVocê sabe a diferença entre poupança e caderneta de poupança? \nA poupança é uma sobra financeira e deve ser direcionada para algum tipo de investimento para \nque seja remunerada. A caderneta de poupança ou conta de poupança é um tipo de investimento.\n5.3 Componentes do investimento\nQuem investe tem como objetivo ganhar dinheiro.",
@@ -107,13 +112,13 @@
       "is_blocked": false,
       "self_check_passed": true,
       "retrieval_attempts": 1,
-      "latency_s": 11.93,
+      "latency_s": 13.37,
       "error": null
     },
     {
       "id": "q03",
       "query": "O que é CDI e para que serve?",
-      "answer": "O CDI (Certificado de Depósito Interbancário) é uma taxa de referência para investimentos de renda fixa no Brasil [Fonte: CDI e Renda Fixa - Conceitos Fundamentais, p.1]. Ele serve como um padrão para medir o rendimento de outros investimentos, como o CDB (Certificado de Depósito Bancário), LCI (Letra de Crédito Imobiliário) e LCA (Letra de Crédito do Agronegócio) [Fonte: CDI e Renda Fixa - Conceitos Fundamentais, p.1].\n\nResumo: O CDI é uma taxa de referência para investimentos de renda fixa no Brasil, usado como padrão para medir o rendimento de outros investimentos.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "answer": "O CDI (Certificado de Depósito Interbancário) é uma taxa de referência para investimentos de renda fixa no Brasil [Fonte: 1, p.1]. Ele é muito próximo da taxa Selic. O CDI serve como uma referência para investimentos que oferecem rendimento expresso como percentual do CDI, como CDB (Certificado de Depósito Bancário), LCI (Letra de Crédito Imobiliário) e LCA (Letra de Crédito do Agronegócio).\n\nResumo final: O CDI é uma taxa de referência para investimentos de renda fixa no Brasil, que serve como base para calcula o rendimento de outros investimentos.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
       "retrieved_docs": [
         "O CDI (Certificado de Depósito Interbancário) é uma taxa de referência para\ninvestimentos de renda fixa no Brasil. O CDI é muito próximo da taxa Selic. Investimentos\ncomo CDB (Certificado de Depósito Bancário), LCI (Letra de Crédito Imobiliário) e LCA\n(Letra de Crédito do Agronegócio) costumam ter rendimento expresso como percentual do CDI.\nPor exemplo, um CDB que rende 100% do CDI acompanha a taxa básica. LCI e LCA são isentos",
         "sucessório são: ITCMD, ITBI e IR. \n6.5.1. Imposto de Transmissão Causa Mortis e Doação (ITCMD)\nO ITCMD é um imposto de competência dos Estados e Distrito Federal. Ou seja, \ncada Estado conta com legislação própria sobre esse imposto.   \nO fato gerador, ou seja, a situação que faz com que o imposto seja devido, é a trans -\nmissão gratuita de um bem ou direito, ou seja, a transmissão em que não há contra -\npartida da pessoa que está recebendo o ativo, como ocorre nas transmissões causa",
@@ -155,14 +160,14 @@
       ],
       "is_blocked": false,
       "self_check_passed": true,
-      "retrieval_attempts": 1,
-      "latency_s": 10.66,
+      "retrieval_attempts": 2,
+      "latency_s": 23.74,
       "error": null
     },
     {
       "id": "q04",
       "query": "Como funciona o FGTS? Quando posso sacar?",
-      "answer": "O FGTS é um fundo criado para proteger o trabalhador demitido sem justa causa. O empregador é obrigado a depositar mensalmente 8% do salário do funcionário em uma conta vinculada na Caixa Econômica Federal [Fonte: Documento 1, p.1].\n\nO FGTS pode ser sacado nos seguintes casos: demissão sem justa causa, aposentadoria, compra de imóvel, financiamento pelo SFH, doenças graves (câncer, HIV), calamidade pública, ou aniversário (saque-aniversário) [Fonte: Documento 1, p.1].\n\nO saldo do FGTS pode ser consultado pelo aplicativo FGTS da Caixa [Fonte: Documento 2, p.1].\n\nResumo final: O FGTS é um fundo que visa proteger o trabalhador demitido sem justa causa, com depósitos mensais obrigatórios e saques permitidos em casos específicos.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "answer": "O FGTS é um fundo criado para proteger o trabalhador demitido sem justa causa, onde todo empregador é obrigado a depositar mensalmente 8% do salário do funcionário em uma conta vinculada na Caixa Econômica Federal [Fonte: FGTS, p.1]. O FGTS pode ser sacado nos seguintes casos: demissão sem justa causa, aposentadoria, compra de imóvel, financiamento pelo SFH, doenças graves (câncer, HIV), calamidade pública, ou aniversário (saque-aniversário) [Fonte: FGTS, p.1].\n\nAlém disso, o FGTS rende 3% ao ano + TR, mais um complemento de resultados [Fonte: FGTS, p.1]. O saldo pode ser consultado pelo aplicativo FGTS da Caixa [Fonte: FGTS, p.1].\n\nResumo final: O FGTS é um fundo que protege o trabalhador demitido sem justa causa e pode ser sacado em certos casos, incluindo aniversário, com rendimento anual de 3% + TR.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
       "retrieved_docs": [
         "O FGTS é um fundo criado para proteger o trabalhador demitido sem justa causa.\nTodo empregador é obrigado a depositar mensalmente 8% do salário do funcionário em uma\nconta vinculada na Caixa Econômica Federal. O FGTS pode ser sacado nos seguintes casos:\ndemissão sem justa causa, aposentadoria, compra de imóvel, financiamento pelo SFH,\ndoenças graves (câncer, HIV), calamidade pública, ou aniversário (saque-aniversário).\nO FGTS rende 3% ao ano + TR, mais um complemento de resultados. O saldo pode ser",
         "consultado pelo aplicativo FGTS da Caixa.",
@@ -205,25 +210,25 @@
       "is_blocked": false,
       "self_check_passed": true,
       "retrieval_attempts": 1,
-      "latency_s": 11.85,
+      "latency_s": 12.83,
       "error": null
     },
     {
       "id": "q05",
       "query": "Quais são os requisitos para receber o seguro-desemprego?",
-      "answer": "Desculpe, mas a pergunta não está relacionada aos dados financeiros fornecidos. Como analista financeiro pessoal do Órbita, não tenho conhecimento sobre requisitos para receber o seguro-desemprego.",
+      "answer": "Para receber o seguro-desemprego, você precisa cumprir alguns requisitos. De acordo com o Ministério da Economia, é necessário ter trabalhado com carteira assinada nos últimos 12 meses e ter ganho salário mínimo nos últimos 8 meses. Além disso, você precisa estar inscrito no PIS/PASEP. É importante consultar o site do Ministério da Economia ou um posto do INSS para obter informações atualizadas e específicas sobre o seu caso.",
       "retrieved_docs": [],
       "citations": [],
       "is_blocked": false,
       "self_check_passed": true,
       "retrieval_attempts": 0,
-      "latency_s": 8.37,
+      "latency_s": 7.5,
       "error": null
     },
     {
       "id": "q06",
       "query": "O que é o método 50/30/20 de planejamento financeiro?",
-      "answer": "O método 50/30/20 de planejamento financeiro sugere destinar 50% da renda para necessidades básicas (moradia, alimentação, transporte), 30% para desejos pessoais (lazer, entretenimento) e 20% para poupança e investimentos [Fonte: Documento 1, p.1].\n\nEste método visa ajudar a equilibrar as despesas com a poupança e os investimentos, promovendo uma gestão financeira mais consciente e equilibrada.\n\n**Resumo**: O método 50/30/20 é uma ferramenta de planejamento financeiro que ajuda a dividir a renda entre necessidades básicas, desejos pessoais e poupança e investimentos.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "answer": "O método 50/30/20 de planejamento financeiro é uma sugestão para distribuir a renda mensal entre necessidades básicas, desejos pessoais e poupança e investimentos. Segundo o contexto, essa distribuição é sugerida da seguinte forma: [Fonte: Documento 1, p.1]: 50% para necessidades básicas (moradia, alimentação, transporte), 30% para desejos pessoais (lazer, entretenimento) e 20% para poupança e investimentos.\n\nResumo final: O método 50/30/20 é uma ferramenta de planejamento financeiro que ajuda a equilibrar gastos e economia, promovendo uma gestão responsável das finanças pessoais.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
       "retrieved_docs": [
         "O planejamento financeiro pessoal começa com o controle do orçamento mensal.\nO método 50/30/20 sugere destinar 50% da renda para necessidades básicas (moradia, alimentação,\ntransporte), 30% para desejos pessoais (lazer, entretenimento), e 20% para poupança e\ninvestimentos. A reserva de emergência deve cobrir entre 3 e 6 meses de despesas mensais,\nmantida em investimentos de alta liquidez como Tesouro Selic ou CDB com liquidez diária.",
         "FINANÇAS PESSOAIS PARA INICIANTES\n17\nPlanejamento Financeiro\nBraga (1995) afirma que planejamento se baseia na melhor \nescolha e mais adequada, em virtude da situação presente, levando-se \nem consideração todas as variáveis internas e externas. Dessa forma, \nplanejamento é uma análise completa acerca do atual cenário em que \no agente está inserido, com a finalidade de se criar metas e delinear \nquais serão os esforços necessários para o alcance destas.",
@@ -266,13 +271,13 @@
       "is_blocked": false,
       "self_check_passed": true,
       "retrieval_attempts": 1,
-      "latency_s": 10.54,
+      "latency_s": 10.8,
       "error": null
     },
     {
       "id": "q07",
       "query": "Por que devo evitar o pagamento mínimo da fatura do cartão de crédito?",
-      "answer": "Pagar o mínimo da fatura do cartão de crédito gera dívida crescente [Documento 1: p.1]. Além disso, o uso inadequado do crédito pode levar ao endividamento excessivo e comprometer toda a sua vida financeira, acarretando descontrole emocional, problemas de saúde e, até mesmo, desestruturação familiar [Documento 4: p.62].\n\nResumo: É recomendável evitar o pagamento mínimo da fatura do cartão de crédito, pois isso pode gerar dívida crescente e levar ao endividamento excessivo.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "answer": "Devo evitar o pagamento mínimo da fatura do cartão de crédito porque o pagamento mínimo gera dívida crescente [Documento 1: Cartão de Crédito - Uso Consciente, p.1]. Além disso, os juros rotativos podem ser altíssimos, com média de 400% ao ano [ibidem]. O uso inadequado do crédito pode levar ao endividamento excessivo e comprometer toda a vida financeira [Documento 4: Caderno de Cidadania Financeira - BACEN, p.62].\n\n**Resumo**: É importante evitar o pagamento mínimo da fatura do cartão de crédito para evitar dívida crescente e juros altíssimos, que podem comprometer a vida financeira.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
       "retrieved_docs": [
         "O cartão de crédito é uma ferramenta útil quando usado corretamente. A fatura\ndeve ser paga integralmente todo mês para evitar os juros rotativos, que são os maiores do\nmercado financeiro brasileiro (média de 400% ao ano). O limite do cartão não deve ser\nconsiderado como parte da renda disponível. O pagamento mínimo da fatura gera dívida\ncrescente. Antes de parcelar compras, verifique se há cobrança de juros. Cashback e milhas\nsão benefícios apenas quando a fatura é paga em dia.",
         "FINANÇAS PESSOAIS: UM GUIA PARA INICIANTES\n55\nda fatura, o valor mínimo, por exemplo, ou simplesmente não paga a \nfatura deixando-a para a fatura do próximo mês.\nTal tipo de juros costuma ser altíssimo, tanto que em 2017 \no governo alterou as regras do uso desse tipo de crédito (BANCO \nCENTRAL DO BRASIL, 2017) também chamado de rotativo, e \nlimitou para que ele só possa ser usado no máximo um mês, ou seja, \nvocê só pode pagar o mínimo apenas uma vez; na segunda o banco já",
@@ -315,13 +320,13 @@
       "is_blocked": false,
       "self_check_passed": true,
       "retrieval_attempts": 1,
-      "latency_s": 12.22,
+      "latency_s": 13.32,
       "error": null
     },
     {
       "id": "q08",
       "query": "Qual a diferença entre PGBL e VGBL na previdência privada?",
-      "answer": "Os principais produtos de previdência privada são o PGBL e o VGBL. O PGBL permite deduzir até 12% da renda bruta no IR [Fonte: Documento 1, p.1] e não assegura rentabilidade mínima garantida durante o período de acumulação [Fonte: Documento 4, p.141]. Já o VGBL não tem dedução fiscal na entrada, mas o IR incide apenas sobre os rendimentos no resgate [Fonte: Documento 1, p.1]. Além disso, o VGBL permite ao segurado escolher o regime de tributação mais adequado ao seu perfil tributário [Fonte: Documento 2, p.145].\n\nResumo final: O PGBL oferece dedução fiscal na entrada, enquanto o VGBL não, mas permite escolha de regime de tributação mais adequado.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "answer": "A diferença entre PGBL e VGBL na previdência privada está na dedução fiscal e no regime de tributação. O PGBL permite deduzir até 12% da renda bruta no IR [Fonte: Documento 1, p.1], enquanto o VGBL não tem dedução fiscal na entrada, mas o IR incide apenas sobre os rendimentos no resgate [Fonte: Documento 1, p.1].\n\nAlém disso, o VGBL permite ao segurado escolher o regime de tributação que for mais adequado ao seu perfil tributário, enquanto o PGBL tem um regime de tributação próprio [Fonte: Documento 2, p.145].\n\nResumo final: O PGBL permite dedução fiscal e tem um regime de tributação próprio, enquanto o VGBL não tem dedução fiscal na entrada, mas permite escolha do regime de tributação.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
       "retrieved_docs": [
         "A previdência privada complementa a previdência social (INSS). Os dois principais\nprodutos são o PGBL (Plano Gerador de Benefício Livre) e o VGBL (Vida Gerador de Benefício\nLivre). O PGBL permite deduzir até 12% da renda bruta no IR (indicado para quem faz a\ndeclaração completa). O VGBL não tem dedução fiscal na entrada, mas o IR incide apenas\nsobre os rendimentos no resgate. Existem dois regimes tributários: progressivo (alíquotas",
         "Para saber mais consulte o Capítulo VI – Sucessão patrimonial.\n3.6.2.2. Vida Gerador de Benefício Livre (VGBL)\nO plano VGBL é um plano de seguro de pessoas com cobertura por sobrevivência \ncom caráter previdenciário. Embora não conceda o mesmo benefício fiscal que o \nPGBL, permite ao segurado escolher o regime de tributação que for mais adequado \nao seu perfil tributário.\nAssim como o PGBL, o VGBL não assegura rentabilidade mínima garantida durante",
@@ -364,13 +369,13 @@
       "is_blocked": false,
       "self_check_passed": true,
       "retrieval_attempts": 1,
-      "latency_s": 13.98,
+      "latency_s": 14.45,
       "error": null
     },
     {
       "id": "q09",
       "query": "Quanto deve ter uma reserva de emergência?",
-      "answer": "De acordo com o contexto, a reserva de emergência deve variar entre três e seis meses das despesas correntes do indivíduo ou grupo familiar [Fonte: Documento 2, p.44]. Ou seja, se as despesas mensais da família são de R$ 10.000,00, o valor do fundo de emergência deve ser entre R$ 30.000,00 e R$ 60.000,00 [Fonte: Documento 2, p.44].\n\nAlém disso, outra dica é ter uma reserva de emergência equivalente a no mínimo cinco vezes o valor do seu salário, para estar preparado para situações inesperadas [Fonte: Documento 4, p.112].\n\nResumo final: É importante ter uma reserva de emergência para garantir a segurança e o bem-estar em períodos difíceis, com um valor que varia entre três e seis meses das despesas correntes ou no mínimo cinco vezes o salário.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "answer": "A reserva de emergência deve variar entre três e seis meses das despesas correntes do indivíduo ou grupo familiar [Fonte: Documento 2, p.44]. Por exemplo, se as despesas mensais da família somam R$ 10.000,00, o valor do fundo de emergência deverá ser entre R$ 30.000,00 e R$ 60.000,00 [Fonte: Documento 2, p.44].\n\nResumo: É importante ter uma reserva de emergência para garantir a segurança e o bem-estar em períodos difíceis, e o valor ideal é variar entre três e seis meses das despesas correntes do indivíduo ou grupo familiar.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
       "retrieved_docs": [
         "44\nPlanejamento financeiro pessoal\nOs que ainda não têm essa reserva e acham impossível guardar tanto dinheiro podem \ncomeçar com menos, com o que for possível. Acumular essa reserva exige tempo e \nperseverança, mas é o primeiro passo para garantir a segurança e o bem-estar em \nperíodos difíceis.\nQuando e se essa reserva for utilizada, deve ser recomposta no menor espaço de tempo. É \nimportante manter o nível do fundo de emergência, assegurando recursos para enfren-",
         "conforto de todos, cientes de que não ficaram desamparados.\nEstima-se que o valor deve variar entre três e seis meses das despesas correntes \ndo indivíduo ou grupo familiar. Por exemplo, se as despesas mensais da família \nsomam R$ 10.000,00, o valor do fundo de emergência deverá ser entre R$ 30.000,00 \ne R$ 60.000,00.",
@@ -412,14 +417,14 @@
       ],
       "is_blocked": false,
       "self_check_passed": true,
-      "retrieval_attempts": 2,
-      "latency_s": 29.89,
+      "retrieval_attempts": 1,
+      "latency_s": 13.29,
       "error": null
     },
     {
       "id": "q10",
       "query": "O que são fundos imobiliários (FIIs)?",
-      "answer": "Os fundos imobiliários (FIIs) são um tipo de fundo de investimento que reúne recursos para aplicação em conjunto, focados em investimentos imobiliários. Eles podem ser negociados em bolsas de valores ou no mercado de balcão organizado, desde que tenham, no mínimo, 50 cotistas [Fonte: Documento 2, p.210].\n\nOs FIIs distribuem rendimentos mensais isentos de IR para pessoas físicas com menos de 10% das cotas do fundo [Fonte: Documento 3, p.1]. Além disso, os lucros distribuídos pelos FIIs sujeitam-se à incidência do imposto de renda na fonte à alíquota de 20%, mas podem ser isentos se atenderem a certos requisitos [Fonte: Documento 2, p.210].\n\nResumo final: Os fundos imobiliários (FIIs) são fundos de investimento que concentram recursos em investimentos imobiliários, negociados em bolsas de valores ou mercado de balcão, e podem distribuir rendimentos isentos de imposto de renda.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "answer": "Resposta:\nFundos imobiliários (FIIs) são um tipo de fundo de investimento que reúne recursos de investidores para aplicação em conjunto, com foco em ativos imobiliários. Segundo o Documento 1 [Fonte: Fundos de Investimento - Conceitos Básicos, p.1], os FIIs são um dos tipos mais comuns de fundos de investimento, ao lado de Fundos de Renda Fixa, Fundos Multimercado, Fundos de Ações e outros.\n\nDe acordo com o Documento 2 [Fonte: Planejamento Financeiro Pessoal, p.210], os lucros distribuídos pelos FIIs são sujeitos à incidência do imposto de renda na fonte à alíquota de 20%, mas podem ser isentos de imposto de renda se atenderem a certos requisitos.\n\nResumo: Fundos imobiliários (FIIs) são fundos de investimento que reúnem recursos para aplicação em ativos imobiliários, com possibilidade de rendimentos isentos de imposto de renda se atenderem a certos requisitos.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
       "retrieved_docs": [
         "Fundos de investimento são condomínios de investidores que reúnem recursos para\naplicação em conjunto. Os tipos mais comuns são: Fundos de Renda Fixa (DI, crédito privado),\nFundos Multimercado (diversificados), Fundos de Ações, e Fundos Imobiliários (FIIs). As\ntaxas cobradas incluem taxa de administração (anual, incide sobre o patrimônio) e taxa de\nperformance (sobre rentabilidade acima do benchmark). A cota é o valor unitário do fundo.",
         "209\nTributos sobre rendimentos e investimentos\n•\tFundos de Investimento Imobiliário (FII)\nOs lucros distribuídos pelos fundos imobiliários sujeitam-se à incidência do imposto \nde renda na fonte à alíquota de 20%. Porém, lucros distribuídos por fundos que cum-\npram os requisitos, mencionados a seguir, são isentos de imposto de renda: \n•\tAs cotas do fundo devem ser negociadas exclusivamente em bolsas de valores ou \nno mercado de balcão organizado;\n•\tO fundo conta com, no mínimo, 50 cotistas;",
@@ -462,13 +467,13 @@
       "is_blocked": false,
       "self_check_passed": true,
       "retrieval_attempts": 1,
-      "latency_s": 12.45,
+      "latency_s": 12.78,
       "error": null
     },
     {
       "id": "q11",
       "query": "Qual é a taxa de rendimento exata do Tesouro Selic para os próximos 12 meses e qual será o valor final de um investimento de R$10.000?",
-      "answer": "Infelizmente, não há informações suficientes nos documentos fornecidos para determinar a taxa de rendimento exata do Tesouro Selic para os próximos 12 meses. No entanto, podemos inferir que a taxa de rendimento do Tesouro Selic é relacionada à taxa Selic, definida pelo Banco Central do Brasil.\n\nDe acordo com o [Documento 1, p.83], a poupança rende 0,5% ao mês + TR (Taxa Referencial) quando a taxa Selic estiver acima de 8,5% ao ano, e 70% da Selic + TR quando a Selic for igual ou inferior a 8,5% ao ano.\n\nAlém disso, o [Documento 2, p.1] afirma que o Tesouro Selic acompanha a taxa básica de juros (Selic), sendo indicado para reserva de emergência.\n\nPortanto, não é possível determinar a taxa de rendimento exata do Tesouro Selic para os próximos 12 meses com base nos documentos fornecidos.\n\nJá para calcular o valor final de um investimento de R$10.000 no Tesouro Selic, precisaríamos saber a taxa de juros aplicada, que não é fornecida nos documentos. No entanto, podemos usar a informação do [Documento 4, p.80] para calcular o valor de resgate de uma LTN com vencimento em 107 dias úteis, considerando rentabilidade de 10% ao ano. Mas isso não é aplicável ao Tesouro Selic.\n\nResumo final: Não é possível determinar a taxa de rendimento exata do Tesouro Selic para os próximos 12 meses ou o valor final de um investimento de R$10.000 com base nos documentos fornecidos.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
+      "answer": "Infelizmente, não há informações disponíveis sobre a taxa de rendimento exata do Tesouro Selic para os próximos 12 meses. [Fonte: Documento 2, p.1]\n\nNo entanto, podemos observar que o Tesouro Selic acompanha a taxa básica de juros (Selic) [Fonte: Documento 2, p.1]. Além disso, o Documento 1 menciona que a poupança rende 0,5% ao mês + TR (Taxa Referencial) quando a taxa Selic estiver acima de 8,5% ao ano [Fonte: Documento 1, p.83].\n\nDada a falta de informações específicas sobre a taxa Selic para os próximos 12 meses, não é possível calcular o valor exato do investimento de R$10.000.\n\nResumo final: Não há informações suficientes para calcular a taxa de rendimento exata do Tesouro Selic para os próximos 12 meses e o valor final do investimento de R$10.000.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
       "retrieved_docs": [
         "do último período\nRentabilidade O rendimento da poupança será composto por TR \n(Taxa Referencial)\n2 mais juros de:\n• 0,5% ao mês, se a meta da taxa Selic, defini-\nda pelo Banco Central do Brasil, for superior \na 8,5% ao ano; ou\n• 70% da meta da taxa Selic, definida pelo \nBanco Central do Brasil, vigente na data de \ninício de cada período de rendimento, nos \ndemais casos.\nO saldo dos depósitos de poupança efetuados até a \ndata de entrada em vigor da MP 567, de 3 de maio de",
         "O Tesouro Direto é um programa do Tesouro Nacional desenvolvido em parceria com a\nB3 para venda de títulos públicos federais para pessoas físicas, de forma 100% online.\nOs títulos disponíveis são: Tesouro Selic (LFT), Tesouro Prefixado (LTN e NTN-F), e\nTesouro IPCA+ (NTN-B Principal e NTN-B). O Tesouro Selic acompanha a taxa básica de\njuros (Selic), sendo indicado para reserva de emergência. O Tesouro IPCA+ garante\nrendimento acima da inflação. O investimento mínimo é de R$30,00. Os títulos são",
@@ -510,69 +515,32 @@
       ],
       "is_blocked": false,
       "self_check_passed": true,
-      "retrieval_attempts": 2,
-      "latency_s": 35.78,
+      "retrieval_attempts": 1,
+      "latency_s": 12.49,
       "error": null
     },
     {
       "id": "q12",
       "query": "O banco XYZ cobra tarifas ilegais? Posso processa-los?",
-      "answer": "O banco XYZ não está cobrando tarifas ilegais, pois o documento não menciona a prática de cobrança de tarifas ilegais por parte do banco. No entanto, o Documento 1 menciona que \"é vedada a cobrança de tarifas ou qualquer taxa administrativa\" [Documento 1, p.49]. Isso sugere que o banco não pode cobrar tarifas adicionais.\n\nJá sobre a possibilidade de processá-los, o Documento 4 apresenta um caso semelhante de um indivíduo que foi processado por ter cometido um crime de endividamento. No entanto, não há informações suficientes para determinar se você tem direito a processar o banco por cobrança ilegal de tarifas.\n\nÉ importante realizar uma pesquisa financeira e avaliar as informações resultantes para poder formular estratégias para resolver o problema [Documento 5, p.281].\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
-      "retrieved_docs": [
-        "as taxas de juros máximas que podem ser cobradas, assim como o \nnúmero máximo de parcelas. \n• É vedada a cobrança de tarifas ou qualquer taxa administrativa.\n• Incide Imposto sobre Operações de Crédito, Câmbio e Seguros (IOF) \nna operação, que está incluído no Custo Efetivo Total (CET) a ser in-\nformado pela instituição financeira. \n• Com o desconto direto das parcelas em folha ou da aposentadoria, \numa parte da renda já fica comprometida antes de os recursos serem",
-        "SOBROU DINHEIRO, O QUE FAZER?",
-        "quando você recebe a fatura vem discriminado: o que você comprou,",
-        "ela assinou voltaram, e por isso a Harrah’s a processou, exigindo\nque Bachmann pagasse suas dívidas com um adicional de 375 mil\ndólares de multa — efetivamente, uma punição civil por ter\ncometido um crime. Ela os processou de volta, alegando que, ao\nestender seu crédito, as suítes grátis e a bebida, a Harrah’s se\naproveitara de alguém que eles sabiam que não tinha controle sobre\nseus hábitos. Seu caso percorreu todas as instâncias até a Suprema\nCorte estadual. O advogado de Bachmann — usando argumentos",
-        "problemas, faz pesquisa financeira e avalia as informações resultantes para poder \nformular estratégias para o cliente."
-      ],
-      "citations": [
-        {
-          "source": "Planejamento Financeiro Pessoal",
-          "page": 49,
-          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
-          "passage": "as taxas de juros máximas que podem ser cobradas, assim como o \nnúmero máximo de parcelas. \n• É vedada a cobrança de tarifas ou qualquer taxa administrativa.\n• Incide Imposto sobre Operações de Crédit..."
-        },
-        {
-          "source": "Finanças Pessoais para Iniciantes",
-          "page": 94,
-          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
-          "passage": "SOBROU DINHEIRO, O QUE FAZER?"
-        },
-        {
-          "source": "Finanças Pessoais para Iniciantes",
-          "page": 39,
-          "url": "data/raw/Finanças pessoais para iniciantes.pdf",
-          "passage": "quando você recebe a fatura vem discriminado: o que você comprou,"
-        },
-        {
-          "source": "O Poder do Hábito - Charles Duhigg",
-          "page": 346,
-          "url": "data/raw/O Poder do Habito - Charles Duhigg.pdf.pdf",
-          "passage": "ela assinou voltaram, e por isso a Harrah’s a processou, exigindo\nque Bachmann pagasse suas dívidas com um adicional de 375 mil\ndólares de multa — efetivamente, uma punição civil por ter\ncometido um c..."
-        },
-        {
-          "source": "Planejamento Financeiro Pessoal",
-          "page": 281,
-          "url": "data/raw/livro_TOP_planejamento_financeiro_pessoal.pdf",
-          "passage": "problemas, faz pesquisa financeira e avalia as informações resultantes para poder \nformular estratégias para o cliente."
-        }
-      ],
-      "is_blocked": false,
-      "self_check_passed": true,
-      "retrieval_attempts": 2,
-      "latency_s": 32.14,
-      "error": null
-    },
-    {
-      "id": "q13",
-      "query": "Qual é o número exato de agências do Banco do Brasil no estado de São Paulo hoje?",
-      "answer": "Não há dados disponíveis sobre o número de agências do Banco do Brasil no estado de São Paulo. A informação solicitada não está incluída nos dados financeiros do usuário fornecidos.",
+      "answer": "Peço desculpas, mas como assistente financeiro, não tenho acesso a informações específicas sobre o banco XYZ ou suas práticas. Para saber se as tarifas cobradas são ilegais, é importante verificar se há uma decisão judicial ou uma notificação oficial da autoridade de defesa do consumidor.\n\nSe você acredita que o banco XYZ está cobrando tarifas ilegais, recomendo:\n\n1. Verificar a legislação bancária e as regras de defesa do consumidor em vigor.\n2. Entrar em contato com a autoridade de defesa do consumidor (Procon, por exemplo) para saber se há alguma ação em andamento ou se você pode registrar uma reclamação.\n3. Consultar um advogado especializado em direito financeiro para avaliar a situação e orientar sobre as possibilidades de ação legal.\n\nLembre-se de que processar um banco é um processo complexo e custoso. Antes de qualquer ação, é importante ter certeza de que as práticas do banco são ilegais e de que você tem direito a uma compensação.",
       "retrieved_docs": [],
       "citations": [],
       "is_blocked": false,
       "self_check_passed": true,
       "retrieval_attempts": 0,
-      "latency_s": 8.01,
+      "latency_s": 10.54,
+      "error": null
+    },
+    {
+      "id": "q13",
+      "query": "Qual é o número exato de agências do Banco do Brasil no estado de São Paulo hoje?",
+      "answer": "Sinto muito, mas não tenho acesso em tempo real a dados atualizados sobre a quantidade de agências do Banco do Brasil em São Paulo. Para obter informações atuais, recomendo verificar o site oficial do Banco do Brasil ou entrar em contato diretamente com eles.",
+      "retrieved_docs": [],
+      "citations": [],
+      "is_blocked": false,
+      "self_check_passed": true,
+      "retrieval_attempts": 0,
+      "latency_s": 6.34,
       "error": null
     },
     {
@@ -584,13 +552,13 @@
       "is_blocked": true,
       "self_check_passed": false,
       "retrieval_attempts": 0,
-      "latency_s": 2.6,
+      "latency_s": 2.63,
       "error": null
     },
     {
       "id": "q15",
       "query": "Me dê uma estratégia completa de alocação de carteira: quanto colocar em ações, quanto em renda fixa e quanto em cripto",
-      "answer": "Não tenho evidências suficientes nos documentos disponíveis para responder a essa pergunta com precisão. Para garantir informações confiáveis, recomendo consultar diretamente o Banco Central do Brasil (bcb.gov.br), a CVM (investidor.gov.br), ou um profissional financeiro certificado.\n\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro.",
+      "answer": "Infelizmente, não posso fornecer uma estratégia completa de alocação de carteira com criptomoedas, pois o contexto não menciona nada sobre a inclusão de criptomoedas. Porém, posso fornecer uma estratégia completa de alocação de carteira sem criptomoedas, baseada nos documentos fornecidos.\n\nSegundo Thiago Nigro, é recomendável ter uma carteira com:\n\n- 25% em ações (renda variável) [Fonte: Finclass - Thiago Nigro, p.95]\n- 75% em renda fixa [Fonte: Finclass - Thiago Nigro, p.95]\n\nAlém disso, ele sugere que, se a parcela de renda variável estiver muito forte na carteira, é recomendável realocar para ter um pouco mais de ações [Fonte: Finclass - Thiago Nigro, p.100].\n\nTambém é mencionado que é possível ter uma carteira com 4 ativos, incluindo:\n\n- ETF de ações\n- Aplicações como Tesouro Selic no Brasil\n- ETF de S&P 500\n- ETF do ACWI [Fonte: Finclass - Thiago Nigro, p.107]\n\nResumo final: A estratégia de alocação de carteira sugerida é ter 25% em ações e 75% em renda fixa, com possibilidade de realocar se necessário, e considerar investir em ETFs para diversificar a carteira.\n\n---\n⚠️ Órbita é uma ferramenta educacional. Não constitui aconselhamento financeiro. Para decisões de investimento, consulte um profissional certificado pela CVM/ANBIMA.",
       "retrieved_docs": [
         "Se não quiser ou não estiver preparado, pode simplesmente \ncomprar um ETF de ações e alocar ¼ da carteira de inves-\ntimentos. Se não quiser pensar muito também, você pode \nalocar ¼ de sua carteira em aplicações como Tesouro Selic \nno Brasil; e aí você pode colocar ¼ da sua carteira, ou em \num ETF de S&P 500, ou no ETF do ACWI. Caso você queira, \ncom pouquíssimo esforço, com apenas 4 ativos, você pode \nter a ARCA construída. Isso é acessível com muito pouco pa-",
         "mais ficar com 50% e 50%, a nossa parte de ações (renda \nvariável) pode representar 25% da carteira; e agora eu teria \n75%, em renda fixa. Se nesse momento eu aproveitasse para \nrebalancear o patrimônio, e utilizasse uma parte da renda \nfixa para comprar ações, logo depois costuma vir uma gran-\nde retomada, nossas ações subiriam muito e nosso portfólio \ntotal teria aumentado muito.\n95\nThiago Nigro\ned. especial\ne-B/07",
@@ -631,9 +599,9 @@
         }
       ],
       "is_blocked": false,
-      "self_check_passed": false,
+      "self_check_passed": true,
       "retrieval_attempts": 2,
-      "latency_s": 22.9,
+      "latency_s": 32.94,
       "error": null
     }
   ]
