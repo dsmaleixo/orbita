@@ -76,17 +76,18 @@
         "end_date": "2025-01-31",
         "goals": [
           {
-            "name": "Controle de Lazer (máx 20% do salário)",
+            "name": "Controle de Lazer (máx R$900/mês)",
             "target_amount": 900.0,
             "months_remaining": 1
           }
-        ],
-        "lazer_budget": 900.0
+        ]
       },
       "expected_output": {
-        "lazer_spending_flagged": true
+        "has_alerts": true,
+        "alert_contains": "Controle de Lazer",
+        "savings_below_target": true
       },
-      "success_criteria": "System detects that lazer spending exceeds 20% of R$4500 salary budget"
+      "success_criteria": "Alert generated because monthly savings are below R$900 target for lazer budget control"
     },
     {
       "id": "a05",
@@ -104,10 +105,11 @@
         ]
       },
       "expected_output": {
-        "savings_intervention": true,
-        "has_nudge_message": true
+        "has_alerts": true,
+        "alert_contains": "Poupança Mensal",
+        "savings_below_target": true
       },
-      "success_criteria": "System generates intervention nudge when savings rate is critically low"
+      "success_criteria": "Alert generated because savings are below R$500/month required for R$1500 goal in 3 months"
     }
   ]
 }

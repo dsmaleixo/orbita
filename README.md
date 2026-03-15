@@ -172,25 +172,51 @@ Portas expostas: `3000` (frontend) e `8001` (API).
 
 ### O que o agente NÃO pode fazer
 
-Criar/deletar transações, transferir fundos, criar pagamentos, autenticar, escrever dados no Open Finance.
+- Criar/deletar transações, transferir fundos, criar pagamentos
+- Autenticar ou acessar credenciais
+- Escrever dados no Open Finance
+- Executar comandos de shell, instalar pacotes ou modificar o sistema de arquivos
+- Acessar caminhos fora de `data/` e `logs/` (definido em `allowed_paths`)
 
 ### Controles
 
-- **Allowlist** — `config/mcp_allowlist.yaml` restringe ferramentas permitidas
-- **Audit logging** — toda chamada MCP registrada em `logs/mcp_audit.log`
-- **Sanitização** — caracteres de controle removidos, campos truncados, valores financeiros nunca logados
+- **Allowlist** — `config/mcp_allowlist.yaml` restringe ferramentas permitidas (somente 3 tools read-only)
+- **Audit logging** — toda chamada MCP registrada em `logs/mcp_audit.log` (JSON Lines com timestamp, tool, params redatados, record count)
+- **Sanitização** — caracteres de controle removidos, campos truncados a 256 chars, valores financeiros (`amount`, `balance`, `cpf`, `token`) nunca logados
+- **Isolamento** — MCP server roda como subprocesso stdio separado; credenciais Pluggy restritas ao processo filho
+
+### Justificativa e riscos
+
+| Risco | Severidade | Mitigação |
+|---|---|---|
+| Supply-chain MCP (exfiltração via tool comprometida) | Alta | Allowlist estrita (3 tools read-only); audit log completo; isolamento Docker |
+| Prompt injection via dados bancários | Média | `sanitize_mcp_output()` remove control chars; formato dict estruturado |
+| Dados financeiros em logs | Média | Audit log registra apenas nomes de tools e record counts, nunca valores |
 
 ---
 
 ## Avaliação
 
-### RAG — RAGAS
+### Como executar
 
 ```bash
+# Pré-requisitos: Ollama rodando, modelo baixado, FAISS indexado (etapas 3-4 do Setup)
+
+# 1. Avaliação RAG (15 perguntas, ~5-10 min com Ollama local)
 uv run python eval/run_ragas.py
+
+# 2. Avaliação de automação (5 tarefas, requer conexão Pluggy MCP)
+uv run python eval/run_automation_eval.py
+
+# 3. Testes unitários (mockados, sem dependências externas)
+uv run pytest tests/ -v
 ```
 
-15 perguntas rotuladas (10 educação financeira + 3 adversariais + 2 recusas).
+Resultados salvos em `eval/results/ragas_report.json` e `eval/results/automation_report.json`.
+
+### RAG — RAGAS
+
+15 perguntas rotuladas (`eval/golden_set.json`): 10 educação financeira + 3 adversariais + 2 recusas.
 
 | Métrica | Meta |
 |---|---|
@@ -199,14 +225,21 @@ uv run python eval/run_ragas.py
 | Context Precision | >= 0.65 |
 | Context Recall | >= 0.65 |
 | Correct Refusals | = 2/2 |
+| Latência P50 | < 30s |
 
 ### Automação
 
-```bash
-uv run python eval/run_automation_eval.py
-```
+5 tarefas definidas em `eval/automation_tasks.json`:
 
-5 tarefas: categorização, detecção de desvio de meta, relatório mensal, alerta de gastos, detecção de ausência de poupança. Meta: >= 80%.
+| ID | Tarefa | Tipo | Critério de Sucesso |
+|---|---|---|---|
+| a01 | Categorizar 10 transações | `categorize` | 7 categorias presentes, moradia é maior |
+| a02 | Detectar desvio de meta de emergência | `goal_alert` | Alerta gerado com shortfall calculado |
+| a03 | Gerar relatório mensal | `report` | Contém período, resumo, insights, top categorias |
+| a04 | Detectar estouro no orçamento de lazer | `goal_alert` | Alerta com nome da meta e shortfall > 0 |
+| a05 | Detectar ausência de poupança | `goal_alert` | Alerta com nome da meta e shortfall > 0 |
+
+Métricas: taxa de sucesso (meta >= 80%), nº médio de steps, tempo médio por tarefa.
 
 ---
 

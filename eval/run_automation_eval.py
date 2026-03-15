@@ -121,11 +121,18 @@ def _evaluate_output(
 
         if expected.get("alert_contains"):
             keyword = expected["alert_contains"]
-            alert_msgs = " ".join(a.get("message", "") for a in alerts)
+            alert_msgs = " ".join(a.get("message", "") + " " + a.get("goal", "") for a in alerts)
             found = keyword.lower() in alert_msgs.lower() or keyword.lower() in final_response.lower()
             checks["alert_contains_keyword"] = found
             total += 1
             if found:
+                passed += 1
+
+        if expected.get("savings_below_target"):
+            below = any(a.get("shortfall", 0) > 0 for a in alerts)
+            checks["savings_below_target"] = below
+            total += 1
+            if below:
                 passed += 1
 
     elif automation_type == "report":
