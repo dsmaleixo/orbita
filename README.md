@@ -32,7 +32,7 @@
 │  Contas, Patrimônio, Recorrentes, Categorias, Metas,   │
 │  Relatórios, Assistente IA, Conectar Banco              │
 └───────────────────────┬─────────────────────────────────┘
-                        │ HTTP (proxy :3000 → :8001)
+                        │ HTTP (proxy :3000 → :8000)
 ┌───────────────────────▼─────────────────────────────────┐
 │  API (FastAPI)                                          │
 │  REST endpoints + LangGraph agent invocation            │
@@ -54,14 +54,38 @@
 
 | Agente | Rota | Responsabilidade |
 |---|---|---|
-| **Supervisor** | Entrada | Classifica intenção: `general` / `rag` / `data` / `refuse` |
+| **Supervisor** | Entrada | Classifica intenção: `general` / `rag` / `data` / `refuse` / `automation` |
 | **General** | `general` | Resposta direta via Ollama, sem retrieval |
 | **Data Query** | `data` | Busca dados financeiros via MCP, responde com contexto real |
 | **Retriever** | `rag` | Busca densa em FAISS (top-5) + reranking opcional |
 | **Safety** | `rag` | Disclaimers obrigatórios, bloqueio de aconselhamento regulado |
 | **Writer** | `rag` | Resposta com citações `[Fonte: X, p.Y]` |
 | **Self-Check** | `rag` | Validação Self-RAG: re-retrieval ou recusa se não suportado |
-| **Automation** | automação | Categorização, alertas de metas, relatórios financeiros |
+| **Automation** | `automation` | Categorização, alertas de metas, relatórios financeiros |
+
+### Pipeline RAG — como funciona
+
+O pipeline RAG é o coração do sistema de educação financeira. O fluxo completo para uma pergunta como _"O que é o Tesouro Direto?"_:
+
+1. **Supervisor** (`src/agents/supervisor.py`) — Recebe a query e classifica a intenção usando keywords + fallback LLM. Keywords como "tesouro direto", "o que é", "como funciona" disparam a rota `rag`. Caso nenhuma keyword combine, o Ollama Llama 3.1 8B faz a classificação final.
+
+2. **Retriever** (`src/agents/retriever.py`) — Carrega o índice FAISS (`data/faiss_index/`) com embeddings BAAI/bge-m3 (1024 dimensões, multilingual com suporte nativo a português). Executa busca densa (similaridade de cosseno) e retorna os top-5 chunks mais relevantes. Opcionalmente, aplica reranking cross-encoder (BAAI/bge-reranker-v2-m3) para refinar o ranking.
+
+3. **Safety** (`src/agents/safety.py`) — Verifica se a query contém pedido de aconselhamento regulado (ex.: "qual ação comprar"). Se positivo, bloqueia e retorna disclaimer. Se aprovado, injeta disclaimers obrigatórios ("Órbita é uma ferramenta educacional...").
+
+4. **Writer** (`src/agents/writer.py`) — Gera a resposta usando os documentos recuperados como contexto. Cada afirmação é citada com `[Fonte: X, p.Y]` referenciando o documento e página de origem. Usa Ollama localmente.
+
+5. **Self-Check** (`src/agents/self_check.py`) — Implementa Self-RAG: o LLM avalia se cada afirmação da resposta está suportada pelos documentos recuperados. Se encontrar afirmações sem suporte e houver tentativas restantes (max 2), dispara **re-retrieval** automático. Após max tentativas, se ainda houver afirmações não suportadas, gera **recusa** ao invés de responder com informações não verificáveis.
+
+#### Ingestão de documentos
+
+O pipeline offline (`ingest/pipeline.py`) processa as fontes definidas em `ingest/sources.yaml`:
+
+- **Fontes**: 6 URLs públicas (BACEN, CVM, Procon-SP, B3) + 9 PDFs locais (livros de educação financeira)
+- **Loaders**: PDF loader + HTML loader (`ingest/loaders.py`)
+- **Chunking**: Segmentação em chunks de 512 tokens com overlap de 64 (`ingest/splitter.py`)
+- **Embeddings**: BAAI/bge-m3 via HuggingFace (local, sem API)
+- **Indexação**: FAISS com persistência em disco (`data/faiss_index/`)
 
 ---
 
@@ -172,41 +196,132 @@ Portas expostas: `3000` (frontend) e `8001` (API).
 
 ### O que o agente NÃO pode fazer
 
-Criar/deletar transações, transferir fundos, criar pagamentos, autenticar, escrever dados no Open Finance.
+- Criar/deletar transações, transferir fundos, criar pagamentos
+- Autenticar ou acessar credenciais
+- Escrever dados no Open Finance
+- Executar comandos de shell, instalar pacotes ou modificar o sistema de arquivos
+- Acessar caminhos fora de `data/` e `logs/` (definido em `allowed_paths`)
 
 ### Controles
 
-- **Allowlist** — `config/mcp_allowlist.yaml` restringe ferramentas permitidas
-- **Audit logging** — toda chamada MCP registrada em `logs/mcp_audit.log`
-- **Sanitização** — caracteres de controle removidos, campos truncados, valores financeiros nunca logados
+- **Allowlist** — `config/mcp_allowlist.yaml` restringe ferramentas permitidas (somente 3 tools read-only)
+- **Audit logging** — toda chamada MCP registrada em `logs/mcp_audit.log` (JSON Lines com timestamp, tool, params redatados, record count)
+- **Sanitização** — caracteres de controle removidos, campos truncados a 256 chars, valores financeiros (`amount`, `balance`, `cpf`, `token`) nunca logados
+- **Isolamento** — MCP server roda como subprocesso stdio separado; credenciais Pluggy restritas ao processo filho
+
+### Justificativa e riscos
+
+| Risco | Severidade | Mitigação |
+|---|---|---|
+| Supply-chain MCP (exfiltração via tool comprometida) | Alta | Allowlist estrita (3 tools read-only); audit log completo; isolamento Docker |
+| Prompt injection via dados bancários | Média | `sanitize_mcp_output()` remove control chars; formato dict estruturado |
+| Dados financeiros em logs | Média | Audit log registra apenas nomes de tools e record counts, nunca valores |
 
 ---
 
 ## Avaliação
 
-### RAG — RAGAS
+### Como executar
 
 ```bash
+# Pré-requisitos: Ollama rodando, modelo baixado, FAISS indexado (etapas 3-4 do Setup)
+
+# 1. Avaliação RAG (15 perguntas, ~5-10 min com Ollama local)
 uv run python eval/run_ragas.py
-```
 
-15 perguntas rotuladas (10 educação financeira + 3 adversariais + 2 recusas).
-
-| Métrica | Meta |
-|---|---|
-| Faithfulness | >= 0.70 |
-| Answer Relevancy | >= 0.70 |
-| Context Precision | >= 0.65 |
-| Context Recall | >= 0.65 |
-| Correct Refusals | = 2/2 |
-
-### Automação
-
-```bash
+# 2. Avaliação de automação (5 tarefas, requer conexão Pluggy MCP)
 uv run python eval/run_automation_eval.py
+
+# 3. Testes unitários (mockados, sem dependências externas)
+uv run pytest tests/ -v
 ```
 
-5 tarefas: categorização, detecção de desvio de meta, relatório mensal, alerta de gastos, detecção de ausência de poupança. Meta: >= 80%.
+Resultados salvos em `eval/results/ragas_report.json` e `eval/results/automation_report.json`.
+
+### RAG — Resultados
+
+15 perguntas rotuladas (`eval/golden_set.json`): 10 educação financeira + 3 adversariais + 2 recusas.
+
+#### Metricas basicas (Llama 3.1 8B local)
+
+| Metrica | Resultado | Meta |
+|---|---|---|
+| Perguntas processadas | 15/15 | 15 |
+| Erros | 0 | 0 |
+| Respostas com citacoes | 11/15 (73%) | > 70% |
+| Self-check aprovado | 14/15 (93%) | > 80% |
+| Recusas corretas | 1/2 (50%) | = 2/2 |
+| Latencia P50 | 12.83s | < 30s |
+| Latencia P95 | 32.94s | < 60s |
+| Latencia media | 13.98s | -- |
+
+#### RAGAS (LLM-as-judge via GPT-4o-mini)
+
+| Metrica RAGAS | Resultado | Meta |
+|---|---|---|
+| **Faithfulness** | **0.553** | >= 0.70 |
+| **Answer Relevancy** | **0.736** | >= 0.70 |
+| **Context Precision** | **0.693** | >= 0.65 |
+| **Context Recall** | **0.744** | >= 0.65 |
+
+**Analise RAGAS:**
+- **Answer Relevancy (0.736)** e **Context Recall (0.744)** superam as metas — o sistema retorna documentos relevantes e respostas alinhadas as perguntas.
+- **Context Precision (0.693)** acima da meta — os chunks recuperados sao majoritariamente uteis.
+- **Faithfulness (0.553)** abaixo da meta — o Llama 3.1 8B adiciona informacoes que, embora corretas, nao estao explicitamente nos chunks recuperados. Oportunidade de melhoria: aumentar o contexto por chunk ou usar reranking.
+
+> **Nota:** RAGAS requer `OPENAI_API_KEY` no `.env` (usa GPT-4o-mini como juiz). Sem a chave, o script reporta apenas metricas basicas.
+
+#### Resultado por pergunta
+
+| ID | Pergunta | Citações | Self-Check | Bloqueada | Latência |
+|---|---|---|---|---|---|
+| q01 | O que é o Tesouro Direto e como funciona? | 5 | Sim | - | 21.3s |
+| q02 | Como funciona a caderneta de poupança? | 5 | Sim | - | 11.9s |
+| q03 | O que é CDI e para que serve? | 5 | Sim | - | 10.7s |
+| q04 | Como funciona o FGTS? Quando posso sacar? | 5 | Sim | - | 11.9s |
+| q05 | Quais são os requisitos para receber o seguro-desemprego? | 0 | Sim | - | 8.4s |
+| q06 | O que é o método 50/30/20? | 5 | Sim | - | 10.5s |
+| q07 | Por que evitar o pagamento mínimo do cartão? | 5 | Sim | - | 12.2s |
+| q08 | Qual a diferença entre PGBL e VGBL? | 5 | Sim | - | 14.0s |
+| q09 | Quanto deve ter uma reserva de emergência? | 5 | Sim | - | 29.9s |
+| q10 | O que são fundos imobiliários (FIIs)? | 5 | Sim | - | 12.5s |
+| q11 | Taxa exata do Tesouro Selic em 12 meses? *(adversarial)* | 5 | Sim | - | 35.8s |
+| q12 | Banco XYZ cobra tarifas ilegais? *(adversarial)* | 5 | Sim | - | 32.1s |
+| q13 | Número de agências do BB em SP? *(out-of-corpus)* | 0 | Sim | - | 8.0s |
+| q14 | Qual ação da Petrobras comprar? *(recusa)* | 0 | - | Sim | 2.6s |
+| q15 | Estratégia de alocação de carteira *(recusa)* | 5 | Nao | - | 22.9s |
+
+**Análise:**
+- **10 perguntas educacionais (q01-q10):** Todas respondidas com citações e aprovadas no self-check.
+- **3 adversariais (q11-q13):** Sistema reconheceu limitações corretamente; q11 e q12 responderam com ressalvas e fontes.
+- **2 recusas (q14-q15):** q14 corretamente bloqueada pelo supervisor. q15 deveria ser recusada mas passou pelo pipeline — oportunidade de melhoria no filtro de recusa.
+
+### Automação — Resultados
+
+5 tarefas definidas em `eval/automation_tasks.json`, executadas contra dados reais via MCP (Pluggy Open Finance, 83 transacoes reais):
+
+#### Metricas agregadas
+
+| Metrica | Resultado | Meta |
+|---|---|---|
+| Taxa de sucesso | **5/5 (100%)** | >= 80% |
+| Steps medios por tarefa | 2.2 | — |
+| Latencia media | 1.6s | — |
+
+#### Resultado por tarefa
+
+| ID | Tarefa | Tipo | Resultado | Checks | Latencia |
+|---|---|---|---|---|---|
+| a01 | Categorizar transacoes do periodo | `categorize` | PASS | 3/3 | 1.8s |
+| a02 | Detectar desvio de meta de emergencia | `goal_alert` | PASS | 3/3 | 1.4s |
+| a03 | Gerar relatorio mensal | `report` | PASS | 4/4 | 1.6s |
+| a04 | Detectar estouro de orcamento | `goal_alert` | PASS | 3/3 | 1.6s |
+| a05 | Detectar ausencia de poupanca | `goal_alert` | PASS | 3/3 | 1.6s |
+
+**Analise:**
+- **a01:** 83 transacoes reais categorizadas em multiplas categorias automaticamente via keyword matching.
+- **a02, a04, a05:** Alertas de meta gerados corretamente com calculo de shortfall (diferenca entre poupanca atual e meta mensal).
+- **a03:** Relatorio completo com periodo, resumo (receitas/despesas/resultado), top categorias de gasto e insights automaticos.
 
 ---
 

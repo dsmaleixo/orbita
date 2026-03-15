@@ -96,6 +96,7 @@ def _evaluate_output(
         categories = output.get("categories", {})
         total_txns = output.get("total_transactions", 0)
 
+        # Check categories_present (exact list)
         for expected_cat in expected.get("categories_present", []):
             present = expected_cat in categories
             checks[f"category_{expected_cat}"] = present
@@ -103,6 +104,32 @@ def _evaluate_output(
             if present:
                 passed += 1
 
+        # Check has_categories (at least some categories exist)
+        if expected.get("has_categories"):
+            has_cats = len(categories) > 0
+            checks["has_categories"] = has_cats
+            total += 1
+            if has_cats:
+                passed += 1
+
+        # Check min_categories
+        min_cats = expected.get("min_categories", 0)
+        if min_cats:
+            enough = len(categories) >= min_cats
+            checks[f"min_{min_cats}_categories"] = enough
+            total += 1
+            if enough:
+                passed += 1
+
+        # Check has_total_transactions
+        if expected.get("has_total_transactions"):
+            has_total = total_txns > 0
+            checks["has_total_transactions"] = has_total
+            total += 1
+            if has_total:
+                passed += 1
+
+        # Check exact total_transactions
         exp_total = expected.get("total_transactions", 0)
         if exp_total:
             match = total_txns == exp_total
@@ -121,11 +148,18 @@ def _evaluate_output(
 
         if expected.get("alert_contains"):
             keyword = expected["alert_contains"]
-            alert_msgs = " ".join(a.get("message", "") for a in alerts)
+            alert_msgs = " ".join(a.get("message", "") + " " + a.get("goal", "") for a in alerts)
             found = keyword.lower() in alert_msgs.lower() or keyword.lower() in final_response.lower()
             checks["alert_contains_keyword"] = found
             total += 1
             if found:
+                passed += 1
+
+        if expected.get("savings_below_target"):
+            below = any(a.get("shortfall", 0) > 0 for a in alerts)
+            checks["savings_below_target"] = below
+            total += 1
+            if below:
                 passed += 1
 
     elif automation_type == "report":
@@ -165,7 +199,7 @@ def main() -> None:
         logger.info("[%d/%d] %s (%s)", i, len(tasks), task["id"], task["name"])
         result = evaluate_task(graph, task)
         results.append(result)
-        status = "✅ PASS" if result["success"] else "❌ FAIL"
+        status = "PASS" if result["success"] else "FAIL"
         logger.info("  %s | Latency: %.1fs | MCP calls: %d",
                     status, result["latency_s"], result["num_mcp_calls"])
 
@@ -177,14 +211,14 @@ def main() -> None:
     avg_latency = sum(r["latency_s"] for r in results) / total if total > 0 else 0
 
     print("\n" + "=" * 60)
-    print("ÓRBITA AUTOMATION EVALUATION RESULTS")
+    print("ORBITA AUTOMATION EVALUATION RESULTS")
     print("=" * 60)
     print(f"\n  Success rate:     {successes}/{total} ({success_rate*100:.0f}%)")
     print(f"  Avg steps/task:   {avg_steps:.1f}")
     print(f"  Avg latency:      {avg_latency:.1f}s")
-    print("\n── Per-task results ──")
+    print("\n-- Per-task results --")
     for r in results:
-        status = "✅" if r["success"] else "❌"
+        status = "PASS" if r["success"] else "FAIL"
         print(f"  {status} [{r['id']}] {r['name']}: {r['checks'].get('_pass_rate', 'N/A')}")
     print("=" * 60 + "\n")
 

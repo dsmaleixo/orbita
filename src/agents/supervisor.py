@@ -61,6 +61,12 @@ _REFUSE_PATTERNS = [
 
 
 def supervisor_node(state: OrbitaState) -> dict[str, Any]:
+    # If intent is pre-set (e.g. automation from eval), skip classification
+    pre_set = state.get("intent")
+    if pre_set and pre_set != "general":
+        logger.info("Supervisor: using pre-set intent '%s'", pre_set)
+        return {"intent": pre_set}
+
     query = state["user_query"].lower()
 
     for pat in _REFUSE_PATTERNS:

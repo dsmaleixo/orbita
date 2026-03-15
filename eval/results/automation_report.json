@@ -1,0 +1,92 @@
+{
+  "summary": {
+    "success_rate": 1.0,
+    "successes": 5,
+    "total": 5,
+    "avg_steps": 2.2,
+    "avg_latency_s": 1.59
+  },
+  "task_results": [
+    {
+      "id": "a01",
+      "name": "Categorize Current Month Transactions",
+      "automation_type": "categorize",
+      "success": true,
+      "checks": {
+        "has_categories": true,
+        "min_2_categories": true,
+        "has_total_transactions": true,
+        "_pass_rate": "3/3"
+      },
+      "latency_s": 1.81,
+      "num_mcp_calls": 1,
+      "num_steps": 2,
+      "error": null
+    },
+    {
+      "id": "a02",
+      "name": "Detect Deviation from Emergency Fund Goal",
+      "automation_type": "goal_alert",
+      "success": true,
+      "checks": {
+        "has_alerts": true,
+        "alert_contains_keyword": true,
+        "savings_below_target": true,
+        "_pass_rate": "3/3"
+      },
+      "latency_s": 1.42,
+      "num_mcp_calls": 1,
+      "num_steps": 2,
+      "error": null
+    },
+    {
+      "id": "a03",
+      "name": "Generate Monthly Report",
+      "automation_type": "report",
+      "success": true,
+      "checks": {
+        "has_period": true,
+        "has_summary": true,
+        "has_insights": true,
+        "has_top_categories": true,
+        "_pass_rate": "4/4"
+      },
+      "latency_s": 1.55,
+      "num_mcp_calls": 2,
+      "num_steps": 3,
+      "error": null
+    },
+    {
+      "id": "a04",
+      "name": "Detect Overspending Against Budget",
+      "automation_type": "goal_alert",
+      "success": true,
+      "checks": {
+        "has_alerts": true,
+        "alert_contains_keyword": true,
+        "savings_below_target": true,
+        "_pass_rate": "3/3"
+      },
+      "latency_s": 1.56,
+      "num_mcp_calls": 1,
+      "num_steps": 2,
+      "error": null
+    },
+    {
+      "id": "a05",
+      "name": "Detect Low Savings Pattern",
+      "automation_type": "goal_alert",
+      "success": true,
+      "checks": {
+        "has_alerts": true,
+        "alert_contains_keyword": true,
+        "savings_below_target": true,
+        "_pass_rate": "3/3"
+      },
+      "latency_s": 1.61,
+      "num_mcp_calls": 1,
+      "num_steps": 2,
+      "error": null
+    }
+  ]
+}
