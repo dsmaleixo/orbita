@@ -1,7 +1,6 @@
 """Pluggy webhook receiver.
 
-Listens for Pluggy events and writes them to a log file that the
-Streamlit app can poll to invalidate its cache.
+Listens for Pluggy events and writes them to a log file.
 
 Run with:
     uv run uvicorn src.webhook.server:app --host 0.0.0.0 --port 8000 --reload
@@ -96,10 +95,6 @@ async def receive_webhook(
         logger.warning("Received unknown event type: %s", event_type)
 
     _log_event(payload)
-
-    # Write a "cache bust" marker so Streamlit knows to refresh
-    bust_path = EVENTS_LOG.parent / "cache_bust.txt"
-    bust_path.write_text(datetime.now(timezone.utc).isoformat(), encoding="utf-8")
 
     return JSONResponse({"received": True, "event": event_type})
 

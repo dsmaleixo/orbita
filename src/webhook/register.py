@@ -23,9 +23,6 @@ EVENTS = [
     "transactions/deleted",
 ]
 
-# Alternatively register a single "all" webhook instead of 5 individual ones.
-# Set USE_ALL_EVENT=True to do that.
-USE_ALL_EVENT = False
 
 
 def _get_api_key() -> str:
@@ -72,7 +69,7 @@ def register(url: str, replace: bool = False) -> None:
     existing = _list_existing(headers)
     existing_by_event = {w["event"]: w for w in existing}
 
-    events_to_register = ["all"] if USE_ALL_EVENT else EVENTS
+    events_to_register = EVENTS
 
     for event in events_to_register:
         if event in existing_by_event:

@@ -15,7 +15,7 @@ O sistema deve:
 
 ### Requisitos técnicos mínimos (stack)
 
-**Stack base:** Python, LangChain + LangGraph, FAISS ou Chroma (evitar SaaS pago), UI Streamlit/Gradio, código no GitHub.
+**Stack base:** Python, LangChain + LangGraph, FAISS ou Chroma (evitar SaaS pago), UI Next.js, código no GitHub.
 
 #### LLM (preferência local)
 * Preferência: **Ollama** com LLMs open-source (ex.: Llama 3.x, Qwen2.5, Mistral/Gemma, etc.). ([ollama.com](https://ollama.com/library?utm_source=chatgpt.com))
@@ -122,7 +122,7 @@ RAGAS (métricas). ([docs.ragas.io](https://docs.ragas.io/en/latest/concepts/met
 
 ### Entregáveis (iguais aos seus)
 * GitHub (MIT/Apache-2.0) com README, src/, app/, ingest/, eval/, tests/, Dockerfile, LICENSE, CITATION.cff
-* Demo (Streamlit/Gradio local ou Docker)
+* Demo (Next.js + FastAPI local ou Docker)
 * Slides (5–10): problema → público-alvo → arquitetura (grafo) → demo → métricas → limitações/próximos passos
 
 ---

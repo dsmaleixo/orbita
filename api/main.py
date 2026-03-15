@@ -300,7 +300,9 @@ def connect(req: ConnectRequest) -> Dict[str, Any]:
     new_value = ",".join(current_ids)
     settings.PLUGGY_ITEM_ID = new_value
     os.environ["PLUGGY_ITEM_ID"] = new_value
-    _mcp = None
+    if _mcp is not None:
+        _mcp.close()
+        _mcp = None
     _update_env_var("PLUGGY_ITEM_ID", new_value)
 
     logger.info("Connected Pluggy item: %s (total: %d)", req.itemId, len(current_ids))
@@ -318,7 +320,9 @@ def disconnect(item_id: str) -> Dict[str, Any]:
     new_value = ",".join(current_ids)
     settings.PLUGGY_ITEM_ID = new_value
     os.environ["PLUGGY_ITEM_ID"] = new_value
-    _mcp = None
+    if _mcp is not None:
+        _mcp.close()
+        _mcp = None
     _update_env_var("PLUGGY_ITEM_ID", new_value)
 
     logger.info("Disconnected Pluggy item: %s (remaining: %d)", item_id, len(current_ids))

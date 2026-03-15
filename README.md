@@ -39,8 +39,8 @@
 └───────────┬───────────────────────┬─────────────────────┘
             │                       │
 ┌───────────▼───────────┐ ┌────────▼──────────────────────┐
-│  MCP Client           │ │  LangGraph Orchestration      │
-│  Pluggy / Mock        │ │  Supervisor → Retriever →     │
+│  MCP Client (stdio)   │ │  LangGraph Orchestration      │
+│  → Pluggy MCP Server  │ │  Supervisor → Retriever →     │
 │  (Open Finance)       │ │  Safety → Writer → Self-Check │
 └───────────────────────┘ └────────┬──────────────────────┘
                                    │
@@ -269,7 +269,7 @@ orbita/
 1. **LLM em português** — Llama 3.1 8B pode ter desempenho variável em termos financeiros específicos
 2. **Latência** — 2-3 chamadas de LLM por resposta = 20-30s no P50
 3. **Corpus** — fallback para corpus sintético quando documentos oficiais não estão disponíveis
-4. **MCP real** — integração com Pluggy real requer credenciais de sandbox
+4. **Pluggy** — requer credenciais de sandbox ou produção (obtenha em dashboard.pluggy.ai)
 
 ---
 
