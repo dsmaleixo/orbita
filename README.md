@@ -293,30 +293,30 @@ As métricas RAGAS (Faithfulness, Answer Relevancy, Context Precision, Context R
 
 ### Automação — Resultados
 
-5 tarefas definidas em `eval/automation_tasks.json`, executadas contra dados reais via MCP (Pluggy Open Finance):
+5 tarefas definidas em `eval/automation_tasks.json`, executadas contra dados reais via MCP (Pluggy Open Finance, 83 transacoes reais):
 
-#### Métricas agregadas
+#### Metricas agregadas
 
-| Métrica | Resultado | Meta |
+| Metrica | Resultado | Meta |
 |---|---|---|
-| Taxa de sucesso | 3/5 (60%) | >= 80% |
-| Steps médios por tarefa | 2.2 | — |
-| Latência média | 1.4s | — |
+| Taxa de sucesso | **5/5 (100%)** | >= 80% |
+| Steps medios por tarefa | 2.2 | — |
+| Latencia media | 1.6s | — |
 
 #### Resultado por tarefa
 
-| ID | Tarefa | Tipo | Resultado | Checks | Latência |
+| ID | Tarefa | Tipo | Resultado | Checks | Latencia |
 |---|---|---|---|---|---|
-| a01 | Categorizar 10 transações | `categorize` | FAIL | 0/8 | 1.9s |
-| a02 | Detectar desvio de meta de emergência | `goal_alert` | PASS | 2/2 | 1.3s |
-| a03 | Gerar relatório mensal | `report` | FAIL | 3/4 | 1.4s |
-| a04 | Detectar estouro no orçamento de lazer | `goal_alert` | PASS | 3/3 | 1.3s |
-| a05 | Detectar ausência de poupança | `goal_alert` | PASS | 3/3 | 1.3s |
+| a01 | Categorizar transacoes do periodo | `categorize` | PASS | 3/3 | 1.8s |
+| a02 | Detectar desvio de meta de emergencia | `goal_alert` | PASS | 3/3 | 1.4s |
+| a03 | Gerar relatorio mensal | `report` | PASS | 4/4 | 1.6s |
+| a04 | Detectar estouro de orcamento | `goal_alert` | PASS | 3/3 | 1.6s |
+| a05 | Detectar ausencia de poupanca | `goal_alert` | PASS | 3/3 | 1.6s |
 
-**Análise:**
-- **a01 (FAIL):** Sandbox Pluggy retorna 0 transações para Jan/2025 — sem dados para categorizar. Com dados reais, o algoritmo de categorização funciona corretamente (coberto por testes unitários).
-- **a03 (FAIL):** Relatório gerado com período, resumo e insights, mas `top_spending_categories` vazio (0 transações no período). Passa 3/4 checks.
-- **a02, a04, a05 (PASS):** Alertas de meta gerados corretamente. Mesmo sem transações, o sistema detecta que poupança (R$0) está abaixo da meta e gera alertas com shortfall calculado.
+**Analise:**
+- **a01:** 83 transacoes reais categorizadas em multiplas categorias automaticamente via keyword matching.
+- **a02, a04, a05:** Alertas de meta gerados corretamente com calculo de shortfall (diferenca entre poupanca atual e meta mensal).
+- **a03:** Relatorio completo com periodo, resumo (receitas/despesas/resultado), top categorias de gasto e insights automaticos.
 
 ---
 

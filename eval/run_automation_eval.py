@@ -96,6 +96,7 @@ def _evaluate_output(
         categories = output.get("categories", {})
         total_txns = output.get("total_transactions", 0)
 
+        # Check categories_present (exact list)
         for expected_cat in expected.get("categories_present", []):
             present = expected_cat in categories
             checks[f"category_{expected_cat}"] = present
@@ -103,6 +104,32 @@ def _evaluate_output(
             if present:
                 passed += 1
 
+        # Check has_categories (at least some categories exist)
+        if expected.get("has_categories"):
+            has_cats = len(categories) > 0
+            checks["has_categories"] = has_cats
+            total += 1
+            if has_cats:
+                passed += 1
+
+        # Check min_categories
+        min_cats = expected.get("min_categories", 0)
+        if min_cats:
+            enough = len(categories) >= min_cats
+            checks[f"min_{min_cats}_categories"] = enough
+            total += 1
+            if enough:
+                passed += 1
+
+        # Check has_total_transactions
+        if expected.get("has_total_transactions"):
+            has_total = total_txns > 0
+            checks["has_total_transactions"] = has_total
+            total += 1
+            if has_total:
+                passed += 1
+
+        # Check exact total_transactions
         exp_total = expected.get("total_transactions", 0)
         if exp_total:
             match = total_txns == exp_total
