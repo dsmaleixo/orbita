@@ -47,7 +47,7 @@ This project is an **academic proof of concept** that validates the core archite
 | **Open Finance integration** | Pluggy REST API via `PluggyDirectClient`; in-app Connect Widget; real-time webhook server |
 | **MCP security** | Read-only allowlist (3 tools); every call audit-logged; output sanitized before LLM context |
 | **Local-first infrastructure** | Ollama (`llama3.1:8b`), FAISS, `BAAI/bge-m3` — no SaaS, no API cost, full data sovereignty |
-| **Multi-page financial dashboard** | 9 Streamlit pages (Dashboard, Transactions, Cash Flow, Accounts, Assets, Recurring, Categories, Chat, Connect) |
+| **Multi-page financial dashboard** | 11 Next.js pages (Dashboard, Transactions, Cash Flow, Accounts, Assets, Recurring, Categories, Goals, Reports, Chat, Connect) |
 | **Automation workflows** | Expense categorization, goal deviation alerts, financial report generation |
 | **Evaluation suite** | RAGAS metrics (15-question golden set), 5 automation task definitions |
 

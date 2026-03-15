@@ -28,7 +28,6 @@ class Settings:
     FAISS_INDEX_PATH: str = os.getenv("FAISS_INDEX_PATH", "data/faiss_index")
 
     # MCP
-    MCP_SERVER_URL: str = os.getenv("MCP_SERVER_URL", "http://localhost:8000")
     MCP_ALLOWLIST_PATH: str = os.getenv("MCP_ALLOWLIST_PATH", "config/mcp_allowlist.yaml")
 
     # Pluggy credentials

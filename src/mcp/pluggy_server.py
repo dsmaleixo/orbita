@@ -22,7 +22,14 @@ from __future__ import annotations
 import logging
 import os
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+from dotenv import load_dotenv
+
+# Load .env so the server has credentials when spawned as a subprocess
+_project_root = Path(__file__).resolve().parent.parent.parent
+load_dotenv(_project_root / ".env", override=False)
 
 import httpx
 from mcp.server.fastmcp import FastMCP
@@ -34,7 +41,18 @@ logger = logging.getLogger(__name__)
 PLUGGY_BASE_URL = os.getenv("PLUGGY_BASE_URL", "https://api.pluggy.ai")
 PLUGGY_CLIENT_ID = os.getenv("PLUGGY_CLIENT_ID", "")
 PLUGGY_CLIENT_SECRET = os.getenv("PLUGGY_CLIENT_SECRET", "")
-PLUGGY_ITEM_ID = os.getenv("PLUGGY_ITEM_ID", "")
+
+
+def _resolve_item_ids() -> List[str]:
+    """Parse PLUGGY_ITEM_ID (comma-separated) into a list."""
+    raw = os.getenv("PLUGGY_ITEM_ID", "")
+    if not raw:
+        raise ValueError(
+            "PLUGGY_ITEM_ID is not set. "
+            "Go to the 'Conectar Banco' page to create a connection, "
+            "or set PLUGGY_ITEM_ID in .env."
+        )
+    return [item_id.strip() for item_id in raw.split(",") if item_id.strip()]
 
 
 class PluggyAPIClient:
@@ -193,15 +211,17 @@ def get_transactions(start_date: str, end_date: str) -> List[Dict]:
         List of transactions with: id, date, description, amount (BRL), type, category
     """
     client = _get_pluggy_client()
-    item_id = PLUGGY_ITEM_ID
+    item_ids = _resolve_item_ids()
 
-    # Get all accounts for this item
-    accounts = client.get_accounts(item_id)
-    if not accounts:
+    # Get all accounts across all connected items
+    all_accounts: List[Dict] = []
+    for iid in item_ids:
+        all_accounts.extend(client.get_accounts(iid))
+    if not all_accounts:
         return []
 
     all_transactions: List[Dict] = []
-    for account in accounts:
+    for account in all_accounts:
         account_id = account.get("id", "")
         if not account_id:
             continue
@@ -227,9 +247,11 @@ def get_balances() -> List[Dict]:
         List of accounts with: id, type, subtype, name, balance (BRL), currency_code
     """
     client = _get_pluggy_client()
-    item_id = PLUGGY_ITEM_ID
-    accounts = client.get_accounts(item_id)
-    result = [_sanitize_account(acc) for acc in accounts]
+    item_ids = _resolve_item_ids()
+    all_accounts: List[Dict] = []
+    for iid in item_ids:
+        all_accounts.extend(client.get_accounts(iid))
+    result = [_sanitize_account(acc) for acc in all_accounts]
     logger.info("get_balances(): returned %d accounts", len(result))
     return result
 
@@ -242,10 +264,12 @@ def get_accounts() -> List[Dict]:
         List of account metadata: id, type, subtype, name, currency_code
     """
     client = _get_pluggy_client()
-    item_id = PLUGGY_ITEM_ID
-    accounts = client.get_accounts(item_id)
+    item_ids = _resolve_item_ids()
+    all_accounts: List[Dict] = []
+    for iid in item_ids:
+        all_accounts.extend(client.get_accounts(iid))
     result = []
-    for acc in accounts:
+    for acc in all_accounts:
         result.append({
             "id": str(acc.get("id", "")),
             "type": str(acc.get("type", "")),

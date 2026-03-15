@@ -25,7 +25,7 @@ The key architectural thesis: a supervisor-delegated multi-agent system with 4 i
 | **Safety/Policy** | `rag` | Mandatory disclaimer injection. Regex blocklist for regulated advisory topics (specific tickers, portfolio allocation, tax strategies). Sets `is_blocked` if triggered. |
 | **Writer** | `rag` | Generates citation-formatted response: every claim mapped to `[Fonte: X, p.Y]`. Populates `citations` list from chunk metadata. |
 | **Self-Check** | `rag` | Self-RAG loop: LLM validates each claim against retrieved docs. If unsupported and `retrieval_attempts < 2`: re-retrieves. If still unsupported: sets `final_response` to refusal. |
-| **Automation** | `automation` | Three sub-workflows triggered from Streamlit: categorize expenses, detect goal deviation, generate financial report. All call MCP for live data. |
+| **Automation** | `automation` | Three sub-workflows: categorize expenses, detect goal deviation, generate financial report. All call MCP for live data. |
 
 ### 2.3 Graph Topology
 
@@ -52,7 +52,7 @@ graph TD
     style Z fill:#0f172a,stroke:#334155,color:#94a3b8
 ```
 
-The graph compiles to a `CompiledGraph` via `build_graph()` and is loaded once into `st.session_state` on first Streamlit render.
+The graph compiles to a `CompiledGraph` via `build_graph()` and is lazily instantiated on the first API request.
 
 ---
 
@@ -63,7 +63,7 @@ The graph compiles to a `CompiledGraph` via `build_graph()` and is loaded once i
 ```
 User → Supervisor (keyword: "olá", "como você funciona?", none of the other patterns)
   → General: ChatOllama(llama3.1:8b) with system prompt
-  → final_response → Streamlit
+  → final_response → Frontend
 ```
 
 Latency: ~3–8s (single LLM call).
@@ -76,9 +76,9 @@ User → Supervisor (keyword: "o que é", "como funciona", book/concept keywords
   → Safety: blocklist check + disclaimer injection
   → Writer: LLM with context=[doc1..doc3] + "cite every claim as [Fonte: X, p.Y]"
   → Self-Check: LLM validates {claim: supported?} for each sentence
-      ├── all supported → final_response → Streamlit
+      ├── all supported → final_response → Frontend
       └── unsupported + retries < 2 → reformulate query → Retriever (loop)
-      └── unsupported + retries >= 2 → refusal message → Streamlit
+      └── unsupported + retries >= 2 → refusal message → Frontend
 ```
 
 Latency: ~15–30s (2–3 LLM calls + FAISS lookup).
@@ -92,7 +92,7 @@ User → Supervisor (keyword: "meu saldo", "meus gastos", "quanto gastei")
       MCPClient.get_balances()                         → list[Dict]
       builds context: "Saldo total: R$X. Receitas: R$Y. Despesas: R$Z. Top 5 transactions..."
   → LLM with context + user_query (system: "use ONLY the data provided")
-  → final_response → Streamlit
+  → final_response → Frontend
 ```
 
 Latency: ~5–15s (Pluggy API call + single LLM call).
@@ -113,19 +113,22 @@ Corpus: BACEN Cidadania Financeira, CVM educational materials, Procon-SP/IDEC gu
 ### 3.5 Open Finance Data Flow
 
 ```
-User (Streamlit "Conectar Banco" page)
-  → app/pages/connect.py: POST /connect_token → Pluggy API → accessToken
-  → Connect Widget (cdn.pluggy.ai/connect/v2) renders in-app
+User (Next.js "Conectar Banco" page)
+  → frontend/src/app/connect/page.tsx: POST /api/connect-token → Pluggy API → accessToken
+  → Pluggy Connect Widget (react-pluggy-connect) renders in-app
   → User authenticates with bank (or Pluggy Bank sandbox: user_good/password_good)
-  → onSuccess: item_id captured → saved to .env → cache cleared
+  → onSuccess: item_id captured → POST /api/connect → saved to .env
 
 Runtime (any data page or Data Query agent):
-  → PluggyDirectClient._auth_header(): POST /auth → JWT (auto-refreshed, 1h45m TTL)
-  → GET /accounts?itemId={item_id} → accounts list
-  → GET /transactions?accountId={id}&from=...&to=...&pageSize=500 → paginated transactions
-  → sanitize_mcp_output() → strips control chars, truncates long fields
-  → enforce_allowlist() → PermissionError if tool not in mcp_allowlist.yaml
-  → audit_log() → appends JSON line to logs/mcp_audit.log (no financial values)
+  → MCPClient._call_tool(name, args) → MCP protocol (JSON-RPC over stdio)
+  → pluggy_server.py (FastMCP subprocess):
+      → PluggyAPIClient._authenticate(): POST /auth → JWT (auto-refreshed, 1h45m TTL)
+      → GET /accounts?itemId={item_id} → accounts list
+      → GET /transactions?accountId={id}&from=...&to=...&pageSize=500 → paginated transactions
+  → PluggyTools (client-side security):
+      → enforce_allowlist() → PermissionError if tool not in mcp_allowlist.yaml
+      → sanitize_mcp_output() → strips control chars, truncates long fields
+      → audit_log() → appends JSON line to logs/mcp_audit.log (no financial values)
 ```
 
 ### 3.6 Webhook Flow (real-time event notifications)
@@ -135,7 +138,7 @@ Pluggy → POST https://<public-url>/webhook
   → src/webhook/server.py (FastAPI, port 8000)
   → verify HMAC-SHA256 signature (if PLUGGY_WEBHOOK_SECRET set)
   → log event to logs/webhook_events.jsonl
-  → write logs/cache_bust.txt (triggers Streamlit cache invalidation)
+  → log event for processing
 
 Registered events: item/created, item/updated, transactions/created,
                    transactions/updated, transactions/deleted
@@ -173,7 +176,7 @@ class OrbitaState(TypedDict):
 
 ### 4.2 MCP Security Layer
 
-All Pluggy data access passes through `PluggyTools` (`src/mcp/pluggy_tools.py`) which wraps `PluggyDirectClient`:
+All Pluggy data access passes through `PluggyTools` (`src/mcp/pluggy_tools.py`) which wraps the MCP client:
 
 | Control | Implementation |
 |---|---|
@@ -196,7 +199,7 @@ All Pluggy data access passes through `PluggyTools` (`src/mcp/pluggy_tools.py`) 
 
 Chunking: 512 tokens, 50-token overlap, metadata attached per chunk.
 
-### 4.4 Streamlit Dashboard (9 pages)
+### 4.4 Next.js Frontend (11 pages)
 
 | Page | Key Content |
 |---|---|
@@ -204,13 +207,15 @@ Chunking: 512 tokens, 50-token overlap, metadata attached per chunk.
 | **Transactions** | Full filterable list with search, category multiselect, income/expense toggle |
 | **Cash Flow** | Monthly income vs. expense grouped bar, cumulative area chart, savings rate KPI |
 | **Accounts** | Per-account balance cards, total patrimony banner |
-| **Assets** | Net worth donut by account type, progress bars, manual asset entry form |
+| **Assets** | Net worth donut by account type, progress bars |
 | **Recurring** | Auto-detected recurring charges from 6-month history, average amount, last seen date |
 | **Categories** | Horizontal bar + donut, per-category detail with transaction drill-down |
-| **Chat (AI)** | Multi-route chat with route badge (📊 Data / 📚 RAG / 💬 General), citation expanders, disclaimer banner, suggestion chips |
-| **Connect Bank** | Pluggy Connect Widget embedded via `st.components.v1.html`, connect token auto-generated, item_id saved to `.env` on success |
+| **Goals** | Financial goal tracking |
+| **Reports** | Financial reports |
+| **Chat (AI)** | Multi-route chat with route badge, citation display, disclaimer banner, suggestion chips |
+| **Connect Bank** | Pluggy Connect Widget via `react-pluggy-connect`, connect token auto-generated, item_id saved to `.env` on success, multi-account support |
 
-All financial data pages use `@st.cache_data(ttl=300)` (5-minute cache) on Pluggy API calls. A `cache_bust.txt` written by the webhook server triggers cache invalidation on next load.
+All financial data is fetched via the FastAPI REST API (`/api/*` endpoints) which proxies Pluggy calls through the MCP security layer.
 
 ---
 
@@ -226,11 +231,11 @@ All financial data pages use `@st.cache_data(ttl=300)` (5-minute cache) on Plugg
 | Optional reranker | BAAI/bge-reranker-v2-m3 | via sentence-transformers | Cross-encoder; off by default (`ENABLE_RERANKER=false`) |
 | Vector store | FAISS | faiss-cpu | Local persistence, zero SaaS |
 | Open Finance | Pluggy REST API | pluggy-sdk 1.0+ | Direct REST via `httpx`; Connect Widget for onboarding |
-| MCP adapter | langchain-mcp-adapters | ≥0.1 | `PluggyTools` wraps `PluggyDirectClient` |
-| MCP server (optional) | FastMCP | mcp ≥1.0 | `src/mcp/pluggy_server.py` — for academic MCP requirement |
+| MCP server | FastMCP | mcp ≥1.0 | `src/mcp/pluggy_server.py` — spawned as stdio subprocess |
+| MCP client | mcp SDK | mcp ≥1.0 | `src/mcp/client.py` — stdio transport, auto-managed lifecycle |
 | Webhook server | FastAPI + uvicorn | fastapi ≥0.135 | Receives Pluggy event notifications |
-| UI | Streamlit | ≥1.30 | 9-page app with Plotly charts, custom dark CSS |
-| Charts | Plotly | ≥6.6 | Express + Graph Objects |
+| UI | Next.js 15 + React 19 | — | 11-page app with Recharts, Tailwind CSS |
+| Charts | Recharts | ≥2.15 | Composable React chart components |
 | Document loaders | PyPDF + BeautifulSoup4 | pypdf ≥4.0 | PDF and HTML corpus ingestion |
 | Evaluation | RAGAS | ≥0.2 | Faithfulness, Relevancy, Precision, Recall |
 | Testing | pytest | ≥8.0 | Fully mocked, no external deps required |
@@ -245,8 +250,8 @@ All financial data pages use `@st.cache_data(ttl=300)` (5-minute cache) on Plugg
 | **FAISS over Chroma** | Zero client-server overhead, single-file persistence, better throughput for the ~1K–10K chunk corpus size. |
 | **Ollama over API LLMs** | Zero cost, full data sovereignty — user financial data never leaves the machine. Critical for a fintech PoC. |
 | **bge-m3** | State-of-the-art multilingual dense retrieval with native Portuguese support; 1024-dim vectors give high recall on Brazilian financial terminology. |
-| **PluggyDirectClient over SSE MCP transport** | Eliminates the two-process architecture. Same security controls (allowlist, audit log, sanitization) apply through `PluggyTools`. The `pluggy_server.py` is kept for the academic MCP requirement but not required for runtime. |
-| **FastAPI webhook server** | Required for Pluggy production access approval and real-time cache invalidation. Runs as a separate process alongside Streamlit. |
+| **MCP stdio transport** | `MCPClient` spawns `pluggy_server.py` as a subprocess via stdio — real MCP protocol in the runtime data path. Same security controls (allowlist, audit log, sanitization) apply client-side through `PluggyTools`. Subprocess lifecycle is managed automatically. |
+| **FastAPI webhook server** | Required for Pluggy production access approval and real-time event notifications. Runs as a separate process. |
 
 ---
 
@@ -281,8 +286,8 @@ orbita/
 │   │   ├── state.py             (OrbitaState TypedDict)
 │   │   └── builder.py           (StateGraph → CompiledGraph)
 │   ├── mcp/
-│   │   ├── client.py            (MCPClient — Pluggy direct API)
-│   │   ├── pluggy_direct.py     (PluggyDirectClient — REST via httpx)
+│   │   ├── client.py            (MCPClient — MCP stdio transport)
+│   │   ├── pluggy_direct.py     (PluggyDirectClient — REST via httpx, used for connect-token)
 │   │   ├── pluggy_tools.py      (allowlist enforcement + sanitization)
 │   │   ├── pluggy_server.py     (FastMCP server — academic requirement)
 │   │   └── security.py          (audit logging)
@@ -294,26 +299,13 @@ orbita/
 │       ├── server.py            (FastAPI webhook receiver)
 │       └── register.py          (register webhooks with Pluggy API)
 │
-├── app/
-│   ├── main.py                  (Streamlit entry point, 9-page nav)
-│   ├── data_layer.py            (cached Pluggy fetchers + transformations)
-│   ├── pages/
-│   │   ├── dashboard.py
-│   │   ├── transactions.py
-│   │   ├── cash_flow.py
-│   │   ├── accounts.py
-│   │   ├── assets.py
-│   │   ├── recurring.py
-│   │   ├── categories.py
-│   │   ├── chat.py
-│   │   ├── goals.py
-│   │   ├── connect.py           (Pluggy Connect Widget onboarding)
-│   │   └── reports.py
-│   └── components/
-│       ├── charts.py            (Plotly chart functions)
-│       ├── citation.py
-│       ├── disclaimer.py
-│       └── styles.py            (dark-theme CSS + Plotly layout)
+├── api/
+│   └── main.py                  (FastAPI REST endpoints + LangGraph integration)
+│
+├── frontend/                    (Next.js 15 + React 19 + Tailwind CSS)
+│   ├── src/app/                 (11 pages: dashboard, transactions, etc.)
+│   ├── src/components/          (React UI components)
+│   └── src/lib/                 (API client + utilities)
 │
 ├── ingest/
 │   ├── pipeline.py              (end-to-end ingestion orchestrator)
@@ -358,7 +350,7 @@ orbita/
 | **FAISS retrieval gaps** — Dense-only search may miss synonym variations ("aposentadoria" vs. "previdência") | Medium | Cross-encoder reranker available (`ENABLE_RERANKER=true`); expand corpus with synonym-rich metadata |
 | **Self-RAG latency** — 2–3 LLM calls per RAG response = 15–30s P50 | Low (PoC acceptable) | Documented as known limitation; single-call `general` and `data` routes bypass RAG for simple queries |
 | **Pluggy item_id unavailable** — User hasn't connected a bank | Low | Graceful degradation: pages show empty state + setup warning; Connect page generates token and renders widget in-app |
-| **Webhook endpoint not public** — Pluggy production requires a non-localhost URL | Low | `src/webhook/register.py` + ngrok instructions documented; server runs on port 8000 independently of Streamlit |
+| **Webhook endpoint not public** — Pluggy production requires a non-localhost URL | Low | `src/webhook/register.py` + ngrok instructions documented; server runs on port 8000 independently |
 
 ### 7.2 Security Risks
 
@@ -380,13 +372,13 @@ orbita/
 | R3 | Anti-hallucination self-check | Self-RAG claim validation, 1 retry, then refuse | `src/agents/self_check.py`, `src/graph/builder.py` |
 | R4 | LangGraph orchestration | 8-node StateGraph, typed state, conditional edges | `src/graph/builder.py`, `src/graph/state.py` |
 | R5 | 1+ automation workflow | 3 sub-workflows: categorize, goal_alert, report | `src/agents/automation.py` |
-| R6 | MCP integration | `PluggyDirectClient` + `PluggyTools` security layer | `src/mcp/` |
+| R6 | MCP integration | `MCPClient` (stdio) → `pluggy_server.py` (FastMCP) + `PluggyTools` security layer | `src/mcp/` |
 | R7 | MCP security (allowlist, logging, docs) | `mcp_allowlist.yaml` + `security.py` + README section | `mcp_allowlist.yaml`, `src/mcp/security.py` |
 | R8 | Python + LangChain + LangGraph | Full stack as specified | `pyproject.toml` |
 | R9 | FAISS (no paid SaaS) | `faiss-cpu`, local persistence | `src/rag/vectorstore.py` |
 | R10 | Ollama + open-source LLM | `ChatOllama(model="llama3.1:8b")` | `src/config.py`, all agents |
 | R11 | HuggingFace bge-m3 | `HuggingFaceEmbeddings("BAAI/bge-m3")` | `src/rag/embeddings.py` |
-| R12 | Streamlit UI | 9-page app, Plotly charts, dark CSS | `app/` |
+| R12 | Frontend UI | Next.js 15 + React 19, 11-page app, Recharts, Tailwind CSS | `frontend/`, `api/` |
 | R13 | Eval: 10-20 Q&A + RAGAS | 15 labeled pairs + RAGAS runner | `eval/golden_set.json`, `eval/run_ragas.py` |
 | R14 | Eval: 5 automation tasks | Task definitions + evaluation script | `eval/automation_tasks.json`, `eval/run_automation_eval.py` |
 | R15 | MCP documentation | README: tools, allowlist, risk analysis | `README.md` |
