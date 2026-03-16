@@ -11,8 +11,8 @@ import {
 } from "@/components/charts";
 import { SkeletonCard, SkeletonChart } from "@/components/skeleton";
 import { getDateRange, formatCurrency } from "@/lib/utils";
-import { getSummary, getMonthlyData, getTransactions } from "@/lib/api";
-import type { Summary, MonthlyData, Transaction } from "@/lib/api";
+import { getCashFlow } from "@/lib/api";
+import type { Summary, MonthlyData } from "@/lib/api";
 import { TrendingUp, TrendingDown, PiggyBank } from "lucide-react";
 
 export default function CashFlowPage() {
@@ -24,17 +24,18 @@ export default function CashFlowPage() {
 
   useEffect(() => {
     const { start, end } = getDateRange(period);
+    let cancelled = false;
     setLoading(true);
-    Promise.all([
-      getSummary(start, end),
-      getMonthlyData(start, end),
-      getTransactions(start, end),
-    ])
-      .then(([s, m, txns]) => {
-        setSummary(s);
-        setMonthly(m);
-        // Build cumulative data
-        const sorted = [...txns].sort((a, b) => a.date.localeCompare(b.date));
+    setSummary({ income: 0, expenses: 0, net: 0, count: 0 });
+    setMonthly([]);
+    setCumulative([]);
+
+    getCashFlow(start, end)
+      .then((data) => {
+        if (cancelled) return;
+        setSummary(data.summary);
+        setMonthly(data.monthly);
+        const sorted = [...data.transactions].sort((a, b) => a.date.localeCompare(b.date));
         let running = 0;
         const cum = sorted.map((t) => {
           running += t.amount;
@@ -43,7 +44,11 @@ export default function CashFlowPage() {
         setCumulative(cum);
       })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => { cancelled = true; };
   }, [period]);
 
   const savingsRate =

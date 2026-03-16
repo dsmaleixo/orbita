@@ -112,10 +112,12 @@ class PluggyDirectClient:
         """Fetch account metadata."""
         return [
             {
-                "id": str(a.get("id", "")),
+                "account_id": str(a.get("id", "")),
                 "account_type": str(a.get("type", "")).lower(),
                 "subtype": str(a.get("subtype", "")),
+                "status": str(a.get("status", "ACTIVE")).lower(),
                 "name": str(a.get("name", ""))[:100],
+                "number": str(a.get("number", "")),
                 "institution_name": str(a.get("institution", {}).get("name", ""))[:100],
                 "currency_code": str(a.get("currencyCode", "BRL")),
             }

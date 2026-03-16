@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/page-header";
 import { PeriodSelect } from "@/components/period-select";
 import { MetricCard } from "@/components/metric-card";
 import { SkeletonCard, SkeletonRow } from "@/components/skeleton";
-import { getSummary, getMonthlyData, getCategoryTotals, getRecurring } from "@/lib/api";
+import { getReports } from "@/lib/api";
 import type { Summary, MonthlyData, CategoryTotals, RecurringItem } from "@/lib/api";
 import { getDateRange, formatCurrency, CATEGORY_CONFIG } from "@/lib/utils";
 import { FileBarChart, TrendingUp, TrendingDown, PiggyBank, ArrowRight } from "lucide-react";
@@ -20,21 +20,27 @@ export default function ReportsPage() {
 
   useEffect(() => {
     const { start, end } = getDateRange(period);
+    let cancelled = false;
     setLoading(true);
-    Promise.all([
-      getSummary(start, end),
-      getMonthlyData(start, end),
-      getCategoryTotals(start, end),
-      getRecurring(start, end),
-    ])
-      .then(([s, m, c, r]) => {
-        setSummary(s);
-        setMonthly(m);
-        setCategories(c);
-        setRecurring(r);
+    setSummary({ income: 0, expenses: 0, net: 0, count: 0 });
+    setMonthly([]);
+    setCategories({});
+    setRecurring([]);
+
+    getReports(start, end)
+      .then((data) => {
+        if (cancelled) return;
+        setSummary(data.summary);
+        setMonthly(data.monthly);
+        setCategories(data.categories);
+        setRecurring(data.recurring);
       })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => { cancelled = true; };
   }, [period]);
 
   const savingsRate =

@@ -18,9 +18,56 @@ CATEGORY_MAP = {
     "investimentos": ["tesouro", "cdb", "fundo", "corretora", "xp", "rico", "nuinvest", "inter invest"],
 }
 
+# Map Pluggy's English category names to our local keys
+PLUGGY_CATEGORY_MAP: Dict[str, str] = {
+    "groceries": "alimentacao",
+    "eating out": "alimentacao",
+    "food delivery": "alimentacao",
+    "restaurants": "alimentacao",
+    "transport": "transporte",
+    "ride sharing": "transporte",
+    "gas stations": "transporte",
+    "parking": "transporte",
+    "rent": "moradia",
+    "utilities": "moradia",
+    "digital services": "moradia",
+    "telecom": "moradia",
+    "health": "saude",
+    "pharmacy": "saude",
+    "fitness": "saude",
+    "education": "educacao",
+    "streaming": "educacao",
+    "entertainment": "lazer",
+    "travel": "lazer",
+    "hotels": "lazer",
+    "clothing": "vestuario",
+    "shopping": "vestuario",
+    "investments": "investimentos",
+    "savings": "investimentos",
+    "transfers": "outros",
+    "transfer - pix": "outros",
+    "same person transfer": "outros",
+    "credit card payment": "outros",
+    "tax on financial operations": "outros",
+    "services": "outros",
+    "donations": "outros",
+}
 
-def categorize(description: str) -> str:
-    """Classify a transaction description into a spending category."""
+
+def normalize_pluggy_category(pluggy_cat: str) -> str:
+    """Map a Pluggy English category to a local category key."""
+    return PLUGGY_CATEGORY_MAP.get(pluggy_cat.lower(), "")
+
+
+def categorize(description: str, pluggy_category: str = "") -> str:
+    """Classify a transaction into a spending category.
+
+    Uses the Pluggy category first, then falls back to keyword matching.
+    """
+    if pluggy_category:
+        mapped = normalize_pluggy_category(pluggy_category)
+        if mapped:
+            return mapped
     d = description.lower()
     for cat, keywords in CATEGORY_MAP.items():
         if any(k in d for k in keywords):
@@ -55,8 +102,14 @@ def get_monthly_data(txns: List[Dict], months: int = 6) -> List[Dict]:
     today = datetime.today()
     result = []
     for i in range(months - 1, -1, -1):
-        d = today - timedelta(days=i * 30)
-        key = d.strftime("%Y-%m")
+        # Use proper month arithmetic instead of timedelta(days=i*30)
+        year = today.year
+        month = today.month - i
+        while month <= 0:
+            month += 12
+            year -= 1
+        key = f"{year:04d}-{month:02d}"
+        d = datetime(year, month, 1)
         label = d.strftime("%b/%y")
         result.append({
             "month": label,

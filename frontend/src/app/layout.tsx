@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/sidebar";
 export const metadata: Metadata = {
   title: "Órbita — Finanças Pessoais",
   description: "Veja seu dinheiro com clareza",
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({

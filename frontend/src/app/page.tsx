@@ -12,14 +12,7 @@ import {
 } from "@/components/charts";
 import { SkeletonCard, SkeletonRow, SkeletonChart } from "@/components/skeleton";
 import { getDateRange, formatCurrency } from "@/lib/utils";
-import {
-  getTransactions,
-  getBalances,
-  getSummary,
-  getMonthlyData,
-  getCategoryTotals,
-  getBalanceHistory,
-} from "@/lib/api";
+import { getDashboard } from "@/lib/api";
 import type {
   Transaction,
   Summary,
@@ -46,25 +39,25 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const { start, end } = getDateRange(period);
+    let cancelled = false;
     setLoading(true);
-    Promise.all([
-      getTransactions(start, end),
-      getBalances(),
-      getSummary(start, end),
-      getMonthlyData(start, end),
-      getCategoryTotals(start, end),
-      getBalanceHistory(start, end),
-    ])
-      .then(([t, b, s, m, c, bh]) => {
-        setTxns(t);
-        setTotalBalance(b.reduce((sum, x) => sum + (x.balance || 0), 0));
-        setSummary(s);
-        setMonthly(m);
-        setCategories(c);
-        setBalanceHistory(bh);
+
+    getDashboard(start, end)
+      .then((data) => {
+        if (cancelled) return;
+        setTxns(data.transactions);
+        setTotalBalance(data.balances.reduce((sum, x) => sum + (x.balance || 0), 0));
+        setSummary(data.summary);
+        setMonthly(data.monthly);
+        setCategories(data.categories);
+        setBalanceHistory(data.balanceHistory);
       })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => { cancelled = true; };
   }, [period]);
 
   const recentTxns = [...txns]
