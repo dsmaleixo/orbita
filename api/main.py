@@ -5,6 +5,7 @@ import logging
 import os
 import re
 import sys
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -33,6 +34,12 @@ from src.mcp.pluggy_direct import PluggyDirectClient
 
 _mcp: MCPClient | None = None
 
+# ── Transaction cache ─────────────────────────────────────────────────────
+# Prevents multiple Pluggy API calls for the same date range within a short
+# window, ensuring all endpoints in a single page load see the same data.
+_txn_cache: Dict[str, Any] = {"key": None, "data": [], "ts": 0.0}
+_TXN_CACHE_TTL = 30  # seconds
+
 
 def _mcp_client() -> MCPClient:
     global _mcp
@@ -42,19 +49,50 @@ def _mcp_client() -> MCPClient:
 
 
 def fetch_transactions(start_date: str, end_date: str) -> List[Dict]:
+    cache_key = f"{start_date}|{end_date}"
+    now = time.monotonic()
+    if _txn_cache["key"] == cache_key and (now - _txn_cache["ts"]) < _TXN_CACHE_TTL:
+        return _txn_cache["data"]
+
     txns = _mcp_client().get_transactions(start_date, end_date)
     for t in txns:
-        if not t.get("category") or t["category"] in ("", "outros"):
-            t["category"] = categorize(t.get("description", ""))
+        t["category"] = categorize(
+            t.get("description", ""),
+            pluggy_category=t.get("category", ""),
+        )
+
+    _txn_cache["key"] = cache_key
+    _txn_cache["data"] = txns
+    _txn_cache["ts"] = now
     return txns
 
 
+def _normalize_balance(raw: Dict) -> Dict:
+    """Normalize balance data to the shape the frontend expects."""
+    return {
+        "account_id": raw.get("account_id") or raw.get("id", ""),
+        "balance": float(raw.get("balance", 0)),
+        "currency": raw.get("currency") or raw.get("currency_code", "BRL"),
+    }
+
+
+def _normalize_account(raw: Dict) -> Dict:
+    """Normalize account data to the shape the frontend expects."""
+    return {
+        "account_id": raw.get("account_id") or raw.get("id", ""),
+        "account_type": (raw.get("account_type") or raw.get("type", "")).lower(),
+        "status": (raw.get("status", "active")).lower(),
+        "name": raw.get("name", ""),
+        "number": raw.get("number", ""),
+    }
+
+
 def fetch_balances() -> List[Dict]:
-    return _mcp_client().get_balances()
+    return [_normalize_balance(b) for b in _mcp_client().get_balances()]
 
 
 def fetch_accounts() -> List[Dict]:
-    return _mcp_client().get_accounts()
+    return [_normalize_account(a) for a in _mcp_client().get_accounts()]
 
 logger = logging.getLogger(__name__)
 
@@ -153,6 +191,100 @@ def health() -> Dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/api/dashboard")
+def dashboard(
+    start: Optional[str] = Query(None),
+    end: Optional[str] = Query(None),
+    months: int = Query(6),
+) -> Dict[str, Any]:
+    """Single endpoint returning all dashboard data in one response."""
+    txns = _safe_txns(start, end)
+    try:
+        bals = fetch_balances()
+    except Exception:
+        logger.exception("Error fetching balances")
+        bals = []
+    try:
+        accts = fetch_accounts()
+    except Exception:
+        logger.exception("Error fetching accounts")
+        accts = []
+
+    summary_data = get_summary(txns)
+    current_balance = sum(b.get("balance", 0) for b in bals)
+    txn_total = sum(t.get("amount", 0) for t in txns)
+
+    return {
+        "transactions": txns,
+        "balances": bals,
+        "accounts": accts,
+        "summary": summary_data,
+        "monthly": get_monthly_data(txns, months=months),
+        "categories": get_category_totals(txns),
+        "balanceHistory": get_balance_history(txns, initial_balance=current_balance - txn_total),
+    }
+
+
+@app.get("/api/cash-flow")
+def cash_flow(
+    start: Optional[str] = Query(None),
+    end: Optional[str] = Query(None),
+    months: int = Query(6),
+) -> Dict[str, Any]:
+    """Single endpoint returning all cash-flow page data."""
+    txns = _safe_txns(start, end)
+    return {
+        "summary": get_summary(txns),
+        "monthly": get_monthly_data(txns, months=months),
+        "transactions": txns,
+    }
+
+
+@app.get("/api/accounts-overview")
+def accounts_overview() -> Dict[str, Any]:
+    """Single endpoint returning balances + accounts for Contas and Patrimônio pages."""
+    try:
+        bals = fetch_balances()
+    except Exception:
+        logger.exception("Error fetching balances")
+        bals = []
+    try:
+        accts = fetch_accounts()
+    except Exception:
+        logger.exception("Error fetching accounts")
+        accts = []
+    return {"balances": bals, "accounts": accts}
+
+
+@app.get("/api/reports")
+def reports(
+    start: Optional[str] = Query(None),
+    end: Optional[str] = Query(None),
+    months: int = Query(6),
+) -> Dict[str, Any]:
+    """Single endpoint returning all reports page data."""
+    txns = _safe_txns(start, end)
+    return {
+        "summary": get_summary(txns),
+        "monthly": get_monthly_data(txns, months=months),
+        "categories": get_category_totals(txns),
+        "recurring": get_recurring(txns),
+    }
+
+
+@app.get("/api/categories-overview")
+def categories_overview(
+    start: Optional[str] = Query(None),
+    end: Optional[str] = Query(None),
+) -> Dict[str, Any]:
+    """Single endpoint returning categories + transactions for the Categorias page."""
+    txns = _safe_txns(start, end)
+    return {
+        "categories": get_category_totals(txns),
+        "transactions": txns,
+    }
+
+
 @app.get("/api/config", response_model=ConfigResponse)
 def config() -> ConfigResponse:
     ids = settings.pluggy_item_ids
@@ -246,10 +378,14 @@ def balance_history(
 ) -> List[Dict[str, Any]]:
     txns = _safe_txns(start, end)
     try:
-        initial = 0.0
+        current_balance = 0.0
         bals = fetch_balances()
         if bals:
-            initial = sum(b.get("balance", 0) for b in bals)
+            current_balance = sum(b.get("balance", 0) for b in bals)
+        # Work backwards: the current balance already includes all transactions,
+        # so the starting balance is current_balance minus the sum of all txn amounts.
+        txn_total = sum(t.get("amount", 0) for t in txns)
+        initial = current_balance - txn_total
         return get_balance_history(txns, initial_balance=initial)
     except Exception:
         logger.exception("Error computing balance history")
@@ -303,6 +439,7 @@ def connect(req: ConnectRequest) -> Dict[str, Any]:
     if _mcp is not None:
         _mcp.close()
         _mcp = None
+    _txn_cache["key"] = None  # Invalidate transaction cache
     _update_env_var("PLUGGY_ITEM_ID", new_value)
 
     logger.info("Connected Pluggy item: %s (total: %d)", req.itemId, len(current_ids))
@@ -323,6 +460,7 @@ def disconnect(item_id: str) -> Dict[str, Any]:
     if _mcp is not None:
         _mcp.close()
         _mcp = None
+    _txn_cache["key"] = None  # Invalidate transaction cache
     _update_env_var("PLUGGY_ITEM_ID", new_value)
 
     logger.info("Disconnected Pluggy item: %s (remaining: %d)", item_id, len(current_ids))

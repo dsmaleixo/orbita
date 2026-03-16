@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/page-header";
 import { PeriodSelect } from "@/components/period-select";
 import { CategoryDonut, HorizontalBarCategories } from "@/components/charts";
 import { SkeletonChart } from "@/components/skeleton";
-import { getCategoryTotals, getTransactions } from "@/lib/api";
+import { getCategoriesOverview } from "@/lib/api";
 import type { CategoryTotals, Transaction } from "@/lib/api";
 import { getDateRange, formatCurrency, CATEGORY_CONFIG } from "@/lib/utils";
 
@@ -17,14 +17,23 @@ export default function CategoriesPage() {
 
   useEffect(() => {
     const { start, end } = getDateRange(period);
+    let cancelled = false;
     setLoading(true);
-    Promise.all([getCategoryTotals(start, end), getTransactions(start, end)])
-      .then(([c, t]) => {
-        setCategories(c);
-        setTxns(t);
+    setCategories({});
+    setTxns([]);
+
+    getCategoriesOverview(start, end)
+      .then((data) => {
+        if (cancelled) return;
+        setCategories(data.categories);
+        setTxns(data.transactions);
       })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => { cancelled = true; };
   }, [period]);
 
   const totalExpenses = Object.values(categories).reduce((s, v) => s + v, 0);

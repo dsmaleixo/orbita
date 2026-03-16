@@ -20,11 +20,20 @@ export default function TransactionsPage() {
 
   useEffect(() => {
     const { start, end } = getDateRange(period);
+    let cancelled = false;
     setLoading(true);
+    setTxns([]);
+
     getTransactions(start, end)
-      .then(setTxns)
-      .catch(() => setTxns([]))
-      .finally(() => setLoading(false));
+      .catch(() => [] as Transaction[])
+      .then((t) => {
+        if (!cancelled) setTxns(t);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => { cancelled = true; };
   }, [period]);
 
   const filtered = useMemo(() => {

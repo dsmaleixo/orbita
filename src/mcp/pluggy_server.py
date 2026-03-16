@@ -188,12 +188,15 @@ def _sanitize_transaction(txn: Dict) -> Dict:
 def _sanitize_account(acc: Dict) -> Dict:
     """Return only non-PII account fields."""
     return {
-        "id": str(acc.get("id", "")),
-        "type": str(acc.get("type", "")),
+        "account_id": str(acc.get("id", "")),
+        "account_type": str(acc.get("type", "")).lower(),
         "subtype": str(acc.get("subtype", "")),
+        "status": str(acc.get("status", "ACTIVE")).lower(),
         "name": str(acc.get("name", ""))[:100],
+        "number": str(acc.get("number", "")),
         "balance": float(acc.get("balance", 0)),
-        "currency_code": str(acc.get("currencyCode", "BRL")),
+        "currency": str(acc.get("currencyCode", "BRL")),
+        "institution_name": str(acc.get("institution", {}).get("name", ""))[:100],
     }
 
 
@@ -268,16 +271,7 @@ def get_accounts() -> List[Dict]:
     all_accounts: List[Dict] = []
     for iid in item_ids:
         all_accounts.extend(client.get_accounts(iid))
-    result = []
-    for acc in all_accounts:
-        result.append({
-            "id": str(acc.get("id", "")),
-            "type": str(acc.get("type", "")),
-            "subtype": str(acc.get("subtype", "")),
-            "name": str(acc.get("name", ""))[:100],
-            "currency_code": str(acc.get("currencyCode", "BRL")),
-            "institution_name": str(acc.get("institution", {}).get("name", ""))[:100],
-        })
+    result = [_sanitize_account(acc) for acc in all_accounts]
     logger.info("get_accounts(): returned %d accounts", len(result))
     return result
 

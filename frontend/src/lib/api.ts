@@ -32,6 +32,8 @@ export interface Account {
   name?: string;
   number?: string;
   balance?: number;
+  institution_name?: string;
+  currency_code?: string;
 }
 
 export interface Summary {
@@ -140,6 +142,74 @@ export async function getBalanceHistory(start?: string, end?: string): Promise<B
   if (start) params.set("start", start);
   if (end) params.set("end", end);
   return fetchJSON(`/balance-history?${params}`);
+}
+
+export interface DashboardData {
+  transactions: Transaction[];
+  balances: Balance[];
+  accounts: Account[];
+  summary: Summary;
+  monthly: MonthlyData[];
+  categories: CategoryTotals;
+  balanceHistory: BalancePoint[];
+}
+
+export interface CashFlowData {
+  summary: Summary;
+  monthly: MonthlyData[];
+  transactions: Transaction[];
+}
+
+export async function getCashFlow(start?: string, end?: string, months = 6): Promise<CashFlowData> {
+  const params = new URLSearchParams();
+  if (start) params.set("start", start);
+  if (end) params.set("end", end);
+  params.set("months", String(months));
+  return fetchJSON(`/cash-flow?${params}`);
+}
+
+export interface AccountsOverviewData {
+  balances: Balance[];
+  accounts: Account[];
+}
+
+export async function getAccountsOverview(): Promise<AccountsOverviewData> {
+  return fetchJSON("/accounts-overview");
+}
+
+export interface ReportsData {
+  summary: Summary;
+  monthly: MonthlyData[];
+  categories: CategoryTotals;
+  recurring: RecurringItem[];
+}
+
+export async function getReports(start?: string, end?: string, months = 6): Promise<ReportsData> {
+  const params = new URLSearchParams();
+  if (start) params.set("start", start);
+  if (end) params.set("end", end);
+  params.set("months", String(months));
+  return fetchJSON(`/reports?${params}`);
+}
+
+export interface CategoriesOverviewData {
+  categories: CategoryTotals;
+  transactions: Transaction[];
+}
+
+export async function getCategoriesOverview(start?: string, end?: string): Promise<CategoriesOverviewData> {
+  const params = new URLSearchParams();
+  if (start) params.set("start", start);
+  if (end) params.set("end", end);
+  return fetchJSON(`/categories-overview?${params}`);
+}
+
+export async function getDashboard(start?: string, end?: string, months = 6): Promise<DashboardData> {
+  const params = new URLSearchParams();
+  if (start) params.set("start", start);
+  if (end) params.set("end", end);
+  params.set("months", String(months));
+  return fetchJSON(`/dashboard?${params}`);
 }
 
 export async function sendChatMessage(message: string): Promise<ChatResponse> {

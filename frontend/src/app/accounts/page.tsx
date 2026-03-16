@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { SkeletonCard } from "@/components/skeleton";
-import { getBalances, getAccounts } from "@/lib/api";
+import { getAccountsOverview } from "@/lib/api";
 import type { Balance, Account } from "@/lib/api";
 import { formatCurrency } from "@/lib/utils";
 import { Landmark, CreditCard, PiggyBank, TrendingUp } from "lucide-react";
@@ -22,10 +22,10 @@ export default function AccountsPage() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([getBalances(), getAccounts()])
-      .then(([b, a]) => {
-        setBalances(b);
-        setAccounts(a);
+    getAccountsOverview()
+      .then((data) => {
+        setBalances(data.balances);
+        setAccounts(data.accounts);
       })
       .catch(() => {})
       .finally(() => setLoading(false));

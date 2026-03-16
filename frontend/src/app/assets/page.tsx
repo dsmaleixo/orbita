@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/page-header";
 import { MetricCard } from "@/components/metric-card";
 import { SkeletonCard } from "@/components/skeleton";
-import { getBalances, getAccounts } from "@/lib/api";
+import { getAccountsOverview } from "@/lib/api";
 import type { Balance, Account } from "@/lib/api";
 import { formatCurrency } from "@/lib/utils";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
@@ -24,10 +24,10 @@ export default function AssetsPage() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([getBalances(), getAccounts()])
-      .then(([b, a]) => {
-        setBalances(b);
-        setAccounts(a);
+    getAccountsOverview()
+      .then((data) => {
+        setBalances(data.balances);
+        setAccounts(data.accounts);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
