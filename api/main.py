@@ -81,7 +81,7 @@ def _normalize_account(raw: Dict) -> Dict:
     return {
         "account_id": raw.get("account_id") or raw.get("id", ""),
         "account_type": (raw.get("account_type") or raw.get("type", "")).lower(),
-        "status": (raw.get("status", "active")).lower(),
+        "status": (raw.get("status") or "").lower(),
         "name": raw.get("name", ""),
         "number": raw.get("number", ""),
     }

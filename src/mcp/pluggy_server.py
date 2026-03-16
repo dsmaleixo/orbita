@@ -191,7 +191,7 @@ def _sanitize_account(acc: Dict) -> Dict:
         "account_id": str(acc.get("id", "")),
         "account_type": str(acc.get("type", "")).lower(),
         "subtype": str(acc.get("subtype", "")),
-        "status": str(acc.get("status", "ACTIVE")).lower(),
+        "status": str(acc.get("status", "")).lower(),
         "name": str(acc.get("name", ""))[:100],
         "number": str(acc.get("number", "")),
         "balance": float(acc.get("balance", 0)),
